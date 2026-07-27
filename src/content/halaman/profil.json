@@ -1,4 +1,8 @@
 {
+  "foto_kades": "/images/uploads/644648be4e3fe0204006f56d.webp",
+  "penduduk_wanita": "3230",
+  "nama_kades": "Bapak Kosasih",
+  "penduduk_pria": "3364",
   "sambutan": "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nSelamat datang di Portal Resmi Desa Rancajaya. Kami berkomitmen untuk terus memajukan desa melalui inovasi pertanian dan pemberdayaan masyarakat.",
   "nama_kades": "Bapak H. Naufal",
   "luas_wilayah": "8.11",
@@ -13,17 +17,58 @@
   "penduduk_wanita": "4.300",
   "demo_dusun": [],
   "demo_pendidikan": [
-    { "label": "SD", "value": 3000 },
-    { "label": "SMP", "value": 2500 },
-    { "label": "SMA", "value": 2000 },
-    { "label": "Sarjana", "value": 1000 }
+    {
+      "label": "SD",
+      "value": 3000
+    },
+    {
+      "label": "SMP",
+      "value": 2500
+    },
+    {
+      "label": "SMA",
+      "value": 2000
+    },
+    {
+      "label": "Sarjana",
+      "value": 1000
+    }
+  ],
+  "luas_wilayah": "6.44",
+  "penduduk_total": "6594",
+  "dusun": [
+    "Mulyasari",
+    "Sengon",
+    "Buwer"
   ],
   "apbdes": {
     "pendapatan": "Rp 1.500.000.000",
     "belanja": "Rp 1.450.000.000",
     "riwayat": [
-      { "tahun": "2023", "pendapatan": 1400000000, "belanja": 1350000000 },
-      { "tahun": "2024", "pendapatan": 1500000000, "belanja": 1450000000 }
+      {
+        "tahun": "2023",
+        "pendapatan": 1400000000,
+        "belanja": 1350000000
+      },
+      {
+        "tahun": "2024",
+        "pendapatan": 1500000000,
+        "belanja": 1450000000
+      }
     ]
-  }
+  },
+  "demo_dusun": [
+    {
+      "label": "Buwer",
+      "value": 2593
+    },
+    {
+      "label": "Mulyasari",
+      "value": 2537
+    },
+    {
+      "label": "Sengon",
+      "value": 1464
+    }
+  ]
 }
