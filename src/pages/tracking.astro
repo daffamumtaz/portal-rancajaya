@@ -1,0 +1,80 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import { isPublishedContent } from '../utils/content';
+
+const trackingData = await getEntry('halaman', 'tracking');
+const tracking = isPublishedContent(trackingData?.data) ? trackingData.data : {};
+const steps = tracking.tracking_steps || [
+  { label: 'Permohonan diterima', detail: 'Berkas masuk dan menunggu pemeriksaan petugas.' },
+  { label: 'Sedang diverifikasi', detail: 'Petugas memeriksa kelengkapan data.' },
+  { label: 'Diproses', detail: 'Permohonan sedang diproses oleh perangkat desa.' },
+  { label: 'Selesai', detail: 'Hasil layanan siap diambil atau dikirim.' },
+];
+---
+
+<Layout title="Tracking Progress Layanan - Desa Rancajaya" description="Halaman pelacakan progress permohonan layanan Desa Rancajaya.">
+  <Hero
+    eyebrow="Layanan Publik"
+    title={tracking.hero_title || 'Tracking Progress Layanan'}
+    subtitle={tracking.hero_subtitle || 'Pantau perkembangan permohonan layanan desa menggunakan nomor permohonan.'}
+  />
+
+  <section class="section bg-white">
+    <div class="container-page">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <div class="lg:col-span-2 card p-6 md:p-8">
+          <span class="eyebrow">Cek Permohonan</span>
+          <h2 class="text-2xl font-display font-bold text-ink mt-2">Masukkan nomor permohonan</h2>
+          <p class="text-sm text-muted mt-3 leading-relaxed">Gunakan nomor yang diberikan petugas setelah formulir layanan berhasil dicatat.</p>
+          <form id="trackingForm" class="mt-6 space-y-4">
+            <label for="trackingNumber" class="block text-sm font-semibold text-ink">Nomor Permohonan</label>
+            <input id="trackingNumber" name="trackingNumber" type="text" required class="w-full rounded-md border border-line bg-white px-4 py-3 text-sm text-ink outline-none focus:border-primary-600" placeholder={tracking.tracking_placeholder || 'Contoh: RJ-2026-0001'} />
+            <button type="submit" class="btn-primary w-full">Cek Status</button>
+          </form>
+          <p id="trackingResult" class="hidden mt-4 rounded-md bg-primary-50 px-4 py-3 text-sm text-primary-800" role="status"></p>
+          <p class="text-xs text-muted mt-5">{tracking.tracking_disclaimer || 'Pelacakan akan aktif setelah sistem administrasi desa terhubung.'}</p>
+        </div>
+
+        <div class="lg:col-span-3 card p-6 md:p-8">
+          <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <span class="eyebrow">Rancangan Alur</span>
+              <h2 class="text-2xl font-display font-bold text-ink mt-2">Tahapan pelayanan</h2>
+            </div>
+            <span class="pill-primary">{steps.length} tahap</span>
+          </div>
+          <div class="space-y-5">
+            {steps.map((step, index) => (
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-700 text-sm font-bold text-white">{index + 1}</span>
+                  {index < steps.length - 1 && <span class="mt-2 h-full w-px bg-line"></span>}
+                </div>
+                <div class="pb-2">
+                  <h3 class="font-bold text-ink">{step.label}</h3>
+                  <p class="text-sm text-muted mt-1 leading-relaxed">{step.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const form = document.getElementById('trackingForm');
+    const input = document.getElementById('trackingNumber');
+    const result = document.getElementById('trackingResult');
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const number = input.value.trim();
+      if (!number) return;
+      result.textContent = `Nomor ${number} sudah diterima. Integrasi status layanan akan diaktifkan setelah sistem tracking desa tersedia.`;
+      result.classList.remove('hidden');
+    });
+  </script>
+</Layout>

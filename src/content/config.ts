@@ -7,6 +7,12 @@ const labelValueSchema = z.object({
 
 const releaseStatusSchema = z.enum(['Draf', 'Siap', 'Terbit']).default('Terbit');
 
+const sourceMetadataFields = {
+  tahun_data: z.coerce.number().int().min(2000).max(2100).optional(),
+  sumber_data: z.string().optional(),
+  status_validasi: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
+};
+
 const publicationFields = {
   release_status: releaseStatusSchema,
   published_at: z.coerce.date().optional(),
@@ -36,6 +42,7 @@ const strukturOrganisasiCollection = defineCollection({
     foto: z.string().optional(),
     urutan: z.number(),
     deskripsi: z.string().optional(),
+    ...sourceMetadataFields,
     ...publicationFields,
   }),
 });
@@ -46,9 +53,13 @@ const dusunCollection = defineCollection({
     nama: z.string(),
     kepala_dusun: z.string().optional(),
     jumlah_penduduk: z.number().optional(),
+    jumlah_pria: z.number().optional(),
+    jumlah_wanita: z.number().optional(),
+    jumlah_kk: z.number().optional(),
     luas_wilayah: z.string().optional(),
     deskripsi: z.string(),
     urutan: z.number(),
+    ...sourceMetadataFields,
     ...publicationFields,
   }),
 });
@@ -60,8 +71,11 @@ const apbdesCollection = defineCollection({
     jenis: z.enum(['Pendapatan', 'Belanja']),
     tahun: z.coerce.number().int().min(2000).max(2100),
     jumlah: z.number(),
+    realisasi: z.number().optional(),
     urutan: z.number(),
     deskripsi: z.string().optional(),
+    tanggal_pembaruan: z.coerce.date().optional(),
+    ...sourceMetadataFields,
     ...publicationFields,
   }),
 });
@@ -100,7 +114,9 @@ const potensiStatistikCollection = defineCollection({
     label: z.string(),
     value: z.string(),
     keterangan: z.string().optional(),
+    satuan: z.string().optional(),
     urutan: z.number(),
+    ...sourceMetadataFields,
     ...publicationFields,
   }),
 });
@@ -117,6 +133,8 @@ const umkmCollection = defineCollection({
     foto: z.string().optional(),
     deskripsi: z.string(),
     featured: z.boolean().default(false),
+    tanggal_pembaruan: z.coerce.date().optional(),
+    sumber_data: z.string().optional(),
     ...publicationFields,
   }),
 });
@@ -125,9 +143,16 @@ const layananAdministrasiCollection = defineCollection({
   type: 'content',
   schema: z.object({
     nama: z.string(),
+    kategori: z.enum(['Administrasi Kependudukan', 'Surat Pengantar', 'Usaha', 'Sosial', 'Lainnya']).default('Administrasi Kependudukan'),
     deskripsi: z.string(),
     link: z.string().optional(),
     ikon: z.string().optional(),
+    persyaratan: z.array(z.string()).default([]),
+    biaya: z.string().default('Gratis'),
+    durasi: z.string().default('Sesuai kelengkapan berkas'),
+    kontak: z.string().optional(),
+    diperbarui_pada: z.coerce.date().optional(),
+    sumber_data: z.string().optional(),
     urutan: z.number(),
     ...publicationFields,
   }),
@@ -154,6 +179,8 @@ const faqCollection = defineCollection({
     jawaban: z.string(),
     kategori: z.enum(['Administrasi', 'Layanan', 'Umum', 'Potensi']).default('Umum'),
     urutan: z.number(),
+    tanggal_pembaruan: z.coerce.date().optional(),
+    sumber_data: z.string().optional(),
     ...publicationFields,
   }),
 });
@@ -208,7 +235,16 @@ const halamanCollection = defineCollection({
     penduduk_total: z.string().optional(),
     penduduk_pria: z.string().optional(),
     penduduk_wanita: z.string().optional(),
+    tahun_wilayah: z.coerce.number().int().min(2000).max(2100).optional(),
+    sumber_wilayah: z.string().optional(),
+    status_validasi_wilayah: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
     demo_pendidikan: z.array(labelValueSchema).default([]),
+    demografi_umur: z.array(labelValueSchema).default([]),
+    data_pekerjaan_warga: z.array(labelValueSchema).default([]),
+    status_pernikahan: z.array(labelValueSchema).default([]),
+    tahun_demografi: z.coerce.number().int().min(2000).max(2100).optional(),
+    sumber_demografi: z.string().optional(),
+    status_validasi_demografi: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
     
     // Pertanian
     luas_lahan: z.string().optional(),
@@ -228,6 +264,14 @@ const halamanCollection = defineCollection({
     faq: z.array(z.object({
       q: z.string(),
       a: z.string(),
+    })).default([]),
+
+    // Tracking Progress
+    tracking_placeholder: z.string().optional(),
+    tracking_disclaimer: z.string().optional(),
+    tracking_steps: z.array(z.object({
+      label: z.string(),
+      detail: z.string(),
     })).default([]),
     ...publicationFields,
   }),

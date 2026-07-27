@@ -9,15 +9,44 @@
     { "arah": "Selatan", "wilayah": "Desa Rancajaya dan Rancabango" },
     { "arah": "Barat", "wilayah": "Desa Gempolsari dan Rancamulya" }
   ],
+  "tahun_wilayah": 2022,
+  "sumber_wilayah": "Peraturan Bupati Subang Nomor 198 Tahun 2022 dan data dummy batas wilayah untuk verifikasi desa.",
+  "status_validasi_wilayah": "Perlu Verifikasi",
   "penduduk_total": "6594",
   "penduduk_pria": "3364",
   "penduduk_wanita": "3230",
   "demo_pendidikan": [
-    { "label": "SD", "value": 3000 },
-    { "label": "SMP", "value": 2500 },
-    { "label": "SMA", "value": 2000 },
-    { "label": "Sarjana", "value": 1000 }
+    { "label": "SD/Sederajat", "value": 2050 },
+    { "label": "SMP/Sederajat", "value": 1800 },
+    { "label": "SMA/Sederajat", "value": 1874 },
+    { "label": "Diploma/Sarjana", "value": 870 }
   ],
+  "demografi_umur": [
+    { "label": "0-5 tahun", "value": 420 },
+    { "label": "6-12 tahun", "value": 760 },
+    { "label": "13-17 tahun", "value": 650 },
+    { "label": "18-24 tahun", "value": 970 },
+    { "label": "25-44 tahun", "value": 2010 },
+    { "label": "45-59 tahun", "value": 1250 },
+    { "label": "60 tahun ke atas", "value": 534 }
+  ],
+  "data_pekerjaan_warga": [
+    { "label": "Petani", "value": 2050 },
+    { "label": "Pelajar/Mahasiswa", "value": 1420 },
+    { "label": "Karyawan/Wiraswasta", "value": 1320 },
+    { "label": "Ibu Rumah Tangga", "value": 980 },
+    { "label": "Buruh", "value": 560 },
+    { "label": "Belum Bekerja", "value": 264 }
+  ],
+  "status_pernikahan": [
+    { "label": "Belum Menikah", "value": 2460 },
+    { "label": "Menikah", "value": 3450 },
+    { "label": "Cerai Hidup", "value": 382 },
+    { "label": "Cerai Mati", "value": 302 }
+  ],
+  "tahun_demografi": 2026,
+  "sumber_demografi": "Data dummy untuk diganti berdasarkan rekap administrasi kependudukan desa.",
+  "status_validasi_demografi": "Dummy",
   "release_status": "Terbit",
   "aktif": true
 }

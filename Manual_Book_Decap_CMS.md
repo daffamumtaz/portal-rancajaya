@@ -20,6 +20,8 @@ Website Desa Rancajaya dikelola menggunakan **Decap CMS**. Sistem ini memungkink
 ### 3. Memahami Struktur Konten (Collections)
 Di sisi kiri layar (Sidebar), Anda akan melihat beberapa menu (Collections). Berikut penjelasan untuk setiap menu:
 
+**Aturan entri:** Struktur Organisasi dan Dusun adalah koleksi tetap sehingga hanya dapat diedit. Berita, APBDes, Potensi, UMKM, Layanan, Kontak, FAQ, dan Galeri dapat ditambah melalui tombol **Tambah**. Penghapusan tetap dibatasi agar data publik tidak hilang tanpa pemeriksaan.
+
 #### A. Halaman Website
 Digunakan untuk mengubah konten utama Beranda, Profil, Potensi, dan Layanan. Data APBDes, statistik, kontak, FAQ, serta daftar layanan dikelola pada koleksi masing-masing agar dapat dipakai ulang di beberapa halaman.
 
@@ -58,24 +60,27 @@ Administrasi Daring menyimpan layanan dan tautan formulir. Kontak menyimpan nomo
 
 ---
 
-### 4. Status Publikasi
-CMS memakai dua status pada field **Status Publikasi**:
-- **Draf**: tersimpan di repository, tetapi tidak ditampilkan pada situs publik.
-- **Terbit**: ditampilkan pada situs publik setelah Netlify selesai membangun ulang.
+### 4. Workflow Native Decap
+CMS menggunakan workflow bawaan Decap dengan tiga tahap:
+- **Draf**: konten masih disusun dan belum masuk situs publik.
+- **Dalam Review**: konten menunggu pemeriksaan editor.
+- **Siap Terbit**: konten sudah disetujui untuk diterbitkan melalui tombol native Decap.
 
-**Menyimpan perubahan ke situs publik:**
+**Alur kerja konten:**
 1. Buat atau edit entri, lalu pastikan kolom wajib, tautan, angka, dan foto sudah benar.
-2. Pilih **Draf** jika konten masih perlu diperiksa. Pilih **Terbit** jika konten sudah siap ditampilkan.
-3. Klik **Simpan**. Decap akan menyimpan perubahan ke branch utama.
-4. Tunggu proses build Netlify selesai, lalu periksa Public View.
+2. Simpan sebagai **Draf** atau pindahkan ke **Dalam Review**.
+3. Editor memeriksa isi, sumber data, dan tampilan pratinjau.
+4. Setelah disetujui, pindahkan ke **Siap Terbit** dan gunakan tombol **Terbitkan** bawaan Decap.
+5. Tunggu proses build Netlify selesai, lalu periksa Public View.
 
-Konten tampil publik jika statusnya **Terbit** dan **Tampilkan di Publik** aktif. Karena semua koleksi dilindungi dari penghapusan, koreksi dilakukan dengan mengedit entri atau menonaktifkan Tampilkan di Publik.
+Fitur rilis batch ditahan sampai alur tracking progress stabil. Konten yang tampil publik juga harus memiliki **Tampilkan di Publik** aktif.
 
 ---
 
 ### 5. Pengelolaan Gambar (Media Library)
-- Buka tautan **"Unggah Media"** di pojok kanan bawah halaman admin untuk masuk ke halaman upload.
-- Klik **"Buka Media Library"** untuk mengelola seluruh gambar desa melalui menu **"Media"** Decap CMS.
+- Gunakan menu **"Media"** di header Decap untuk upload langsung seperti alur native sebelumnya.
+- Tautan **"Unggah Media"** di pojok kanan bawah juga membuka pintu masuk Media Library.
+- Klik **"Unggah"** untuk mengelola seluruh gambar desa melalui Media Library Decap CMS.
 - Gunakan tombol **"Unggah"** atau **"Pilih gambar"** saat mengisi field foto.
 - Disarankan untuk **mengompres foto hingga di bawah 1 MB** agar website tetap cepat diakses warga.
 

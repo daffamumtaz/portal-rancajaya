@@ -11,15 +11,20 @@ const profil = isPublishedContent(profilData?.data) ? profilData.data : {};
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 const strukturOrganisasi = (await getCollection('struktur-organisasi')).filter((entry) => isPublishedContent(entry.data));
 const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
-const activeApbdesYear = common.tahun_apbdes_aktif || new Date().getFullYear();
-const apbdesEntries = (await getCollection('apbdes'))
-  .filter((entry) => isPublishedContent(entry.data))
-  .filter((entry) => entry.data.tahun === activeApbdesYear);
+const allApbdesEntries = (await getCollection('apbdes')).filter((entry) => isPublishedContent(entry.data));
+const apbdesYears = [...new Set(allApbdesEntries.map((entry) => entry.data.tahun))].sort((a, b) => b - a);
+const configuredApbdesYear = common.tahun_apbdes_aktif || new Date().getFullYear();
+const activeApbdesYear = apbdesYears.includes(configuredApbdesYear) ? configuredApbdesYear : (apbdesYears[0] || configuredApbdesYear);
+const apbdesEntries = allApbdesEntries.filter((entry) => entry.data.tahun === activeApbdesYear);
 const sortedStruktur = strukturOrganisasi.sort((a, b) => a.data.urutan - b.data.urutan);
 const sortedDusun = dusunEntries.sort((a, b) => a.data.urutan - b.data.urutan);
 
-const orgNodes = sortedStruktur.map((entry) => ({ ...entry, children: [] }));
-const orgById = new Map(orgNodes.map((node) => [node.id, node]));
+const orgNodes = sortedStruktur.map((entry) => ({
+  ...entry,
+  nodeId: entry.slug || entry.id,
+  children: [],
+}));
+const orgById = new Map(orgNodes.map((node) => [node.nodeId, node]));
 const orgRoots = [];
 orgNodes.forEach((node) => {
   const parent = node.data.parent ? orgById.get(node.data.parent) : undefined;
@@ -41,6 +46,8 @@ const totalPendapatan = apbdesEntries
 const totalBelanja = apbdesEntries
   .filter((entry) => entry.data.jenis === 'Belanja')
   .reduce((sum, entry) => sum + entry.data.jumlah, 0);
+const totalSaldo = totalPendapatan - totalBelanja;
+const apbdesTableRows = [...apbdesEntries].sort((a, b) => a.data.jenis.localeCompare(b.data.jenis) || a.data.urutan - b.data.urutan);
 const formatRupiah = (value) => new Intl.NumberFormat('id-ID', {
   style: 'currency',
   currency: 'IDR',
@@ -50,8 +57,29 @@ const demoDusun = sortedDusun
   .filter((entry) => typeof entry.data.jumlah_penduduk === 'number')
   .map((entry) => ({ label: entry.data.nama, value: entry.data.jumlah_penduduk }));
 const pendidikanRows = profil.demo_pendidikan || [];
+const umurRows = profil.demografi_umur || [];
+const pekerjaanRows = profil.data_pekerjaan_warga || [];
+const pernikahanRows = profil.status_pernikahan || [];
 const formatNumber = (value) => new Intl.NumberFormat('id-ID').format(value);
 const totalDusunPopulation = demoDusun.reduce((sum, item) => sum + item.value, 0);
+const chartPalette = ['#15803d', '#ca8a04', '#2563eb', '#dc2626', '#7c3aed', '#0891b2', '#c2410c'];
+const apbdesByYear = Object.fromEntries(apbdesYears.map((year) => {
+  const rows = allApbdesEntries
+    .filter((entry) => entry.data.tahun === year)
+    .map((entry) => ({
+      nama: entry.data.nama,
+      jenis: entry.data.jenis,
+      jumlah: entry.data.jumlah,
+      realisasi: entry.data.realisasi ?? null,
+      deskripsi: entry.data.deskripsi || '',
+      urutan: entry.data.urutan,
+    }));
+  return [year, {
+    rows,
+    pendapatan: rows.filter((row) => row.jenis === 'Pendapatan').sort((a, b) => b.jumlah - a.jumlah),
+    belanja: rows.filter((row) => row.jenis === 'Belanja').sort((a, b) => b.jumlah - a.jumlah),
+  }];
+}));
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const fotoKades = resolvePublicPath(profil.foto_kades, base);
@@ -256,6 +284,9 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
             <span class="text-sm font-bold text-primary-700">Luas Wilayah</span>
             <span class="text-sm font-bold text-primary-700">{profil.luas_wilayah || '0'} km2</span>
           </div>
+          <div class="px-5 py-3 border-t border-line bg-white">
+            <p class="text-[11px] text-muted">Sumber {profil.sumber_wilayah || 'Belum diisi'} / Tahun {profil.tahun_wilayah || '-'} / Status {profil.status_validasi_wilayah || 'Dummy'}</p>
+          </div>
         </div>
 
         <!-- Dusun List -->
@@ -277,7 +308,8 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
                 </div>
                 <div>
                   <h4 class="font-semibold text-sm text-ink">Dusun {dusun.data.nama}</h4>
-                  <p class="text-xs text-muted">{dusun.data.kepala_dusun || 'Kepala dusun belum diisi'} / {dusun.data.jumlah_penduduk || 0} jiwa</p>
+                  <p class="text-xs text-muted">{dusun.data.kepala_dusun || 'Kepala dusun belum diisi'} / {formatNumber(dusun.data.jumlah_penduduk || 0)} jiwa / {formatNumber(dusun.data.jumlah_kk || 0)} KK</p>
+                  <p class="text-xs text-muted mt-1">Laki-laki {formatNumber(dusun.data.jumlah_pria || 0)} / Perempuan {formatNumber(dusun.data.jumlah_wanita || 0)}</p>
                   <p class="text-xs text-muted mt-1">{dusun.data.deskripsi}</p>
                 </div>
               </div>
@@ -307,27 +339,90 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
         <StatCard value={`${profil.penduduk_wanita || '0'}`} label="Perempuan (Jiwa)" />
       </div>
 
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <p class="text-sm text-muted">Setiap legenda menampilkan jumlah warga per kelompok.</p>
+        <span class="pill-primary">Data {profil.tahun_demografi || '-'} / {profil.status_validasi_demografi || 'Dummy'}</span>
+      </div>
+
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Dusun Pie Chart -->
         <div class="card p-6">
           <div class="flex items-start justify-between gap-4 mb-4">
             <h3 class="font-display font-bold text-ink text-sm">Populasi per Dusun</h3>
             <span class="pill-primary shrink-0 text-right">{formatNumber(totalDusunPopulation)} jiwa</span>
           </div>
-          <div class="relative h-64 w-full">
-            <canvas id="chartDusun"></canvas>
+          <div class="relative h-56 w-full"><canvas id="chartDusun"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4" aria-label="Legenda populasi per dusun">
+            {demoDusun.map((row, index) => (
+              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
+                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
+                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} jiwa</strong>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <!-- Pendidikan Bar Chart -->
+
         <div class="card p-6">
           <div class="flex items-start justify-between gap-4 mb-4">
             <h3 class="font-display font-bold text-ink text-sm">Tingkat Pendidikan</h3>
-            <span class="pill-primary shrink-0 text-right">{pendidikanRows.length} kategori</span>
+            <span class="pill-primary shrink-0 text-right">{formatNumber(pendidikanRows.reduce((sum, row) => sum + row.value, 0))} jiwa</span>
           </div>
-          <div class="relative h-64 w-full">
-            <canvas id="chartPendidikan"></canvas>
+          <div class="relative h-64 w-full"><canvas id="chartPendidikan"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4" aria-label="Legenda tingkat pendidikan">
+            {pendidikanRows.map((row, index) => (
+              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
+                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
+                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} jiwa</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="font-display font-bold text-ink text-sm">Kelompok Umur</h3>
+            <span class="pill-primary shrink-0 text-right">{formatNumber(umurRows.reduce((sum, row) => sum + row.value, 0))} jiwa</span>
+          </div>
+          <div class="relative h-72 w-full"><canvas id="chartUmur"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4" aria-label="Legenda kelompok umur">
+            {umurRows.map((row, index) => (
+              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
+                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
+                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} jiwa</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="font-display font-bold text-ink text-sm">Pekerjaan Warga</h3>
+            <span class="pill-primary shrink-0 text-right">{formatNumber(pekerjaanRows.reduce((sum, row) => sum + row.value, 0))} warga</span>
+          </div>
+          <div class="relative h-72 w-full"><canvas id="chartPekerjaan"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4" aria-label="Legenda pekerjaan warga">
+            {pekerjaanRows.map((row, index) => (
+              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
+                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
+                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} warga</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="card p-6 lg:col-span-2">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="font-display font-bold text-ink text-sm">Status Pernikahan</h3>
+            <span class="pill-primary shrink-0 text-right">{formatNumber(pernikahanRows.reduce((sum, row) => sum + row.value, 0))} warga</span>
+          </div>
+          <div class="relative h-64 w-full"><canvas id="chartPernikahan"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-4" aria-label="Legenda status pernikahan">
+            {pernikahanRows.map((row, index) => (
+              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
+                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
+                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} warga</strong>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -335,117 +430,35 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
   </section>
 
   <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows }}>
+  <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows, demoUmur: umurRows, demoPekerjaan: pekerjaanRows, demoPernikahan: pernikahanRows, chartPalette }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
 
-      // Dusun Chart
-      if (demoDusun && demoDusun.length > 0) {
-        const ctxDusun = document.getElementById('chartDusun').getContext('2d');
-        new Chart(ctxDusun, {
+      function renderPieChart(canvasId, rows) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || !rows || rows.length === 0) return;
+        new Chart(canvas.getContext('2d'), {
           type: 'pie',
           data: {
-            labels: demoDusun.map(d => d.label),
+            labels: rows.map(d => d.label),
             datasets: [{
-              data: demoDusun.map(d => d.value),
-              backgroundColor: ['#16a34a', '#eab308', '#2563eb', '#dc2626', '#9333ea'],
+              data: rows.map(d => d.value),
+              backgroundColor: chartPalette,
             }]
           },
-          options: { responsive: true, maintainAspectRatio: false }
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
-      }
-
-      // Pendidikan Chart
-      if (demoPendidikan && demoPendidikan.length > 0) {
-        const ctxPendidikan = document.getElementById('chartPendidikan').getContext('2d');
-        new Chart(ctxPendidikan, {
-          type: 'bar',
-          data: {
-            labels: demoPendidikan.map(d => d.label),
-            datasets: [{
-              label: 'Jumlah Penduduk',
-              data: demoPendidikan.map(d => d.value),
-              backgroundColor: '#15803d',
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-    });
-  </script>
-
-  <!-- 7. Transparansi APBDes -->
-  <section id="apbdes" class="section bg-paper">
-    <div class="container-page">
-      <div class="section-header">
-        <span class="eyebrow">Keuangan Desa</span>
-        <h2 class="section-title">Transparansi APBDes {activeApbdesYear}</h2>
-        <p class="section-subtitle">Realisasi Anggaran Pendapatan dan Belanja Desa (APBDes) Tahun Anggaran {activeApbdesYear}</p>
-      </div>
-      {apbdesEntries.length > 0 ? (
-        <>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="card p-6 text-center border-green-200 bg-gradient-to-br from-white to-green-50">
-              <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Pendapatan</p>
-              <p class="text-3xl font-display font-bold text-green-700">{formatRupiah(totalPendapatan)}</p>
-            </div>
-
-            <div class="card p-6 text-center border-blue-200 bg-gradient-to-br from-white to-blue-50">
-              <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Belanja</p>
-              <p class="text-3xl font-display font-bold text-blue-700">{formatRupiah(totalBelanja)}</p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="card p-6">
-              <div class="flex items-start justify-between gap-4 mb-4">
-                <h3 class="font-display font-bold text-ink text-sm">Top 5 Sumber Pendapatan</h3>
-                <span class="pill-primary shrink-0 text-right">{formatRupiah(totalPendapatan)}</span>
-              </div>
-              <div class="relative h-80 w-full">
-                <canvas id="chartPendapatan"></canvas>
-              </div>
-            </div>
-            <div class="card p-6">
-              <div class="flex items-start justify-between gap-4 mb-4">
-                <h3 class="font-display font-bold text-ink text-sm">Top 5 Belanja</h3>
-                <span class="pill-primary shrink-0 text-right">{formatRupiah(totalBelanja)}</span>
-              </div>
-              <div class="relative h-80 w-full">
-                <canvas id="chartBelanja"></canvas>
-              </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <div class="card p-8 text-center text-muted">Data APBDes untuk tahun {activeApbdesYear} belum diterbitkan.</div>
-      )}
-    </div>
-  </section>
-
-  <script is:inline define:vars={{
-    apbdesPendapatan: apbdesPendapatan.map((entry) => ({ label: entry.data.nama, value: entry.data.jumlah })),
-    apbdesBelanja: apbdesBelanja.map((entry) => ({ label: entry.data.nama, value: entry.data.jumlah }))
-  }}>
-    document.addEventListener("DOMContentLoaded", function() {
-      if (!window.Chart) return;
-
-      function rupiah(value) {
-        if (value >= 1000000000) return (value / 1000000000) + ' M';
-        if (value >= 1000000) return (value / 1000000) + ' Jt';
-        return value;
       }
 
       function renderBarChart(canvasId, rows, color) {
         const canvas = document.getElementById(canvasId);
         if (!canvas || !rows || rows.length === 0) return;
-
         new Chart(canvas.getContext('2d'), {
           type: 'bar',
           data: {
             labels: rows.map(d => d.label),
             datasets: [{
-              label: 'Jumlah',
+              label: 'Jumlah Penduduk',
               data: rows.map(d => d.value),
               backgroundColor: color,
             }]
@@ -454,20 +467,182 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
               x: {
                 beginAtZero: true,
-                ticks: {
-                  callback: rupiah
-                }
+                ticks: { callback: (value) => new Intl.NumberFormat('id-ID').format(value) }
               }
             }
           }
         });
       }
 
-      renderBarChart('chartPendapatan', apbdesPendapatan, '#16a34a');
-      renderBarChart('chartBelanja', apbdesBelanja, '#2563eb');
+      renderPieChart('chartDusun', demoDusun);
+      renderBarChart('chartPendidikan', demoPendidikan, '#15803d');
+      renderBarChart('chartUmur', demoUmur, '#2563eb');
+      renderBarChart('chartPekerjaan', demoPekerjaan, '#ca8a04');
+      renderBarChart('chartPernikahan', demoPernikahan, '#7c3aed');
+    });
+  </script>
+
+  <!-- 7. Transparansi APBDes -->
+  <section id="apbdes" class="section bg-paper">
+    <div class="container-page">
+      <div class="section-header">
+        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+          <div>
+            <span class="eyebrow">Keuangan Desa</span>
+            <h2 class="section-title">Transparansi APBDes <span id="apbdesHeadingYear">{activeApbdesYear}</span></h2>
+            <p class="section-subtitle">Ringkasan anggaran yang dapat difilter berdasarkan tahun dari collection APBDes.</p>
+          </div>
+          <label class="text-sm font-semibold text-ink">Tahun Anggaran
+            <select id="apbdesYearSelect" class="mt-2 block w-full sm:w-auto rounded-md border border-line bg-white px-3 py-2 text-sm">
+              {apbdesYears.map((year) => <option value={year} selected={year === activeApbdesYear}>{year}</option>)}
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div id="apbdesEmpty" class={`card p-8 text-center text-muted ${apbdesEntries.length > 0 ? 'hidden' : ''}`}>Data APBDes untuk tahun yang dipilih belum tersedia.</div>
+
+      <div id="apbdesContent" class={apbdesEntries.length > 0 ? '' : 'hidden'}>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="card p-6 border-green-200 bg-gradient-to-br from-white to-green-50">
+            <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Total Pendapatan</p>
+            <p id="apbdesTotalPendapatan" class="text-2xl font-display font-bold text-green-700">{formatRupiah(totalPendapatan)}</p>
+          </div>
+          <div class="card p-6 border-blue-200 bg-gradient-to-br from-white to-blue-50">
+            <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Total Belanja</p>
+            <p id="apbdesTotalBelanja" class="text-2xl font-display font-bold text-blue-700">{formatRupiah(totalBelanja)}</p>
+          </div>
+          <div class="card p-6 border-gold-200 bg-gradient-to-br from-white to-gold-50">
+            <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Saldo Anggaran</p>
+            <p id="apbdesTotalSaldo" class="text-2xl font-display font-bold text-gold-700">{formatRupiah(totalSaldo)}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="card p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <h3 class="font-display font-bold text-ink text-sm">Top 5 Sumber Pendapatan</h3>
+              <span id="apbdesBadgePendapatan" class="pill-primary shrink-0 text-right">{formatRupiah(totalPendapatan)}</span>
+            </div>
+            <div class="relative h-80 w-full"><canvas id="chartPendapatan"></canvas></div>
+            <div id="legendPendapatan" class="space-y-2 mt-4" aria-label="Legenda sumber pendapatan"></div>
+          </div>
+          <div class="card p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <h3 class="font-display font-bold text-ink text-sm">Top 5 Belanja</h3>
+              <span id="apbdesBadgeBelanja" class="pill-primary shrink-0 text-right">{formatRupiah(totalBelanja)}</span>
+            </div>
+            <div class="relative h-80 w-full"><canvas id="chartBelanja"></canvas></div>
+            <div id="legendBelanja" class="space-y-2 mt-4" aria-label="Legenda pos belanja"></div>
+          </div>
+        </div>
+
+        <div class="card overflow-hidden">
+          <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-line">
+            <div>
+              <h3 class="font-display font-bold text-ink text-sm">Rincian APBDes</h3>
+              <p class="text-xs text-muted mt-1">Kolom realisasi disiapkan untuk tahap integrasi berikutnya.</p>
+            </div>
+            <span id="apbdesRowCount" class="pill-primary">{apbdesTableRows.length} pos</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[680px] text-sm">
+              <thead class="bg-paper text-left text-xs uppercase tracking-wide text-muted">
+                <tr><th class="px-5 py-3">Pos</th><th class="px-5 py-3">Jenis</th><th class="px-5 py-3 text-right">Anggaran</th><th class="px-5 py-3 text-right">Realisasi</th></tr>
+              </thead>
+              <tbody id="apbdesRows">
+                {apbdesTableRows.map((row) => (
+                  <tr class="border-t border-line"><td class="px-5 py-3"><strong class="text-ink">{row.data.nama}</strong><span class="block text-xs text-muted mt-1">{row.data.deskripsi || ''}</span></td><td class="px-5 py-3 text-muted">{row.data.jenis}</td><td class="px-5 py-3 text-right font-semibold text-ink">{formatRupiah(row.data.jumlah)}</td><td class="px-5 py-3 text-right text-muted">{row.data.realisasi != null ? formatRupiah(row.data.realisasi) : '-'}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{
+    apbdesByYear,
+    activeApbdesYear,
+  }}>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!window.Chart) return;
+
+      const currency = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+      const compactCurrency = (value) => {
+        if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)} M`;
+        if (value >= 1000000) return `${(value / 1000000).toFixed(1)} Jt`;
+        return currency.format(value);
+      };
+      const formatCurrency = (value) => currency.format(value);
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>\'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+      let chartPendapatan;
+      let chartBelanja;
+
+      function renderLegend(elementId, rows, color) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        element.innerHTML = rows.map((row) => `<div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs"><span class="flex min-w-0 items-center gap-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background-color:${color}"></span><span class="truncate text-ink">${escapeHtml(row.label)}</span></span><strong class="whitespace-nowrap text-ink">${formatCurrency(row.value)}</strong></div>`).join('');
+      }
+
+      function renderBarChart(canvasId, rows, color, previousChart) {
+        if (previousChart) previousChart.destroy();
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || !rows.length) return undefined;
+        return new Chart(canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: rows.map((row) => row.label),
+            datasets: [{ label: 'Jumlah', data: rows.map((row) => row.value), backgroundColor: color }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, ticks: { callback: compactCurrency } } }
+          }
+        });
+      }
+
+      function renderRows(rows) {
+        const body = document.getElementById('apbdesRows');
+        if (!body) return;
+        body.innerHTML = rows
+          .slice()
+          .sort((a, b) => a.jenis.localeCompare(b.jenis) || a.urutan - b.urutan)
+          .map((row) => `<tr class="border-t border-line"><td class="px-5 py-3"><strong class="text-ink">${escapeHtml(row.nama)}</strong><span class="block text-xs text-muted mt-1">${escapeHtml(row.deskripsi)}</span></td><td class="px-5 py-3 text-muted">${escapeHtml(row.jenis)}</td><td class="px-5 py-3 text-right font-semibold text-ink">${formatCurrency(row.jumlah)}</td><td class="px-5 py-3 text-right text-muted">${row.realisasi == null ? '-' : formatCurrency(row.realisasi)}</td></tr>`)
+          .join('');
+      }
+
+      function renderApbdes(year) {
+        const data = apbdesByYear[year] || { rows: [], pendapatan: [], belanja: [] };
+        const totalPendapatan = data.pendapatan.reduce((sum, row) => sum + row.jumlah, 0);
+        const totalBelanja = data.belanja.reduce((sum, row) => sum + row.jumlah, 0);
+        document.getElementById('apbdesHeadingYear').textContent = year;
+        document.getElementById('apbdesTotalPendapatan').textContent = formatCurrency(totalPendapatan);
+        document.getElementById('apbdesTotalBelanja').textContent = formatCurrency(totalBelanja);
+        document.getElementById('apbdesTotalSaldo').textContent = formatCurrency(totalPendapatan - totalBelanja);
+        document.getElementById('apbdesBadgePendapatan').textContent = formatCurrency(totalPendapatan);
+        document.getElementById('apbdesBadgeBelanja').textContent = formatCurrency(totalBelanja);
+        document.getElementById('apbdesRowCount').textContent = `${data.rows.length} pos`;
+        document.getElementById('apbdesContent').classList.toggle('hidden', data.rows.length === 0);
+        document.getElementById('apbdesEmpty').classList.toggle('hidden', data.rows.length > 0);
+        renderRows(data.rows);
+        renderLegend('legendPendapatan', data.pendapatan.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a');
+        renderLegend('legendBelanja', data.belanja.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb');
+        chartPendapatan = renderBarChart('chartPendapatan', data.pendapatan.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a', chartPendapatan);
+        chartBelanja = renderBarChart('chartBelanja', data.belanja.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb', chartBelanja);
+      }
+
+      const select = document.getElementById('apbdesYearSelect');
+      select?.addEventListener('change', (event) => renderApbdes(event.target.value));
+      renderApbdes(String(activeApbdesYear));
     });
   </script>
 </Layout>
