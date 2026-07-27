@@ -1,11 +1,15 @@
 ---
+import { getEntry } from 'astro:content';
+
 const currentYear = new Date().getFullYear();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const umumData = await getEntry('pengaturan', 'umum');
+const common = umumData?.data || {};
 const navLinks = [
   { name: 'Beranda', href: `${base}/` },
   { name: 'Profil Desa', href: `${base}/profil` },
   { name: 'Informasi', href: `${base}/informasi` },
-  { name: 'Pertanian', href: `${base}/pertanian` },
+  { name: 'Potensi', href: `${base}/pertanian` },
   { name: 'Layanan', href: `${base}/layanan` },
 ];
 ---
@@ -61,18 +65,18 @@ const navLinks = [
         <ul class="flex flex-col gap-4 text-sm text-primary-100">
           <li class="flex items-start gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>Jl. Raya Rancajaya No. 01, Desa Rancajaya, Kec. Patokbeusi, Kab. Subang, Jawa Barat</span>
+            <span>{common.alamat_kantor || 'Jl. Raya Rancajaya No. 01, Desa Rancajaya, Kec. Patokbeusi, Kab. Subang, Jawa Barat'}</span>
           </li>
           <li class="mt-2">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31688.082987151247!2d107.63665799999999!3d-6.3813955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e696ce3210168cb%3A0xc3f2e1a3b3dfa3c!2sRancajaya%2C%20Kec.%20Patokbeusi%2C%20Kabupaten%20Subang%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" width="100%" height="120" style="border:0; border-radius: 0.5rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </li>
           <li class="flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            <span>desa.rancajaya@gmail.com</span>
+            <span>{common.email || 'desa.rancajaya@gmail.com'}</span>
           </li>
           <li class="flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span>(0260) 1234567</span>
+            <span>{common.telepon || '(0260) 1234567'}</span>
           </li>
         </ul>
       </div>
@@ -81,17 +85,8 @@ const navLinks = [
       <div>
         <h3 class="font-display font-semibold text-lg mb-4 text-gold-500">Jam Operasional</h3>
         <ul class="flex flex-col gap-3 text-sm text-primary-100">
-          <li class="flex justify-between">
-            <span>Senin - Jumat</span>
-            <span>08:00 - 16:00</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Sabtu</span>
-            <span>08:00 - 12:00</span>
-          </li>
-          <li class="flex justify-between text-gold-300">
-            <span>Minggu / Libur</span>
-            <span>Tutup</span>
+          <li>
+            <span>{common.jam_operasional || 'Senin - Jumat 08:00 - 16:00'}</span>
           </li>
         </ul>
       </div>

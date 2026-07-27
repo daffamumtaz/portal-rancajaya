@@ -7,10 +7,9 @@ publish_mode: editorial_workflow
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
-locale: 'id'
+locale: "id"
 
 collections:
-  # --- Berita ---
   - name: "berita"
     label: "Berita & Informasi"
     folder: "src/content/berita"
@@ -29,39 +28,68 @@ collections:
       - { label: "Tampilkan di Beranda", name: "featured", widget: "boolean", default: false }
       - { label: "Konten", name: "body", widget: "markdown" }
 
-  # --- Perangkat Desa ---
-  - name: "perangkat_desa"
-    label: "Perangkat Desa"
-    folder: "src/content/perangkat-desa"
+  - name: "struktur-organisasi"
+    label: "Struktur Organisasi Tree"
+    folder: "src/content/struktur-organisasi"
     create: true
+    identifier_field: "nama"
     fields:
       - { label: "Nama", name: "nama", widget: "string" }
       - { label: "Jabatan", name: "jabatan", widget: "string" }
+      - { label: "Parent ID/Jabatan", name: "parent", widget: "string", required: false, hint: "Kosongkan untuk node paling atas. Isi dengan slug/ID parent untuk struktur tree." }
       - { label: "Foto", name: "foto", widget: "image", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int" }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
       - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
 
-
-  # --- Galeri ---
-  - name: "galeri"
-    label: "Galeri & Dokumentasi"
-    folder: "src/content/galeri"
+  - name: "dusun"
+    label: "Dusun"
+    folder: "src/content/dusun"
     create: true
+    identifier_field: "nama"
     fields:
-      - { label: "Judul", name: "judul", widget: "string" }
-      - { label: "Tanggal", name: "tanggal", widget: "date" }
+      - { label: "Nama Dusun", name: "nama", widget: "string" }
+      - { label: "Kepala Dusun", name: "kepala_dusun", widget: "string", required: false }
+      - { label: "Jumlah Penduduk", name: "jumlah_penduduk", widget: "number", value_type: "int", required: false }
+      - { label: "Luas Wilayah", name: "luas_wilayah", widget: "string", required: false }
+      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+
+  - name: "apbdes"
+    label: "Transparansi APBDes"
+    folder: "src/content/apbdes"
+    create: true
+    identifier_field: "nama"
+    fields:
+      - { label: "Nama Sumber/Pos", name: "nama", widget: "string" }
+      - label: "Jenis"
+        name: "jenis"
+        widget: "select"
+        options: ["Pendapatan", "Belanja"]
+      - { label: "Tahun", name: "tahun", widget: "string", default: "2026" }
+      - { label: "Jumlah Rupiah", name: "jumlah", widget: "number", value_type: "int" }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
+
+  - name: "potensi-statistik"
+    label: "Statistik Potensi"
+    folder: "src/content/potensi-statistik"
+    create: true
+    identifier_field: "label"
+    fields:
       - label: "Kategori"
         name: "kategori"
         widget: "select"
-        options: ["Kegiatan", "Pembangunan", "Budaya", "Pertanian", "Lainnya"]
-      - { label: "Foto", name: "foto", widget: "image" }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+        options: ["Pertanian", "Peternakan"]
+      - { label: "Label", name: "label", widget: "string" }
+      - { label: "Nilai", name: "value", widget: "string" }
+      - { label: "Keterangan", name: "keterangan", widget: "text", required: false }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
 
-  # --- Kelompok Tani ---
-  - name: "kelompok_tani"
+  - name: "kelompok-tani"
     label: "Kelompok Tani"
     folder: "src/content/kelompok-tani"
     create: true
+    identifier_field: "nama"
     fields:
       - { label: "Nama Kelompok", name: "nama", widget: "string" }
       - { label: "Ketua", name: "ketua", widget: "string" }
@@ -71,22 +99,83 @@ collections:
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
       - { label: "Kontak", name: "kontak", widget: "string", required: false }
 
-  # --- Layanan Darurat ---
-  - name: "layanan_darurat"
-    label: "Kontak Darurat"
-    folder: "src/content/layanan-darurat"
+  - name: "umkm"
+    label: "UMKM"
+    folder: "src/content/umkm"
     create: true
+    identifier_field: "nama"
     fields:
-      - { label: "Nama", name: "nama", widget: "string" }
+      - { label: "Nama UMKM", name: "nama", widget: "string" }
+      - { label: "Pemilik", name: "pemilik", widget: "string" }
+      - label: "Kategori"
+        name: "kategori"
+        widget: "select"
+        options: ["Makanan", "Minuman", "Kerajinan", "Jasa", "Pertanian", "Lainnya"]
+      - { label: "Produk Utama", name: "produk_utama", widget: "string" }
+      - { label: "Dusun", name: "dusun", widget: "string", required: false }
+      - { label: "Kontak", name: "kontak", widget: "string", required: false }
+      - { label: "Foto", name: "foto", widget: "image", required: false }
+      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+      - { label: "Tampilkan Unggulan", name: "featured", widget: "boolean", default: false }
+
+  - name: "layanan-administrasi"
+    label: "Administrasi Daring"
+    folder: "src/content/layanan-administrasi"
+    create: true
+    identifier_field: "nama"
+    fields:
+      - { label: "Nama Layanan", name: "nama", widget: "string" }
+      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+      - { label: "Link Formulir", name: "link", widget: "string", required: false }
+      - { label: "Ikon atau Singkatan", name: "ikon", widget: "string", required: false }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+
+  - name: "kontak"
+    label: "Kontak"
+    folder: "src/content/kontak"
+    create: true
+    identifier_field: "nama"
+    fields:
+      - { label: "Nama Kontak", name: "nama", widget: "string" }
       - label: "Jenis"
         name: "jenis"
         widget: "select"
-        options: ["Kesehatan", "Keamanan", "Darurat"]
+        options: ["Desa", "Kesehatan", "Keamanan", "Darurat", "Layanan"]
       - { label: "Telepon", name: "telepon", widget: "string" }
-      - { label: "Alamat", name: "alamat", widget: "string" }
+      - { label: "Email", name: "email", widget: "string", required: false }
+      - { label: "Alamat", name: "alamat", widget: "string", required: false }
+      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+
+  - name: "faq"
+    label: "FAQ"
+    folder: "src/content/faq"
+    create: true
+    identifier_field: "pertanyaan"
+    fields:
+      - { label: "Pertanyaan", name: "pertanyaan", widget: "string" }
+      - { label: "Jawaban", name: "jawaban", widget: "text" }
+      - label: "Kategori"
+        name: "kategori"
+        widget: "select"
+        options: ["Administrasi", "Layanan", "Umum", "Potensi"]
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+
+  - name: "galeri"
+    label: "Galeri Foto"
+    folder: "src/content/galeri"
+    create: true
+    identifier_field: "judul"
+    fields:
+      - { label: "Judul", name: "judul", widget: "string" }
+      - { label: "Tanggal", name: "tanggal", widget: "date" }
+      - label: "Kategori"
+        name: "kategori"
+        widget: "select"
+        options: ["Kegiatan", "Pembangunan", "Budaya", "Pertanian", "Peternakan", "UMKM", "Potensi", "Lainnya"]
+      - { label: "Foto", name: "foto", widget: "image" }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
 
-  # --- Pengaturan Umum (Single File) ---
   - name: "pengaturan"
     label: "Pengaturan"
     files:
@@ -109,7 +198,6 @@ collections:
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Jam Operasional", name: "jam_operasional", widget: "text" }
 
-  # --- Halaman Website (Single File) ---
   - name: "halaman"
     label: "Halaman Website"
     files:
@@ -136,63 +224,35 @@ collections:
         fields:
           - { label: "Kata Sambutan", name: "sambutan", widget: "text" }
           - { label: "Nama Kepala Desa", name: "nama_kades", widget: "string" }
-          - { label: "Foto Kepala Desa", name: "foto_kades", widget: "image" }
+          - { label: "Foto Kepala Desa", name: "foto_kades", widget: "image", required: false }
           - { label: "Luas Wilayah (km2)", name: "luas_wilayah", widget: "string" }
-          - { label: "Dusun", name: "dusun", widget: "list", field: { label: "Nama Dusun", name: "nama", widget: "string" } }
           - { label: "Total Penduduk", name: "penduduk_total", widget: "string" }
           - { label: "Penduduk Pria", name: "penduduk_pria", widget: "string" }
           - { label: "Penduduk Wanita", name: "penduduk_wanita", widget: "string" }
-          - label: "Demografi Dusun"
-            name: "demo_dusun"
+          - label: "Batas Wilayah"
+            name: "batas_wilayah"
             widget: "list"
             fields:
-              - { label: "Nama Dusun", name: "label", widget: "string" }
-              - { label: "Jumlah", name: "value", widget: "number", value_type: "int" }
+              - { label: "Arah", name: "arah", widget: "string" }
+              - { label: "Wilayah", name: "wilayah", widget: "string" }
           - label: "Demografi Pendidikan"
             name: "demo_pendidikan"
             widget: "list"
             fields:
               - { label: "Tingkat Pendidikan", name: "label", widget: "string" }
               - { label: "Jumlah", name: "value", widget: "number", value_type: "int" }
-          - label: "Transparansi APBDes"
-            name: "apbdes"
-            widget: "object"
-            fields:
-              - { label: "Total Pendapatan", name: "pendapatan", widget: "string" }
-              - { label: "Total Belanja", name: "belanja", widget: "string" }
-              - label: "Riwayat Tahunan"
-                name: "riwayat"
-                widget: "list"
-                fields:
-                  - { label: "Tahun", name: "tahun", widget: "string" }
-                  - { label: "Pendapatan (Rp)", name: "pendapatan", widget: "number", value_type: "int" }
-                  - { label: "Belanja (Rp)", name: "belanja", widget: "number", value_type: "int" }
 
-      - label: "Halaman Pertanian"
+      - label: "Halaman Potensi"
         name: "pertanian"
         file: "src/content/halaman/pertanian.json"
         fields:
-          - { label: "Luas Lahan (Ha)", name: "luas_lahan", widget: "string" }
-          - { label: "Komoditas Utama", name: "komoditas", widget: "string" }
-          - { label: "Jumlah Kelompok Tani", name: "jumlah_kelompok", widget: "string" }
-          - { label: "Jumlah Petani", name: "jumlah_petani", widget: "string" }
-          - { label: "Jenis Irigasi", name: "irigasi", widget: "string" }
-          - { label: "Produktivitas (Ton/Ha)", name: "produktivitas", widget: "string" }
+          - { label: "Judul Hero", name: "hero_title", widget: "string" }
+          - { label: "Subtitle Hero", name: "hero_subtitle", widget: "text" }
+          - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
 
       - label: "Halaman Layanan"
         name: "layanan"
         file: "src/content/halaman/layanan.json"
         fields:
-          - label: "Layanan Administrasi"
-            name: "administrasi"
-            widget: "list"
-            fields:
-              - { label: "Nama Layanan", name: "nama", widget: "string" }
-              - { label: "Link Formulir", name: "link", widget: "string" }
-              - { label: "Ikon (SVG path atau text)", name: "ikon", widget: "string", required: false }
-          - label: "Tanya Jawab (FAQ)"
-            name: "faq"
-            widget: "list"
-            fields:
-              - { label: "Pertanyaan", name: "q", widget: "string" }
-              - { label: "Jawaban", name: "a", widget: "text" }
+          - { label: "Judul Hero", name: "hero_title", widget: "string", required: false }
+          - { label: "Subtitle Hero", name: "hero_subtitle", widget: "text", required: false }

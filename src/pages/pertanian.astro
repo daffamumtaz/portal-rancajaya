@@ -3,194 +3,198 @@ import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
+import { resolvePublicPath, toWhatsAppHref } from '../utils/content';
 
-const pertanianData = await getEntry('halaman', 'pertanian');
+const potensiData = await getEntry('halaman', 'pertanian');
 const umumData = await getEntry('pengaturan', 'umum');
-const pertanian = pertanianData?.data || {};
+const potensi = potensiData?.data || {};
 const common = umumData?.data || {};
-const kelompokTani = await getCollection('kelompok-tani');
 
-// Ambil galeri pertanian
-const allGallery = await getCollection('galeri');
-const galleryPertanian = allGallery
-  .filter(g => g.data.kategori === 'Pertanian')
+const stats = await getCollection('potensi-statistik');
+const kelompokTani = await getCollection('kelompok-tani');
+const umkm = await getCollection('umkm');
+const galeri = await getCollection('galeri');
+
+const sortByOrder = (a, b) => (a.data.urutan || 0) - (b.data.urutan || 0);
+const pertanianStats = stats.filter((entry) => entry.data.kategori === 'Pertanian').sort(sortByOrder);
+const peternakanStats = stats.filter((entry) => entry.data.kategori === 'Peternakan').sort(sortByOrder);
+const sortedKelompokTani = kelompokTani.sort((a, b) => a.data.nama.localeCompare(b.data.nama));
+const sortedUmkm = umkm.sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.nama.localeCompare(b.data.nama));
+const potensiGallery = galeri
+  .filter((entry) => ['Pertanian', 'Peternakan', 'UMKM', 'Potensi'].includes(entry.data.kategori))
   .sort((a, b) => b.data.tanggal.valueOf() - a.data.tanggal.valueOf())
-  .slice(0, 4);
+  .slice(0, 8);
+
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const whatsappHref = toWhatsAppHref(common.telepon);
 ---
 
-<Layout title={`Pertanian - ${common.nama_desa || 'Desa Rancajaya'}`}>
-  <Hero 
-    eyebrow="Potensi Desa" 
-    title="Sektor Pertanian" 
-    subtitle={`Pertanian sebagai tulang punggung perekonomian ${common.nama_desa || 'Desa Rancajaya'}`}
+<Layout title={`Potensi - ${common.nama_desa || 'Desa Rancajaya'}`} description={`Potensi pertanian, peternakan, UMKM, dan ekonomi lokal ${common.nama_desa || 'Desa Rancajaya'}.`}>
+  <Hero
+    eyebrow="Potensi Desa"
+    title={potensi.hero_title || 'Potensi Desa'}
+    subtitle={potensi.hero_subtitle || `Data potensi pertanian, peternakan, UMKM, dan ekonomi lokal ${common.nama_desa || 'Desa Rancajaya'}`}
   />
 
-  <!-- Statistik Pertanian -->
   <section class="section bg-white border-b border-line">
     <div class="container-page">
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <StatCard label="Luas Lahan" value={`${pertanian.luas_lahan || '0'} Ha`}>
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22 22 2"/><path d="m2 2 20 20"/><path d="M14 10v4"/><path d="M10 14v4"/><path d="M6 18v4"/><path d="M18 6v4"/></svg>
-        </StatCard>
-        <StatCard label="Komoditas Utama" value={pertanian.komoditas || 'Padi'}>
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 7v2"/><path d="M15 7v2"/><path d="M12 2a5 5 0 0 0-5 5v5a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5Z"/></svg>
-        </StatCard>
-        <StatCard label="Kelompok Tani" value={`${pertanian.jumlah_kelompok || '0'} Klp`}>
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </StatCard>
-        <StatCard label="Jumlah Petani" value={`±${pertanian.jumlah_petani || '0'}`}>
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </StatCard>
-        <StatCard label="Irigasi" value={pertanian.irigasi || 'Teknis'}>
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M12 2v20"/><path d="M4.93 4.93l14.14 14.14"/><path d="M19.07 4.93L4.93 19.07"/></svg>
-        </StatCard>
-        <StatCard label="Produktivitas" value={`${pertanian.produktivitas || '0'} T/Ha`} variant="dark">
-          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
-        </StatCard>
+      <div class="section-header">
+        <span class="eyebrow">Ringkasan</span>
+        <h2 class="section-title">Potensi Ekonomi Lokal</h2>
+        <p class="section-subtitle">{potensi.deskripsi || 'Data potensi dapat diperbarui melalui Decap CMS.'}</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {pertanianStats.slice(0, 4).map((stat, index) => (
+          <StatCard label={stat.data.label} value={stat.data.value} variant={index === 0 ? 'dark' : 'light'}>
+            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 7v2"/><path d="M15 7v2"/><path d="M12 2a5 5 0 0 0-5 5v5a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5Z"/></svg>
+          </StatCard>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- Komoditas Unggulan -->
-  <section class="section">
+  <section class="section bg-paper border-b border-line">
     <div class="container-page">
-      <div class="section-header text-center flex flex-col items-center">
-        <span class="eyebrow mb-2">PRODUK LOKAL</span>
-        <h2 class="section-title">Komoditas Unggulan</h2>
-        <p class="section-subtitle text-center">Hasil bumi utama yang menjadi tumpuan perekonomian dan kebanggaan {common.nama_desa || 'Desa Rancajaya'}.</p>
+      <div class="section-header">
+        <span class="eyebrow">Peternakan</span>
+        <h2 class="section-title">Statistik Peternakan</h2>
+        <p class="section-subtitle">Data dummy ini sudah menjadi collection dan dapat diedit dari CMS.</p>
       </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Card 1 -->
-        <div class="card-hover overflow-hidden">
-          <div class="h-48 bg-primary-100 flex items-center justify-center">
-            <span class="text-primary-300 font-medium">Foto Padi Sawah</span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-ink mb-2">Padi Sawah</h3>
-            <p class="text-sm text-muted">Komoditas utama dengan luas lahan terbesar. Menghasilkan beras berkualitas tinggi berkat sistem irigasi teknis yang mengalir sepanjang tahun.</p>
-          </div>
-        </div>
-        <!-- Card 2 -->
-        <div class="card-hover overflow-hidden">
-          <div class="h-48 bg-primary-100 flex items-center justify-center">
-            <span class="text-primary-300 font-medium">Foto Palawija</span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-ink mb-2">Kacang Kedelai & Palawija</h3>
-            <p class="text-sm text-muted">Ditanam sebagai tanaman penyela di musim kemarau untuk menjaga kesuburan tanah dan memberikan penghasilan tambahan bagi petani.</p>
-          </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="card-hover overflow-hidden">
-          <div class="h-48 bg-primary-100 flex items-center justify-center">
-            <span class="text-primary-300 font-medium">Foto Sayuran</span>
-          </div>
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-ink mb-2">Hortikultura Sayuran</h3>
-            <p class="text-sm text-muted">Cabai, tomat, dan kacang panjang yang dikembangkan oleh kelompok wanita tani di lahan-lahan pekarangan produktif.</p>
-          </div>
-        </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {peternakanStats.map((stat, index) => (
+          <StatCard label={stat.data.label} value={stat.data.value} variant={index === 0 ? 'dark' : 'light'}>
+            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c3-6 13-6 16 0"/><path d="M4 18h16"/><path d="M8 18v3"/><path d="M16 18v3"/></svg>
+          </StatCard>
+        ))}
+        {peternakanStats.length === 0 && (
+          <p class="text-muted col-span-2 md:col-span-4 text-center">Data statistik peternakan belum ditambahkan.</p>
+        )}
       </div>
     </div>
   </section>
 
-  <!-- Kelompok Tani -->
-  <section class="section bg-white border-t border-b border-line">
+  <section class="section bg-white border-b border-line">
     <div class="container-page">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
-          <span class="eyebrow mb-2">KELEMBAGAAN</span>
-          <h2 class="section-title">Kelompok Tani (Poktan)</h2>
+          <span class="eyebrow mb-2">Pertanian</span>
+          <h2 class="section-title">Kelompok Tani</h2>
+          <p class="section-subtitle">Kelompok tani dan komoditas utama yang dikelola warga.</p>
         </div>
-        <button class="btn-outline">Lihat Semua Data</button>
+        <span class="pill-primary">{sortedKelompokTani.length} kelompok terdata</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {kelompokTani.length > 0 ? kelompokTani.map((poktan) => (
-          <div class="card p-5 flex flex-col sm:flex-row gap-4">
-            <div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div class="flex-grow">
-              <h3 class="font-bold text-ink text-lg">{poktan.data.nama}</h3>
-              <p class="text-xs text-muted mb-3">Ketua: {poktan.data.ketua}</p>
-              
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span class="block text-muted text-xs">Dusun</span>
-                  <span class="font-semibold text-ink">{poktan.data.dusun}</span>
+        {sortedKelompokTani.map((poktan) => (
+          <div class="card p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-ink text-lg">{poktan.data.nama}</h3>
+                <p class="text-xs text-muted mb-3">Ketua: {poktan.data.ketua}</p>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span class="block text-muted text-xs">Dusun</span>
+                    <span class="font-semibold text-ink">{poktan.data.dusun}</span>
+                  </div>
+                  <div>
+                    <span class="block text-muted text-xs">Anggota</span>
+                    <span class="font-semibold text-ink">{poktan.data.jumlah_anggota} Orang</span>
+                  </div>
                 </div>
-                <div>
-                  <span class="block text-muted text-xs">Anggota</span>
-                  <span class="font-semibold text-ink">{poktan.data.jumlah_anggota} Orang</span>
-                </div>
+                <p class="text-sm text-muted mt-3">{poktan.data.deskripsi}</p>
+                <p class="text-xs text-primary-700 font-semibold mt-2">Komoditas: {poktan.data.komoditas_utama}</p>
               </div>
             </div>
           </div>
-        )) : (
+        ))}
+        {sortedKelompokTani.length === 0 && (
           <p class="text-muted col-span-2 text-center">Data kelompok tani belum ditambahkan.</p>
         )}
       </div>
     </div>
   </section>
 
-  <!-- Dokumentasi Kegiatan -->
   <section class="section bg-paper border-b border-line">
-    <div class="container-page text-center">
+    <div class="container-page">
       <div class="section-header">
-        <span class="eyebrow mb-2">GALERI</span>
-        <h2 class="section-title">Dokumentasi Kegiatan Pertanian</h2>
-        <p class="section-subtitle mx-auto">Potret aktivitas kelompok tani, masa panen, dan penyuluhan pertanian di {common.nama_desa || 'Desa Rancajaya'}.</p>
+        <span class="eyebrow">UMKM</span>
+        <h2 class="section-title">UMKM Desa</h2>
+        <p class="section-subtitle">Semua data UMKM berasal dari satu collection Decap CMS.</p>
       </div>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {galleryPertanian.map((item) => (
-          <div class="card overflow-hidden group cursor-pointer">
-            <div class="h-48 overflow-hidden">
-              <img src={item.data.foto.startsWith('/') ? base + item.data.foto : item.data.foto} alt={item.data.judul} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {sortedUmkm.map((item) => (
+          <div class="card overflow-hidden">
+            <div class="h-44 bg-primary-50 flex items-center justify-center overflow-hidden">
+              {item.data.foto ? (
+                <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.nama} class="w-full h-full object-cover" loading="lazy" />
+              ) : (
+                <span class="text-primary-300 font-medium">Foto UMKM</span>
+              )}
             </div>
-            <div class="p-4 text-left">
-              <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>
-              <p class="text-xs text-muted mt-1">{new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(item.data.tanggal)}</p>
+            <div class="p-5">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <h3 class="font-bold text-ink">{item.data.nama}</h3>
+                {item.data.featured && <span class="pill-gold">Unggulan</span>}
+              </div>
+              <p class="text-xs text-muted mb-2">{item.data.kategori} / {item.data.dusun || 'Dusun belum diisi'}</p>
+              <p class="text-sm text-muted">{item.data.deskripsi}</p>
+              <p class="text-xs text-primary-700 font-semibold mt-3">Produk: {item.data.produk_utama}</p>
             </div>
           </div>
         ))}
-        {galleryPertanian.length === 0 && (
-          <div class="col-span-1 sm:col-span-2 md:col-span-4 text-center text-muted py-8">Belum ada dokumentasi pertanian yang diunggah.</div>
+        {sortedUmkm.length === 0 && (
+          <p class="text-muted col-span-3 text-center">Data UMKM belum ditambahkan.</p>
         )}
       </div>
     </div>
   </section>
 
-  <!-- Peta & Kontak -->
-  <section class="section">
+  <section class="section bg-white border-b border-line">
+    <div class="container-page text-center">
+      <div class="section-header">
+        <span class="eyebrow mb-2">Galeri</span>
+        <h2 class="section-title">Galeri Potensi</h2>
+        <p class="section-subtitle mx-auto">Foto dokumentasi ini berasal dari collection Galeri Foto.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {potensiGallery.map((item) => (
+          <div class="card overflow-hidden">
+            <div class="h-48 overflow-hidden">
+              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.judul} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+            <div class="p-4 text-left">
+              <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>
+              <p class="text-xs text-muted mt-1">{item.data.kategori}</p>
+            </div>
+          </div>
+        ))}
+        {potensiGallery.length === 0 && (
+          <p class="text-muted col-span-1 sm:col-span-2 md:col-span-4 text-center">Galeri potensi belum ditambahkan.</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-paper">
     <div class="container-page">
-      <div class="card p-2 md:p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full min-h-[400px]">
-        <div class="bg-paper rounded-xl w-full h-64 lg:h-full min-h-[300px] flex items-center justify-center flex-col gap-2 border-2 border-dashed border-line">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-          <p class="text-sm text-muted font-medium">Peta Lokasi Sentra Pertanian</p>
+      <div class="card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <span class="eyebrow">Kolaborasi</span>
+          <h2 class="text-2xl font-bold font-display text-ink mt-2">Kembangkan Potensi {common.nama_desa || 'Desa Rancajaya'}</h2>
+          <p class="text-sm text-muted mt-2 max-w-2xl">Warga dapat menghubungi desa untuk memperbarui data kelompok tani, peternakan, UMKM, dan galeri potensi.</p>
         </div>
-        
-        <div class="p-6 md:p-8 flex flex-col justify-center">
-          <span class="eyebrow mb-2">HUBUNGI KAMI</span>
-          <h2 class="text-2xl font-bold font-display text-ink mb-4">Gabungan Kelompok Tani (Gapoktan) {common.nama_desa || 'Desa Rancajaya'}</h2>
-          <p class="text-muted mb-6 text-sm">Untuk informasi terkait penyuluhan, bantuan pupuk subsidi, alat mesin pertanian, dan keanggotaan kelompok tani, silakan hubungi pengurus Gapoktan.</p>
-          
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-start gap-3 text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-700 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <span class="text-ink font-semibold">{common.telepon || '0812-XXXX-XXXX'} (Bpk. Ketua Gapoktan)</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-700 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span class="text-muted">Sekretariat Gapoktan, Komplek Balai Desa {common.nama_desa || 'Rancajaya'}</span>
-            </li>
-          </ul>
-          
-          <button class="btn-primary self-start">Hubungi via WhatsApp</button>
-        </div>
+        {whatsappHref ? (
+          <a href={whatsappHref} class="btn-primary" target="_blank" rel="noopener noreferrer">Hubungi Desa</a>
+        ) : (
+          <a href={`${base}/layanan`} class="btn-primary">Lihat Kontak Desa</a>
+        )}
       </div>
     </div>
   </section>

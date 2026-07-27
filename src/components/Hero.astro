@@ -1,4 +1,6 @@
 ---
+import { resolvePublicPath } from '../utils/content';
+
 interface Props {
   title: string;
   subtitle?: string;
@@ -20,8 +22,9 @@ const {
 } = Astro.props;
 
 // Jika bgImage kosong/undefined tapi diminta dari CMS, kita gunakan gambar fallback
-const fallbackBg = import.meta.env.BASE_URL.replace(/\/$/, '') + "/images/SawahRancajaya.jpg";
-const finalBgImage = bgImage || fallbackBg;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const fallbackBg = resolvePublicPath('/images/SawahRancajaya.jpg', base);
+const finalBgImage = resolvePublicPath(bgImage, base) || fallbackBg;
 ---
 
 <div class={`relative overflow-hidden isolate ${!bgImage ? 'bg-gradient-to-br from-primary-800 to-primary-600 text-white' : 'text-white'}`}>

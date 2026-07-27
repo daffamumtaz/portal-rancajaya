@@ -1,4 +1,7 @@
 {
+  "hero_title": "Potensi Desa",
+  "hero_subtitle": "Pertanian, peternakan, dan UMKM sebagai penggerak ekonomi masyarakat Desa Rancajaya.",
+  "deskripsi": "Halaman Potensi menampilkan data sektoral yang dapat diperbarui melalui Decap CMS, mulai dari statistik pertanian, statistik peternakan, kelompok tani, UMKM, hingga galeri dokumentasi.",
   "luas_lahan": "450",
   "komoditas": "Padi",
   "jumlah_kelompok": "12",

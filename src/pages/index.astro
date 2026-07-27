@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import { resolvePublicPath } from '../utils/content';
 
 // Fetch CMS Data
 const umumData = await getEntry('pengaturan', 'umum');
@@ -33,7 +34,7 @@ const latestGallery = allGallery
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
-<Layout title="Beranda — Website Profil Desa Rancajaya" description="Website resmi Desa Rancajaya, Kecamatan Patokbeusi, Kabupaten Subang.">
+<Layout title="Beranda - Website Profil Desa Rancajaya" description="Website resmi Desa Rancajaya, Kecamatan Patokbeusi, Kabupaten Subang.">
   
   <!-- 1. Hero -->
   <Hero
@@ -65,7 +66,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 mb-3 group-hover:bg-primary-100 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 7v2"/><path d="M15 7v2"/><path d="M12 2a5 5 0 0 0-5 5v5a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5Z"/></svg>
         </div>
-        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Pertanian</span>
+        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Potensi</span>
       </a>
       <a href={`${base}/layanan`} class="card-hover p-6 flex flex-col items-center justify-center text-center group">
         <div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 mb-3 group-hover:bg-primary-100 transition-colors">
@@ -104,7 +105,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <h2 class="section-title mb-4">{beranda.highlight_title || "Lumbung Padi di Utara Subang"}</h2>
           <p class="section-subtitle mb-6">{beranda.highlight_desc}</p>
           <a href={`${base}/pertanian`} class="btn-ghost">
-            Jelajahi Potensi Pertanian
+            Jelajahi Potensi Desa
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
@@ -112,13 +113,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <div class="absolute inset-0 bg-gold-500 rounded-2xl transform translate-x-3 translate-y-3 opacity-20"></div>
           <div class="h-80 w-full bg-primary-100 rounded-2xl relative z-10 flex items-center justify-center border border-line overflow-hidden">
             {beranda.highlight_image ? (
-              <img src={beranda.highlight_image.startsWith('/') ? base + beranda.highlight_image : beranda.highlight_image} alt={beranda.highlight_title} class="w-full h-full object-cover" />
+              <img src={resolvePublicPath(beranda.highlight_image, base)} alt={beranda.highlight_title} class="w-full h-full object-cover" />
             ) : (
               <span class="text-primary-300 font-medium">Foto Hamparan Sawah</span>
             )}
           </div>
         </div>
-      </div>
       </div>
     </div>
   </section>
@@ -145,6 +145,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
               category={article.data.category}
               date={dateFormatted}
               slug={article.slug}
+              thumbnail={article.data.thumbnail}
               featured={article.data.featured}
             />
           );
@@ -182,6 +183,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
               category={article.data.category}
               date={dateFormatted}
               slug={article.slug}
+              thumbnail={article.data.thumbnail}
               featured={article.data.featured}
             />
           );
@@ -206,7 +208,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         {latestGallery.map((item) => (
           <div class="card overflow-hidden group cursor-pointer">
             <div class="h-48 overflow-hidden">
-              <img src={item.data.foto.startsWith('/') ? base + item.data.foto : item.data.foto} alt={item.data.judul} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.judul} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
             </div>
             <div class="p-4 text-left">
               <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>

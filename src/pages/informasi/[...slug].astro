@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { resolvePublicPath } from '../../utils/content';
 
 export async function getStaticPaths() {
   const beritaEntries = await getCollection('berita');
@@ -23,14 +24,10 @@ if (entry.data.category.toLowerCase() === "pengumuman") pillClass = "pill-gold";
 else if (entry.data.category.toLowerCase() === "agenda") pillClass = "bg-blue-50 text-blue-700 border-blue-100";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-
-let thumbnail = entry.data.thumbnail;
-if (thumbnail && thumbnail.startsWith('/')) {
-  thumbnail = base + thumbnail;
-}
+const thumbnail = resolvePublicPath(entry.data.thumbnail, base);
 ---
 
-<Layout title={`${entry.data.title} — Desa Rancajaya`} description={entry.data.excerpt}>
+<Layout title={`${entry.data.title} - Desa Rancajaya`} description={entry.data.excerpt}>
   
   <article class="bg-paper pb-16">
     <!-- Header/Hero -->
@@ -72,7 +69,7 @@ if (thumbnail && thumbnail.startsWith('/')) {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <span>{entry.data.author}</span>
           </div>
-          <span class="opacity-50">•</span>
+          <span class="opacity-50">/</span>
           <div class="flex items-center gap-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
             <span>{dateFormatted}</span>

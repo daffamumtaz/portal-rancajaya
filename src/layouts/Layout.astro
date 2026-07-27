@@ -20,6 +20,7 @@ const {
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const siteUrl = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://portal-rancajaya.netlify.app';
 const imageUrl = `${siteUrl}${base}${image}`;
+const adminPath = `${base}/admin/index.html`;
 
 // Get data for Structured Data
 const umumData = await getEntry('pengaturan', 'umum');
@@ -79,12 +80,12 @@ const schema = {
 		<Footer />
 
 		<!-- Netlify Identity Login Handler -->
-		<script is:inline>
+		<script is:inline define:vars={{ adminPath }}>
 			if (window.netlifyIdentity) {
 				window.netlifyIdentity.on("init", user => {
 					if (!user) {
 						window.netlifyIdentity.on("login", () => {
-							document.location.href = "/admin/";
+							document.location.href = adminPath;
 						});
 					}
 				});

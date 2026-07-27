@@ -1,38 +1,4 @@
 {
-  "administrasi": [
-    {
-      "nama": "Surat Pengantar RT/RW",
-      "link": "https://forms.gle/xyz123",
-      "ikon": ""
-    },
-    {
-      "nama": "Surat Keterangan Tidak Mampu (SKTM)",
-      "link": "https://forms.gle/xyz123",
-      "ikon": ""
-    },
-    {
-      "nama": "Surat Keterangan Usaha (SKU)",
-      "link": "https://forms.gle/xyz123",
-      "ikon": ""
-    },
-    {
-      "nama": "Surat Pindah/Datang",
-      "link": "https://forms.gle/xyz123",
-      "ikon": ""
-    }
-  ],
-  "faq": [
-    {
-      "q": "Apa saja syarat membuat SKTM?",
-      "a": "Fotokopi KTP, Fotokopi KK, Surat Pengantar dari RT/RW setempat, dan foto rumah (opsional sesuai peruntukan)."
-    },
-    {
-      "q": "Berapa lama proses pembuatan surat keterangan usaha?",
-      "a": "Jika persyaratan lengkap, surat dapat ditunggu dan selesai dalam waktu 15-30 menit di jam kerja."
-    },
-    {
-      "q": "Apakah layanan surat menyurat dikenakan biaya?",
-      "a": "Seluruh layanan administrasi kependudukan di Desa Rancajaya tidak dipungut biaya (GRATIS)."
-    }
-  ]
+  "hero_title": "Layanan Desa",
+  "hero_subtitle": "Informasi layanan administrasi, kontak penting, dan FAQ Desa Rancajaya."
 }
