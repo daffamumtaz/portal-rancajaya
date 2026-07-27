@@ -58,3 +58,18 @@ export function toWhatsAppHref(phone: string | undefined) {
 
   return normalized.startsWith('628') ? `https://wa.me/${normalized}` : undefined;
 }
+
+export function toGoogleMapsEmbedUrl(latitude?: number, longitude?: number, zoom = 18) {
+  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3797;
+  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461;
+  const level = Number.isFinite(zoom) ? Math.min(21, Math.max(1, Math.round(zoom))) : 18;
+
+  return `https://maps.google.com/maps?q=${lat},${lon}&z=${level}&output=embed`;
+}
+
+export function toGoogleMapsUrl(latitude?: number, longitude?: number) {
+  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3797;
+  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461;
+
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+}

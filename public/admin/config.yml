@@ -342,6 +342,10 @@ collections:
           - { label: "Telepon", name: "telepon", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Jam Operasional", name: "jam_operasional", widget: "text" }
+          - { label: "Lintang Kantor Desa", name: "koordinat_latitude", widget: "number", value_type: "float", min: -90, max: 90, step: 0.000001, default: -6.3797 }
+          - { label: "Bujur Kantor Desa", name: "koordinat_longitude", widget: "number", value_type: "float", min: -180, max: 180, step: 0.000001, default: 107.6461 }
+          - { label: "Zoom Peta", name: "peta_zoom", widget: "number", value_type: "int", min: 1, max: 21, default: 18 }
+          - { label: "Sumber Koordinat", name: "sumber_koordinat", widget: "text", required: false }
           - { label: "Tahun APBDes Aktif", name: "tahun_apbdes_aktif", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
           - *release_status
           - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }

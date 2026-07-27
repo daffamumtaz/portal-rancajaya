@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
-import { isPublishedContent, resolvePublicPath } from '../utils/content';
+import { isPublishedContent, resolvePublicPath, toGoogleMapsEmbedUrl } from '../utils/content';
 
 // Fetch CMS Data
 const umumData = await getEntry('pengaturan', 'umum');
@@ -32,6 +32,7 @@ const latestGallery = allGallery
   .slice(0, 4);
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, common.peta_zoom);
 ---
 
 <Layout title="Beranda - Website Profil Desa Rancajaya" description="Website resmi Desa Rancajaya, Kecamatan Patokbeusi, Kabupaten Subang.">
@@ -232,7 +233,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <p class="section-subtitle">Kecamatan Patokbeusi, Kabupaten Subang, Jawa Barat</p>
       </div>
       <div class="h-64 md:h-96 w-full rounded-2xl overflow-hidden shadow-lg border border-line">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31688.082987151247!2d107.63665799999999!3d-6.3813955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e696ce3210168cb%3A0xc3f2e1a3b3dfa3c!2sRancajaya%2C%20Kec.%20Patokbeusi%2C%20Kabupaten%20Subang%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src={mapEmbedUrl} title={`Lokasi Kantor Desa ${common.nama_desa || 'Rancajaya'}`} width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </section>

@@ -2,7 +2,7 @@
 import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { isPublishedContent, toSafeFormUrl, toTelHref } from '../utils/content';
+import { isPublishedContent, toGoogleMapsEmbedUrl, toGoogleMapsUrl, toSafeFormUrl, toTelHref } from '../utils/content';
 
 const umumData = await getEntry('pengaturan', 'umum');
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
@@ -14,6 +14,8 @@ const administrasiData = (await getCollection('layanan-administrasi')).filter((e
 const kontakData = (await getCollection('kontak')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const faqData = (await getCollection('faq')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
+const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, common.peta_zoom);
+const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longitude);
 ---
 
 <Layout title={`Layanan Publik - ${common.nama_desa || 'Desa Rancajaya'}`}>
@@ -56,8 +58,20 @@ const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
             </div>
           </div>
 
-          <div class="card overflow-hidden h-64 bg-paper flex items-center justify-center border border-line">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31688.082987151247!2d107.63665799999999!3d-6.3813955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e696ce3210168cb%3A0xc3f2e1a3b3dfa3c!2sRancajaya%2C%20Kec.%20Patokbeusi%2C%20Kabupaten%20Subang%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="card overflow-hidden bg-paper border border-line">
+            <div class="h-72 flex items-center justify-center">
+              <iframe src={mapEmbedUrl} title={`Lokasi Kantor Desa ${common.nama_desa || 'Rancajaya'}`} width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="px-5 py-4 border-t border-line bg-white">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="font-display font-bold text-sm text-ink">Pinpoint Kantor Desa</h3>
+                  <p class="text-xs text-muted mt-1">Zoom {common.peta_zoom || 18} · {common.koordinat_latitude || -6.3797}, {common.koordinat_longitude || 107.6461}</p>
+                </div>
+                <a href={mapUrl} class="text-xs font-semibold text-primary-700 hover:underline whitespace-nowrap" target="_blank" rel="noopener noreferrer">Buka di Maps</a>
+              </div>
+              {common.sumber_koordinat && <p class="text-[11px] text-muted mt-2">Sumber: {common.sumber_koordinat}</p>}
+            </div>
           </div>
         </div>
 
