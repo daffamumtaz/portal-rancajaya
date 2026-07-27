@@ -14,10 +14,10 @@
   "telepon": "(0260) 1234567",
   "email": "desa.rancajaya@gmail.com",
   "jam_operasional": "Senin - Jumat 08:00 - 16:00",
-  "koordinat_latitude": -6.3797,
-  "koordinat_longitude": 107.6461,
+  "koordinat_latitude": -6.3796663,
+  "koordinat_longitude": 107.6461475,
   "peta_zoom": 18,
-  "sumber_koordinat": "Titik publik Rancajaya dari Kodepos.co.id; mohon dikonfirmasi dengan titik resmi Kantor Desa.",
+  "sumber_koordinat": "Koordinat publik Rancajaya dari Kodepos.co.id; mohon dikonfirmasi kembali sebagai titik fisik gedung Kantor Desa.",
   "tahun_apbdes_aktif": 2026,
   "release_status": "Terbit",
   "aktif": true

@@ -58,26 +58,24 @@ Administrasi Daring menyimpan layanan dan tautan formulir. Kontak menyimpan nomo
 
 ---
 
-### 4. Alur Status dan Rilis Batch
-CMS memakai tiga status pada field **Status Rilis Batch**:
+### 4. Status Publikasi
+CMS memakai dua status pada field **Status Publikasi**:
 - **Draf**: tersimpan di repository, tetapi tidak ditampilkan pada situs publik.
-- **Siap rilis**: sudah diperiksa dan menunggu Publisher.
-- **Terbit**: sudah boleh ditampilkan publik; status ini diatur otomatis oleh rilis batch.
+- **Terbit**: ditampilkan pada situs publik setelah Netlify selesai membangun ulang.
 
-**Menerbitkan beberapa entri sekaligus:**
-1. Buat atau edit entri, lalu klik **Simpan**.
-2. Pilih **Siap rilis** pada field Status Rilis Batch. Pastikan data wajib, tautan, angka, dan foto sudah benar.
-3. Ulangi untuk semua entri yang ingin dirilis.
-4. Buka **Rilis Batch** dari tautan di pojok admin.
-5. Masuk sebagai Publisher, periksa daftar dan validasi, lalu klik **Terbitkan Semua Siap**.
-6. Semua entri valid berubah menjadi **Terbit** dalam satu commit. Netlify kemudian membangun ulang situs.
+**Menyimpan perubahan ke situs publik:**
+1. Buat atau edit entri, lalu pastikan kolom wajib, tautan, angka, dan foto sudah benar.
+2. Pilih **Draf** jika konten masih perlu diperiksa. Pilih **Terbit** jika konten sudah siap ditampilkan.
+3. Klik **Simpan**. Decap akan menyimpan perubahan ke branch utama.
+4. Tunggu proses build Netlify selesai, lalu periksa Public View.
 
-Konten hanya tampil publik jika statusnya **Terbit** dan **Tampilkan di Publik** aktif. Karena semua koleksi dilindungi dari penghapusan, koreksi dilakukan dengan mengedit entri atau menonaktifkan Tampilkan di Publik.
+Konten tampil publik jika statusnya **Terbit** dan **Tampilkan di Publik** aktif. Karena semua koleksi dilindungi dari penghapusan, koreksi dilakukan dengan mengedit entri atau menonaktifkan Tampilkan di Publik.
 
 ---
 
 ### 5. Pengelolaan Gambar (Media Library)
-- Anda dapat mengelola seluruh gambar desa melalui menu **"Media"** di navigasi atas.
+- Buka tautan **"Unggah Media"** di pojok kanan bawah halaman admin untuk masuk ke halaman upload.
+- Klik **"Buka Media Library"** untuk mengelola seluruh gambar desa melalui menu **"Media"** Decap CMS.
 - Gunakan tombol **"Unggah"** atau **"Pilih gambar"** saat mengisi field foto.
 - Disarankan untuk **mengompres foto hingga di bawah 1 MB** agar website tetap cepat diakses warga.
 

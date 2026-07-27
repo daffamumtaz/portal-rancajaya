@@ -102,7 +102,7 @@
       editor: {
         onLeavePage: "Yakin ingin meninggalkan halaman ini?",
         onUpdatingWithUnsavedChanges: "Ada perubahan yang belum disimpan. Simpan sebelum memperbarui status.",
-        onPublishingNotReady: "Ubah status menjadi Siap sebelum menerbitkan.",
+        onPublishingNotReady: "Lengkapi entri sebelum menerbitkan.",
         onPublishingWithUnsavedChanges: "Ada perubahan yang belum disimpan. Simpan sebelum menerbitkan.",
         onPublishing: "Yakin ingin menerbitkan entri ini?",
         onUnpublishing: "Yakin ingin membatalkan penerbitan entri ini?",
@@ -149,7 +149,7 @@
         deleteEntry: "Hapus Entri",
         saving: "Menyimpan...",
         save: "Simpan",
-        statusInfoTooltipDraft: "Status entri masih draf. Untuk mengirimkannya ke peninjauan, ubah status menjadi Dalam Review.",
+        statusInfoTooltipDraft: "Status entri masih draf.",
         statusInfoTooltipInReview: "Entri sedang ditinjau. Anda masih dapat membuat perubahan tambahan.",
         deleting: "Menghapus...",
         updating: "Memperbarui...",
@@ -328,7 +328,7 @@
       },
       workflowList: {
         onDeleteEntry: "Yakin ingin menghapus entri ini?",
-        onPublishingNotReadyEntry: "Hanya item berstatus Siap yang dapat diterbitkan. Pindahkan kartu ke kolom Siap.",
+        onPublishingNotReadyEntry: "Lengkapi entri sebelum menerbitkannya.",
         onPublishEntry: "Yakin ingin menerbitkan entri ini?",
         draftHeader: "Draf",
         inReviewHeader: "Dalam Review",

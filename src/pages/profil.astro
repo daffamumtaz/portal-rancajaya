@@ -49,6 +49,9 @@ const formatRupiah = (value) => new Intl.NumberFormat('id-ID', {
 const demoDusun = sortedDusun
   .filter((entry) => typeof entry.data.jumlah_penduduk === 'number')
   .map((entry) => ({ label: entry.data.nama, value: entry.data.jumlah_penduduk }));
+const pendidikanRows = profil.demo_pendidikan || [];
+const formatNumber = (value) => new Intl.NumberFormat('id-ID').format(value);
+const totalDusunPopulation = demoDusun.reduce((sum, item) => sum + item.value, 0);
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const fotoKades = resolvePublicPath(profil.foto_kades, base);
@@ -308,7 +311,10 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Dusun Pie Chart -->
         <div class="card p-6">
-          <h3 class="font-display font-bold text-ink text-sm mb-4">Populasi per Dusun</h3>
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="font-display font-bold text-ink text-sm">Populasi per Dusun</h3>
+            <span class="pill-primary shrink-0 text-right">{formatNumber(totalDusunPopulation)} jiwa</span>
+          </div>
           <div class="relative h-64 w-full">
             <canvas id="chartDusun"></canvas>
           </div>
@@ -316,7 +322,10 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
         
         <!-- Pendidikan Bar Chart -->
         <div class="card p-6">
-          <h3 class="font-display font-bold text-ink text-sm mb-4">Tingkat Pendidikan</h3>
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <h3 class="font-display font-bold text-ink text-sm">Tingkat Pendidikan</h3>
+            <span class="pill-primary shrink-0 text-right">{pendidikanRows.length} kategori</span>
+          </div>
           <div class="relative h-64 w-full">
             <canvas id="chartPendidikan"></canvas>
           </div>
@@ -326,7 +335,7 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
   </section>
 
   <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script is:inline define:vars={{ demoDusun, demoPendidikan: profil.demo_pendidikan || [] }}>
+  <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
 
@@ -389,13 +398,19 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="card p-6">
-              <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Sumber Pendapatan</h3>
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <h3 class="font-display font-bold text-ink text-sm">Top 5 Sumber Pendapatan</h3>
+                <span class="pill-primary shrink-0 text-right">{formatRupiah(totalPendapatan)}</span>
+              </div>
               <div class="relative h-80 w-full">
                 <canvas id="chartPendapatan"></canvas>
               </div>
             </div>
             <div class="card p-6">
-              <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Belanja</h3>
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <h3 class="font-display font-bold text-ink text-sm">Top 5 Belanja</h3>
+                <span class="pill-primary shrink-0 text-right">{formatRupiah(totalBelanja)}</span>
+              </div>
               <div class="relative h-80 w-full">
                 <canvas id="chartBelanja"></canvas>
               </div>

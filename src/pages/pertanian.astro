@@ -39,9 +39,14 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-white border-b border-line">
     <div class="container-page">
       <div class="section-header">
-        <span class="eyebrow">Ringkasan</span>
-        <h2 class="section-title">Potensi Ekonomi Lokal</h2>
-        <p class="section-subtitle">{potensi.deskripsi || 'Data potensi dapat diperbarui melalui Decap CMS.'}</p>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="eyebrow">Ringkasan</span>
+            <h2 class="section-title">Potensi Ekonomi Lokal</h2>
+            <p class="section-subtitle">{potensi.deskripsi || 'Data potensi dapat diperbarui melalui Decap CMS.'}</p>
+          </div>
+          <span class="pill-primary shrink-0">{pertanianStats.length} indikator</span>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -57,9 +62,14 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-paper border-b border-line">
     <div class="container-page">
       <div class="section-header">
-        <span class="eyebrow">Peternakan</span>
-        <h2 class="section-title">Statistik Peternakan</h2>
-        <p class="section-subtitle">Data peternakan yang diperbarui melalui Decap CMS.</p>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="eyebrow">Peternakan</span>
+            <h2 class="section-title">Statistik Peternakan</h2>
+            <p class="section-subtitle">Data peternakan yang diperbarui melalui Decap CMS.</p>
+          </div>
+          <span class="pill-primary shrink-0">{peternakanStats.length} indikator</span>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -122,9 +132,14 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-paper border-b border-line">
     <div class="container-page">
       <div class="section-header">
-        <span class="eyebrow">UMKM</span>
-        <h2 class="section-title">UMKM Desa</h2>
-        <p class="section-subtitle">Semua data UMKM berasal dari satu collection Decap CMS.</p>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="eyebrow">UMKM</span>
+            <h2 class="section-title">UMKM Desa</h2>
+            <p class="section-subtitle">Semua data UMKM berasal dari satu collection Decap CMS.</p>
+          </div>
+          <span class="pill-primary shrink-0">{sortedUmkm.length} UMKM</span>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -158,9 +173,14 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-white border-b border-line">
     <div class="container-page text-center">
       <div class="section-header">
-        <span class="eyebrow mb-2">Galeri</span>
-        <h2 class="section-title">Galeri Potensi</h2>
-        <p class="section-subtitle mx-auto">Foto dokumentasi ini berasal dari collection Galeri Foto.</p>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="eyebrow mb-2">Galeri</span>
+            <h2 class="section-title">Galeri Potensi</h2>
+            <p class="section-subtitle">Foto dokumentasi ini berasal dari collection Galeri Foto.</p>
+          </div>
+          <span class="pill-primary shrink-0">{potensiGallery.length} foto</span>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

@@ -17,7 +17,9 @@ type PublishableData = {
 
 export function isPublishedContent(data: PublishableData | undefined) {
   if (!data || data.aktif === false) return false;
-  return !data.release_status || data.release_status === 'Terbit';
+  // Siap is kept as a legacy value so older entries remain visible after the
+  // previous controlled workflow is removed. Only an explicit Draf hides content.
+  return data.release_status !== 'Draf';
 }
 
 export function toSafeFormUrl(value: string | undefined) {
@@ -60,16 +62,16 @@ export function toWhatsAppHref(phone: string | undefined) {
 }
 
 export function toGoogleMapsEmbedUrl(latitude?: number, longitude?: number, zoom = 18) {
-  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3797;
-  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461;
+  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3796663;
+  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461475;
   const level = Number.isFinite(zoom) ? Math.min(21, Math.max(1, Math.round(zoom))) : 18;
 
   return `https://maps.google.com/maps?q=${lat},${lon}&z=${level}&output=embed`;
 }
 
 export function toGoogleMapsUrl(latitude?: number, longitude?: number) {
-  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3797;
-  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461;
+  const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3796663;
+  const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461475;
 
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
 }
