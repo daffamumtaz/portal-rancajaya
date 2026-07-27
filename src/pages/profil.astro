@@ -3,15 +3,18 @@ import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
-import { resolvePublicPath } from '../utils/content';
+import { isPublishedContent, resolvePublicPath } from '../utils/content';
 
 const profilData = await getEntry('halaman', 'profil');
 const umumData = await getEntry('pengaturan', 'umum');
-const profil = profilData?.data || {};
-const common = umumData?.data || {};
-const strukturOrganisasi = await getCollection('struktur-organisasi');
-const dusunEntries = await getCollection('dusun');
-const apbdesEntries = await getCollection('apbdes');
+const profil = isPublishedContent(profilData?.data) ? profilData.data : {};
+const common = isPublishedContent(umumData?.data) ? umumData.data : {};
+const strukturOrganisasi = (await getCollection('struktur-organisasi')).filter((entry) => isPublishedContent(entry.data));
+const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
+const activeApbdesYear = common.tahun_apbdes_aktif || new Date().getFullYear();
+const apbdesEntries = (await getCollection('apbdes'))
+  .filter((entry) => isPublishedContent(entry.data))
+  .filter((entry) => entry.data.tahun === activeApbdesYear);
 const sortedStruktur = strukturOrganisasi.sort((a, b) => a.data.urutan - b.data.urutan);
 const sortedDusun = dusunEntries.sort((a, b) => a.data.urutan - b.data.urutan);
 
@@ -367,38 +370,41 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
     <div class="container-page">
       <div class="section-header">
         <span class="eyebrow">Keuangan Desa</span>
-        <h2 class="section-title">Transparansi APBDes</h2>
-        <p class="section-subtitle">Realisasi Anggaran Pendapatan dan Belanja Desa (APBDes)</p>
+        <h2 class="section-title">Transparansi APBDes {activeApbdesYear}</h2>
+        <p class="section-subtitle">Realisasi Anggaran Pendapatan dan Belanja Desa (APBDes) Tahun Anggaran {activeApbdesYear}</p>
       </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <!-- Pendapatan -->
-        <div class="card p-6 text-center border-green-200 bg-gradient-to-br from-white to-green-50">
-          <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Pendapatan</p>
-          <p class="text-3xl font-display font-bold text-green-700">{formatRupiah(totalPendapatan)}</p>
-        </div>
+      {apbdesEntries.length > 0 ? (
+        <>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="card p-6 text-center border-green-200 bg-gradient-to-br from-white to-green-50">
+              <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Pendapatan</p>
+              <p class="text-3xl font-display font-bold text-green-700">{formatRupiah(totalPendapatan)}</p>
+            </div>
 
-        <!-- Belanja -->
-        <div class="card p-6 text-center border-blue-200 bg-gradient-to-br from-white to-blue-50">
-          <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Belanja</p>
-          <p class="text-3xl font-display font-bold text-blue-700">{formatRupiah(totalBelanja)}</p>
-        </div>
-      </div>
+            <div class="card p-6 text-center border-blue-200 bg-gradient-to-br from-white to-blue-50">
+              <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Belanja</p>
+              <p class="text-3xl font-display font-bold text-blue-700">{formatRupiah(totalBelanja)}</p>
+            </div>
+          </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="card p-6">
-          <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Sumber Pendapatan</h3>
-          <div class="relative h-80 w-full">
-            <canvas id="chartPendapatan"></canvas>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card p-6">
+              <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Sumber Pendapatan</h3>
+              <div class="relative h-80 w-full">
+                <canvas id="chartPendapatan"></canvas>
+              </div>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Belanja</h3>
+              <div class="relative h-80 w-full">
+                <canvas id="chartBelanja"></canvas>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="card p-6">
-          <h3 class="font-display font-bold text-ink text-sm mb-4">Top 5 Belanja</h3>
-          <div class="relative h-80 w-full">
-            <canvas id="chartBelanja"></canvas>
-          </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <div class="card p-8 text-center text-muted">Data APBDes untuk tahun {activeApbdesYear} belum diterbitkan.</div>
+      )}
     </div>
   </section>
 

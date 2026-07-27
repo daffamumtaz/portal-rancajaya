@@ -5,6 +5,14 @@ const labelValueSchema = z.object({
   value: z.number(),
 });
 
+const releaseStatusSchema = z.enum(['Draf', 'Siap', 'Terbit']).default('Terbit');
+
+const publicationFields = {
+  release_status: releaseStatusSchema,
+  published_at: z.coerce.date().optional(),
+  aktif: z.boolean().default(true),
+};
+
 const beritaCollection = defineCollection({
   type: 'content',
   schema: z.object({
@@ -15,6 +23,7 @@ const beritaCollection = defineCollection({
     excerpt: z.string(),
     author: z.string().default('Admin Desa'),
     featured: z.boolean().default(false),
+    ...publicationFields,
   }),
 });
 
@@ -27,6 +36,7 @@ const strukturOrganisasiCollection = defineCollection({
     foto: z.string().optional(),
     urutan: z.number(),
     deskripsi: z.string().optional(),
+    ...publicationFields,
   }),
 });
 
@@ -39,6 +49,7 @@ const dusunCollection = defineCollection({
     luas_wilayah: z.string().optional(),
     deskripsi: z.string(),
     urutan: z.number(),
+    ...publicationFields,
   }),
 });
 
@@ -47,10 +58,11 @@ const apbdesCollection = defineCollection({
   schema: z.object({
     nama: z.string(),
     jenis: z.enum(['Pendapatan', 'Belanja']),
-    tahun: z.string(),
+    tahun: z.coerce.number().int().min(2000).max(2100),
     jumlah: z.number(),
     urutan: z.number(),
     deskripsi: z.string().optional(),
+    ...publicationFields,
   }),
 });
 
@@ -62,6 +74,8 @@ const galeriCollection = defineCollection({
     kategori: z.enum(['Kegiatan', 'Pembangunan', 'Budaya', 'Pertanian', 'Peternakan', 'UMKM', 'Potensi', 'Lainnya']),
     foto: z.string(),
     deskripsi: z.string(),
+    alt_text: z.string().optional(),
+    ...publicationFields,
   }),
 });
 
@@ -75,6 +89,7 @@ const kelompokTaniCollection = defineCollection({
     jumlah_anggota: z.number(),
     deskripsi: z.string(),
     kontak: z.string().optional(),
+    ...publicationFields,
   }),
 });
 
@@ -86,6 +101,7 @@ const potensiStatistikCollection = defineCollection({
     value: z.string(),
     keterangan: z.string().optional(),
     urutan: z.number(),
+    ...publicationFields,
   }),
 });
 
@@ -101,6 +117,7 @@ const umkmCollection = defineCollection({
     foto: z.string().optional(),
     deskripsi: z.string(),
     featured: z.boolean().default(false),
+    ...publicationFields,
   }),
 });
 
@@ -112,6 +129,7 @@ const layananAdministrasiCollection = defineCollection({
     link: z.string().optional(),
     ikon: z.string().optional(),
     urutan: z.number(),
+    ...publicationFields,
   }),
 });
 
@@ -125,6 +143,7 @@ const kontakCollection = defineCollection({
     alamat: z.string().optional(),
     deskripsi: z.string(),
     urutan: z.number(),
+    ...publicationFields,
   }),
 });
 
@@ -135,6 +154,7 @@ const faqCollection = defineCollection({
     jawaban: z.string(),
     kategori: z.enum(['Administrasi', 'Layanan', 'Umum', 'Potensi']).default('Umum'),
     urutan: z.number(),
+    ...publicationFields,
   }),
 });
 
@@ -152,6 +172,8 @@ const pengaturanCollection = defineCollection({
     telepon: z.string().optional(),
     email: z.string().optional(),
     jam_operasional: z.string().optional(),
+    tahun_apbdes_aktif: z.coerce.number().int().min(2000).max(2100).default(2026),
+    ...publicationFields,
   }),
 });
 
@@ -182,17 +204,7 @@ const halamanCollection = defineCollection({
     penduduk_total: z.string().optional(),
     penduduk_pria: z.string().optional(),
     penduduk_wanita: z.string().optional(),
-    demo_dusun: z.array(labelValueSchema).default([]),
     demo_pendidikan: z.array(labelValueSchema).default([]),
-    apbdes: z.object({
-      pendapatan: z.string().optional(),
-      belanja: z.string().optional(),
-      riwayat: z.array(z.object({
-        tahun: z.string(),
-        pendapatan: z.number(),
-        belanja: z.number(),
-      })).default([]),
-    }).optional(),
     
     // Pertanian
     luas_lahan: z.string().optional(),
@@ -213,6 +225,7 @@ const halamanCollection = defineCollection({
       q: z.string(),
       a: z.string(),
     })).default([]),
+    ...publicationFields,
   }),
 });
 

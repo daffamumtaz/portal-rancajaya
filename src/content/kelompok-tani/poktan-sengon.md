@@ -6,5 +6,7 @@ komoditas_utama: "Padi dan Palawija"
 jumlah_anggota: 36
 deskripsi: "Mengembangkan padi, palawija, serta pendampingan pemanfaatan pupuk berimbang."
 kontak: "0813-3300-4400"
+release_status: "Terbit"
+aktif: true
 ---
 

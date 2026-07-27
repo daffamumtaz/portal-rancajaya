@@ -4,5 +4,7 @@ deskripsi: "Layanan administrasi perpindahan domisili warga masuk atau keluar de
 link: "https://forms.gle/xyz123"
 ikon: "PD"
 urutan: 4
+release_status: "Terbit"
+aktif: true
 ---
 

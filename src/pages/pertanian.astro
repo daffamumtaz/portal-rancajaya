@@ -3,17 +3,17 @@ import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
-import { resolvePublicPath, toWhatsAppHref } from '../utils/content';
+import { isPublishedContent, resolvePublicPath, toWhatsAppHref } from '../utils/content';
 
 const potensiData = await getEntry('halaman', 'pertanian');
 const umumData = await getEntry('pengaturan', 'umum');
-const potensi = potensiData?.data || {};
-const common = umumData?.data || {};
+const potensi = isPublishedContent(potensiData?.data) ? potensiData.data : {};
+const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 
-const stats = await getCollection('potensi-statistik');
-const kelompokTani = await getCollection('kelompok-tani');
-const umkm = await getCollection('umkm');
-const galeri = await getCollection('galeri');
+const stats = (await getCollection('potensi-statistik')).filter((entry) => isPublishedContent(entry.data));
+const kelompokTani = (await getCollection('kelompok-tani')).filter((entry) => isPublishedContent(entry.data));
+const umkm = (await getCollection('umkm')).filter((entry) => isPublishedContent(entry.data));
+const galeri = (await getCollection('galeri')).filter((entry) => isPublishedContent(entry.data));
 
 const sortByOrder = (a, b) => (a.data.urutan || 0) - (b.data.urutan || 0);
 const pertanianStats = stats.filter((entry) => entry.data.kategori === 'Pertanian').sort(sortByOrder);
@@ -59,7 +59,7 @@ const whatsappHref = toWhatsAppHref(common.telepon);
       <div class="section-header">
         <span class="eyebrow">Peternakan</span>
         <h2 class="section-title">Statistik Peternakan</h2>
-        <p class="section-subtitle">Data dummy ini sudah menjadi collection dan dapat diedit dari CMS.</p>
+        <p class="section-subtitle">Data peternakan yang diperbarui melalui Decap CMS.</p>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -167,7 +167,7 @@ const whatsappHref = toWhatsAppHref(common.telepon);
         {potensiGallery.map((item) => (
           <div class="card overflow-hidden">
             <div class="h-48 overflow-hidden">
-              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.judul} class="w-full h-full object-cover" loading="lazy" />
+              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.alt_text || item.data.judul} class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="p-4 text-left">
               <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>

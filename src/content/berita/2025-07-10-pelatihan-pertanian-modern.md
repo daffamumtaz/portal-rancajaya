@@ -5,6 +5,8 @@ category: "Artikel"
 excerpt: "Dinas Pertanian Kabupaten Subang menyelenggarakan pelatihan teknik pertanian modern bagi para petani di Desa Rancajaya."
 author: "Admin Desa"
 featured: false
+release_status: "Terbit"
+aktif: true
 ---
 
 Dinas Pertanian Kabupaten Subang bekerja sama dengan Pemerintah Desa Rancajaya menyelenggarakan pelatihan pertanian modern. Pelatihan ini bertujuan untuk meningkatkan produktivitas dan kualitas hasil panen para petani.

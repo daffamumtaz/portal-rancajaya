@@ -4,5 +4,7 @@ deskripsi: "Pengajuan surat keterangan usaha bagi warga pelaku UMKM atau usaha r
 link: "https://forms.gle/xyz123"
 ikon: "SU"
 urutan: 3
+release_status: "Terbit"
+aktif: true
 ---
 

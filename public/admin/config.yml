@@ -1,8 +1,12 @@
 backend:
   name: git-gateway
   branch: main
+  squash_merges: true
 
-publish_mode: editorial_workflow
+# Entri disimpan sebagai Draf/Siap di branch utama dan baru terlihat publik
+# setelah halaman Rilis Batch mengubahnya menjadi Terbit dalam satu commit.
+publish_mode: simple
+show_preview_links: true
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -12,9 +16,19 @@ locale: "id"
 collections:
   - name: "berita"
     label: "Berita & Informasi"
+    label_singular: "Informasi"
     folder: "src/content/berita"
     create: true
+    delete: false
+    publish: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{category}} - {{title}}"
+    sortable_fields: ["date", "title", "category"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
+      - { label: "Sudah terbit", field: "release_status", pattern: "Terbit" }
+    view_groups:
+      - { label: "Kategori", field: "category" }
     fields:
       - { label: "Judul", name: "title", widget: "string" }
       - { label: "Tanggal", name: "date", widget: "datetime" }
@@ -27,54 +41,111 @@ collections:
       - { label: "Penulis", name: "author", widget: "string", default: "Admin Desa" }
       - { label: "Tampilkan di Beranda", name: "featured", widget: "boolean", default: false }
       - { label: "Konten", name: "body", widget: "markdown" }
+      - &release_status
+        label: "Status Rilis Batch"
+        name: "release_status"
+        widget: "select"
+        options:
+          - { label: "Draf", value: "Draf" }
+          - { label: "Siap rilis", value: "Siap" }
+          - { label: "Terbit (diatur sistem)", value: "Terbit" }
+        default: "Draf"
+        hint: "Pilih Siap rilis setelah konten diperiksa. Konten diterbitkan bersama melalui menu Rilis Batch."
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "struktur-organisasi"
     label: "Struktur Organisasi Tree"
+    label_singular: "Posisi Struktur"
     folder: "src/content/struktur-organisasi"
-    create: true
+    create: false
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{jabatan}} - {{nama}}"
+    sortable_fields: ["urutan", "jabatan", "nama"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Nama", name: "nama", widget: "string" }
       - { label: "Jabatan", name: "jabatan", widget: "string" }
-      - { label: "Parent ID/Jabatan", name: "parent", widget: "string", required: false, hint: "Kosongkan untuk node paling atas. Isi dengan slug/ID parent untuk struktur tree." }
+      - label: "Atasan Langsung"
+        name: "parent"
+        widget: "relation"
+        collection: "struktur-organisasi"
+        search_fields: ["nama", "jabatan"]
+        value_field: "{{slug}}"
+        display_fields: ["{{jabatan}} - {{nama}}"]
+        required: false
+        hint: "Kosongkan hanya untuk Kepala Desa."
       - { label: "Foto", name: "foto", widget: "image", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
       - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "dusun"
     label: "Dusun"
+    label_singular: "Dusun"
     folder: "src/content/dusun"
-    create: true
+    create: false
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{nama}} - {{jumlah_penduduk}} jiwa"
+    sortable_fields: ["urutan", "nama", "jumlah_penduduk"]
     fields:
       - { label: "Nama Dusun", name: "nama", widget: "string" }
       - { label: "Kepala Dusun", name: "kepala_dusun", widget: "string", required: false }
-      - { label: "Jumlah Penduduk", name: "jumlah_penduduk", widget: "number", value_type: "int", required: false }
+      - { label: "Jumlah Penduduk", name: "jumlah_penduduk", widget: "number", value_type: "int", min: 0, required: false }
       - { label: "Luas Wilayah", name: "luas_wilayah", widget: "string", required: false }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "apbdes"
     label: "Transparansi APBDes"
+    label_singular: "Pos APBDes"
     folder: "src/content/apbdes"
     create: true
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{tahun}} - {{jenis}} - {{nama}}"
+    sortable_fields: ["tahun", "jenis", "jumlah", "nama"]
+    view_filters:
+      - { label: "Pendapatan", field: "jenis", pattern: "Pendapatan" }
+      - { label: "Belanja", field: "jenis", pattern: "Belanja" }
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
+    view_groups:
+      - { label: "Tahun Anggaran", field: "tahun" }
     fields:
-      - { label: "Nama Sumber/Pos", name: "nama", widget: "string" }
+      - { label: "Nama Sumber atau Pos", name: "nama", widget: "string" }
       - label: "Jenis"
         name: "jenis"
         widget: "select"
         options: ["Pendapatan", "Belanja"]
-      - { label: "Tahun", name: "tahun", widget: "string", default: "2026" }
-      - { label: "Jumlah Rupiah", name: "jumlah", widget: "number", value_type: "int" }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Tahun Anggaran", name: "tahun", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
+      - { label: "Jumlah Rupiah", name: "jumlah", widget: "number", value_type: "int", min: 0 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
       - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "potensi-statistik"
     label: "Statistik Potensi"
+    label_singular: "Statistik Potensi"
     folder: "src/content/potensi-statistik"
     create: true
+    delete: false
+    publish: false
     identifier_field: "label"
+    summary: "{{kategori}} - {{label}}: {{value}}"
+    sortable_fields: ["kategori", "urutan", "label"]
+    view_filters:
+      - { label: "Pertanian", field: "kategori", pattern: "Pertanian" }
+      - { label: "Peternakan", field: "kategori", pattern: "Peternakan" }
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - label: "Kategori"
         name: "kategori"
@@ -83,27 +154,52 @@ collections:
       - { label: "Label", name: "label", widget: "string" }
       - { label: "Nilai", name: "value", widget: "string" }
       - { label: "Keterangan", name: "keterangan", widget: "text", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "kelompok-tani"
     label: "Kelompok Tani"
+    label_singular: "Kelompok Tani"
     folder: "src/content/kelompok-tani"
     create: true
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{nama}} - {{dusun}}"
+    sortable_fields: ["nama", "dusun", "jumlah_anggota"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Nama Kelompok", name: "nama", widget: "string" }
       - { label: "Ketua", name: "ketua", widget: "string" }
-      - { label: "Dusun", name: "dusun", widget: "string" }
+      - label: "Dusun"
+        name: "dusun"
+        widget: "relation"
+        collection: "dusun"
+        search_fields: ["nama"]
+        value_field: "nama"
+        display_fields: ["nama"]
       - { label: "Komoditas Utama", name: "komoditas_utama", widget: "string" }
-      - { label: "Jumlah Anggota", name: "jumlah_anggota", widget: "number", value_type: "int" }
+      - { label: "Jumlah Anggota", name: "jumlah_anggota", widget: "number", value_type: "int", min: 0 }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
       - { label: "Kontak", name: "kontak", widget: "string", required: false }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "umkm"
     label: "UMKM"
+    label_singular: "UMKM"
     folder: "src/content/umkm"
     create: true
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{nama}} - {{kategori}}"
+    sortable_fields: ["nama", "kategori", "dusun"]
+    view_filters:
+      - { label: "Unggulan", field: "featured", pattern: true }
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Nama UMKM", name: "nama", widget: "string" }
       - { label: "Pemilik", name: "pemilik", widget: "string" }
@@ -112,29 +208,54 @@ collections:
         widget: "select"
         options: ["Makanan", "Minuman", "Kerajinan", "Jasa", "Pertanian", "Lainnya"]
       - { label: "Produk Utama", name: "produk_utama", widget: "string" }
-      - { label: "Dusun", name: "dusun", widget: "string", required: false }
+      - label: "Dusun"
+        name: "dusun"
+        widget: "relation"
+        collection: "dusun"
+        search_fields: ["nama"]
+        value_field: "nama"
+        display_fields: ["nama"]
+        required: false
       - { label: "Kontak", name: "kontak", widget: "string", required: false }
       - { label: "Foto", name: "foto", widget: "image", required: false }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Tampilkan Unggulan", name: "featured", widget: "boolean", default: false }
+      - { label: "Tampilkan sebagai Unggulan", name: "featured", widget: "boolean", default: false }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "layanan-administrasi"
     label: "Administrasi Daring"
+    label_singular: "Layanan Administrasi"
     folder: "src/content/layanan-administrasi"
     create: true
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{nama}}"
+    sortable_fields: ["urutan", "nama"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Nama Layanan", name: "nama", widget: "string" }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Link Formulir", name: "link", widget: "string", required: false }
+      - { label: "Link Formulir", name: "link", widget: "string", required: false, pattern: ["^(https?://|/).+$", "Gunakan URL http(s) atau path internal yang diawali /." ] }
       - { label: "Ikon atau Singkatan", name: "ikon", widget: "string", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "kontak"
     label: "Kontak"
+    label_singular: "Kontak"
     folder: "src/content/kontak"
     create: true
+    delete: false
+    publish: false
     identifier_field: "nama"
+    summary: "{{jenis}} - {{nama}}"
+    sortable_fields: ["urutan", "jenis", "nama"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Nama Kontak", name: "nama", widget: "string" }
       - label: "Jenis"
@@ -145,13 +266,22 @@ collections:
       - { label: "Email", name: "email", widget: "string", required: false }
       - { label: "Alamat", name: "alamat", widget: "string", required: false }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "faq"
     label: "FAQ"
+    label_singular: "FAQ"
     folder: "src/content/faq"
     create: true
+    delete: false
+    publish: false
     identifier_field: "pertanyaan"
+    summary: "{{kategori}} - {{pertanyaan}}"
+    sortable_fields: ["urutan", "kategori", "pertanyaan"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
     fields:
       - { label: "Pertanyaan", name: "pertanyaan", widget: "string" }
       - { label: "Jawaban", name: "jawaban", widget: "text" }
@@ -159,13 +289,24 @@ collections:
         name: "kategori"
         widget: "select"
         options: ["Administrasi", "Layanan", "Umum", "Potensi"]
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", default: 1 }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "galeri"
     label: "Galeri Foto"
+    label_singular: "Foto Galeri"
     folder: "src/content/galeri"
     create: true
+    delete: false
+    publish: false
     identifier_field: "judul"
+    summary: "{{tanggal}} - {{judul}}"
+    sortable_fields: ["tanggal", "kategori", "judul"]
+    view_filters:
+      - { label: "Siap rilis batch", field: "release_status", pattern: "Siap" }
+    view_groups:
+      - { label: "Kategori", field: "kategori" }
     fields:
       - { label: "Judul", name: "judul", widget: "string" }
       - { label: "Tanggal", name: "tanggal", widget: "date" }
@@ -174,10 +315,14 @@ collections:
         widget: "select"
         options: ["Kegiatan", "Pembangunan", "Budaya", "Pertanian", "Peternakan", "UMKM", "Potensi", "Lainnya"]
       - { label: "Foto", name: "foto", widget: "image" }
+      - { label: "Teks Alternatif Foto", name: "alt_text", widget: "string", required: false, hint: "Jelaskan isi foto untuk aksesibilitas." }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
+      - *release_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "pengaturan"
     label: "Pengaturan"
+    publish: false
     files:
       - label: "Pengaturan Umum"
         name: "umum"
@@ -192,31 +337,37 @@ collections:
           - label: "Misi"
             name: "misi"
             widget: "list"
-            field: { label: "Item Misi", name: "item", widget: "string" }
+            field: { label: "Butir Misi", name: "item", widget: "string" }
           - { label: "Alamat Kantor", name: "alamat_kantor", widget: "text" }
           - { label: "Telepon", name: "telepon", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Jam Operasional", name: "jam_operasional", widget: "text" }
+          - { label: "Tahun APBDes Aktif", name: "tahun_apbdes_aktif", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
+          - *release_status
+          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "halaman"
     label: "Halaman Website"
+    publish: false
     files:
       - label: "Halaman Beranda"
         name: "beranda"
         file: "src/content/halaman/beranda.json"
         fields:
-          - { label: "Hero Title", name: "hero_title", widget: "string" }
-          - { label: "Hero Subtitle", name: "hero_subtitle", widget: "string" }
-          - { label: "Hero Background Image", name: "hero_bg", widget: "image", required: false }
-          - { label: "Highlight Title", name: "highlight_title", widget: "string" }
-          - { label: "Highlight Description", name: "highlight_desc", widget: "text" }
-          - { label: "Highlight Image", name: "highlight_image", widget: "image", required: false }
+          - { label: "Judul Hero", name: "hero_title", widget: "string" }
+          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "string" }
+          - { label: "Gambar Latar Hero", name: "hero_bg", widget: "image", required: false }
+          - { label: "Judul Sorotan", name: "highlight_title", widget: "string" }
+          - { label: "Deskripsi Sorotan", name: "highlight_desc", widget: "text" }
+          - { label: "Gambar Sorotan", name: "highlight_image", widget: "image", required: false }
           - label: "Statistik"
             name: "statistik"
             widget: "list"
             fields:
               - { label: "Label", name: "label", widget: "string" }
-              - { label: "Value", name: "value", widget: "string" }
+              - { label: "Nilai", name: "value", widget: "string" }
+          - *release_status
+          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
       - label: "Halaman Profil"
         name: "profil"
@@ -240,19 +391,25 @@ collections:
             widget: "list"
             fields:
               - { label: "Tingkat Pendidikan", name: "label", widget: "string" }
-              - { label: "Jumlah", name: "value", widget: "number", value_type: "int" }
+              - { label: "Jumlah", name: "value", widget: "number", value_type: "int", min: 0 }
+          - *release_status
+          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
       - label: "Halaman Potensi"
         name: "pertanian"
         file: "src/content/halaman/pertanian.json"
         fields:
           - { label: "Judul Hero", name: "hero_title", widget: "string" }
-          - { label: "Subtitle Hero", name: "hero_subtitle", widget: "text" }
+          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
           - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
+          - *release_status
+          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
       - label: "Halaman Layanan"
         name: "layanan"
         file: "src/content/halaman/layanan.json"
         fields:
           - { label: "Judul Hero", name: "hero_title", widget: "string", required: false }
-          - { label: "Subtitle Hero", name: "hero_subtitle", widget: "text", required: false }
+          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text", required: false }
+          - *release_status
+          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }

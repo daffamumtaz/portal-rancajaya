@@ -4,5 +4,7 @@ deskripsi: "Pengajuan surat pengantar untuk keperluan administrasi awal warga."
 link: "https://forms.gle/xyz123"
 ikon: "SP"
 urutan: 1
+release_status: "Terbit"
+aktif: true
 ---
 

@@ -10,6 +10,31 @@ export function resolvePublicPath(path: string | undefined, base = '') {
   return `${normalizedBase}${normalizedPath}`;
 }
 
+type PublishableData = {
+  aktif?: boolean;
+  release_status?: 'Draf' | 'Siap' | 'Terbit';
+};
+
+export function isPublishedContent(data: PublishableData | undefined) {
+  if (!data || data.aktif === false) return false;
+  return !data.release_status || data.release_status === 'Terbit';
+}
+
+export function toSafeFormUrl(value: string | undefined) {
+  if (!value) return undefined;
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.startsWith('//')) return undefined;
+  if (trimmed.startsWith('/')) return trimmed;
+
+  try {
+    const url = new URL(trimmed);
+    return ['http:', 'https:'].includes(url.protocol) ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function toTelHref(phone: string | undefined) {
   if (!phone) return undefined;
   if (/[a-z]/i.test(phone)) return undefined;

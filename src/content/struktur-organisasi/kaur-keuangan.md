@@ -4,5 +4,7 @@ jabatan: "Kaur Keuangan"
 parent: "sekretaris-desa"
 urutan: 3
 deskripsi: "Mengelola administrasi keuangan desa dan pelaporan APBDes."
+release_status: "Terbit"
+aktif: true
 ---
 

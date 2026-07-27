@@ -5,5 +5,7 @@ tahun: "2026"
 jumlah: 140000000
 urutan: 4
 deskripsi: "Kegiatan sosial, keamanan lingkungan, dan pembinaan warga."
+release_status: "Terbit"
+aktif: true
 ---
 

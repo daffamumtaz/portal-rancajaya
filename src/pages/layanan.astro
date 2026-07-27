@@ -2,17 +2,17 @@
 import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { toTelHref } from '../utils/content';
+import { isPublishedContent, toSafeFormUrl, toTelHref } from '../utils/content';
 
 const umumData = await getEntry('pengaturan', 'umum');
-const common = umumData?.data || {};
+const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 
 const layananData = await getEntry('halaman', 'layanan');
-const layananPage = layananData?.data || {};
+const layananPage = isPublishedContent(layananData?.data) ? layananData.data : {};
 
-const administrasiData = (await getCollection('layanan-administrasi')).sort((a, b) => a.data.urutan - b.data.urutan);
-const kontakData = (await getCollection('kontak')).sort((a, b) => a.data.urutan - b.data.urutan);
-const faqData = (await getCollection('faq')).sort((a, b) => a.data.urutan - b.data.urutan);
+const administrasiData = (await getCollection('layanan-administrasi')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
+const kontakData = (await getCollection('kontak')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
+const faqData = (await getCollection('faq')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
 ---
 
@@ -71,11 +71,12 @@ const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {administrasiData.map((entry) => {
                 const item = entry.data;
-                const hasLink = Boolean(item.link);
+                const safeLink = toSafeFormUrl(item.link);
+                const hasLink = Boolean(safeLink);
                 const cardClass = hasLink ? 'card-hover p-5 flex items-start gap-4' : 'card p-5 flex items-start gap-4 opacity-80';
 
                 return hasLink ? (
-                  <a href={item.link} class={cardClass} target="_blank" rel="noopener noreferrer">
+                  <a href={safeLink} class={cardClass} target="_blank" rel="noopener noreferrer">
                     <div class="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
                       {item.ikon ? (
                         <span class="text-xs font-bold">{item.ikon}</span>

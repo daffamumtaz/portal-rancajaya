@@ -13,5 +13,8 @@
   "alamat_kantor": "Jl. Raya Rancajaya No. 01, Desa Rancajaya, Kec. Patokbeusi, Kab. Subang, Jawa Barat",
   "telepon": "(0260) 1234567",
   "email": "desa.rancajaya@gmail.com",
-  "jam_operasional": "Senin - Jumat 08:00 - 16:00"
+  "jam_operasional": "Senin - Jumat 08:00 - 16:00",
+  "tahun_apbdes_aktif": 2026,
+  "release_status": "Terbit",
+  "aktif": true
 }

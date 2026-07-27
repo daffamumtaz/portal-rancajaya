@@ -4,16 +4,16 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
-import { resolvePublicPath } from '../utils/content';
+import { isPublishedContent, resolvePublicPath } from '../utils/content';
 
 // Fetch CMS Data
 const umumData = await getEntry('pengaturan', 'umum');
 const berandaData = await getEntry('halaman', 'beranda');
-const common = umumData?.data || {};
-const beranda = berandaData?.data || {};
+const common = isPublishedContent(umumData?.data) ? umumData.data : {};
+const beranda = isPublishedContent(berandaData?.data) ? berandaData.data : {};
 
 // Ambil 3 berita terbaru
-const allArticles = await getCollection('berita');
+const allArticles = (await getCollection('berita')).filter((entry) => isPublishedContent(entry.data));
 const latestArticles = allArticles
   .filter(a => a.data.category === 'Berita' || a.data.category === 'Pengumuman')
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -26,7 +26,7 @@ const eduArticles = allArticles
   .slice(0, 3);
 
 // Ambil 4 galeri terbaru
-const allGallery = await getCollection('galeri');
+const allGallery = (await getCollection('galeri')).filter((entry) => isPublishedContent(entry.data));
 const latestGallery = allGallery
   .sort((a, b) => b.data.tanggal.valueOf() - a.data.tanggal.valueOf())
   .slice(0, 4);
@@ -208,7 +208,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         {latestGallery.map((item) => (
           <div class="card overflow-hidden group cursor-pointer">
             <div class="h-48 overflow-hidden">
-              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.judul} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.alt_text || item.data.judul} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
             </div>
             <div class="p-4 text-left">
               <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>

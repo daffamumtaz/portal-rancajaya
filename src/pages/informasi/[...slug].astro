@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { resolvePublicPath } from '../../utils/content';
+import { isPublishedContent, resolvePublicPath } from '../../utils/content';
 
 export async function getStaticPaths() {
-  const beritaEntries = await getCollection('berita');
+  const beritaEntries = (await getCollection('berita')).filter((entry) => isPublishedContent(entry.data));
   return beritaEntries.map(entry => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -32,17 +32,6 @@ const thumbnail = resolvePublicPath(entry.data.thumbnail, base);
   <article class="bg-paper pb-16">
     <!-- Header/Hero -->
     <header class="bg-gradient-to-br from-primary-800 to-primary-600 text-white pt-24 pb-20 px-4 md:px-8 relative isolate">
-      <div class="absolute inset-0 opacity-10 pointer-events-none">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="leaf" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M20 5c5 0 10 5 10 10s-5 10-10 10S10 20 10 15 15 5 20 5z" fill="currentColor" fill-opacity="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#leaf)" />
-        </svg>
-      </div>
-
       <div class="max-w-4xl mx-auto relative z-10 animate-fade-in-up">
         <a href={`${base}/informasi`} class="inline-flex items-center gap-2 text-primary-100 hover:text-white mb-8 transition-colors text-sm font-semibold">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>

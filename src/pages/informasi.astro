@@ -3,12 +3,13 @@ import { getCollection, getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import { isPublishedContent } from '../utils/content';
 
 const umumData = await getEntry('pengaturan', 'umum');
-const common = umumData?.data || {};
+const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 
 // Fetch and sort articles by date (newest first)
-const allArticles = await getCollection('berita');
+const allArticles = (await getCollection('berita')).filter((entry) => isPublishedContent(entry.data));
 const sortedArticles = allArticles.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 

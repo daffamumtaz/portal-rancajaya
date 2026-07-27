@@ -5,6 +5,8 @@ category: "Pengumuman"
 excerpt: "Pemerintah Desa Rancajaya membuka pendaftaran penerima Bantuan Langsung Tunai (BLT) Dana Desa Tahap III Tahun 2025."
 author: "Admin Desa"
 featured: false
+release_status: "Terbit"
+aktif: true
 ---
 
 Pemerintah Desa Rancajaya mengumumkan pembukaan pendaftaran penerima Bantuan Langsung Tunai (BLT) Dana Desa Tahap III Tahun 2025. Warga yang memenuhi syarat dipersilakan untuk mendaftar di Kantor Desa.

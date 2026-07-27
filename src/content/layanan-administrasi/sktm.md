@@ -4,5 +4,7 @@ deskripsi: "Layanan pengajuan SKTM untuk kebutuhan pendidikan, kesehatan, dan ba
 link: "https://forms.gle/xyz123"
 ikon: "SK"
 urutan: 2
+release_status: "Terbit"
+aktif: true
 ---
 

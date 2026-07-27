@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rilis Batch - CMS Desa</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17231b; background: #f5f7f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #f5f7f4; }
+    header { background: #166534; color: #fff; padding: 1rem clamp(1rem, 4vw, 3rem); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    header strong { font-size: 1rem; }
+    header nav { display: flex; gap: .75rem; flex-wrap: wrap; }
+    a { color: inherit; }
+    .shell { width: min(100% - 2rem, 960px); margin: 2rem auto 4rem; }
+    .intro { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.25rem; }
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: .35rem; font-size: clamp(1.65rem, 4vw, 2.4rem); }
+    .muted { color: #5f6f64; }
+    .panel { background: #fff; border: 1px solid #dbe4dc; border-radius: 8px; padding: clamp(1rem, 3vw, 1.5rem); box-shadow: 0 8px 24px rgba(23, 35, 27, .06); }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }
+    .stat { border: 1px solid #e4ebe5; border-radius: 8px; padding: 1rem; }
+    .stat strong { display: block; font-size: 1.6rem; color: #166534; }
+    .actions { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin-top: 1.25rem; }
+    button, .button { border: 0; border-radius: 6px; padding: .7rem 1rem; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+    button.primary, .button.primary { background: #166534; color: #fff; }
+    button.secondary, .button.secondary { background: #e8f1e9; color: #166534; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    .message { margin-top: 1rem; border-radius: 6px; padding: .85rem 1rem; display: none; white-space: pre-wrap; }
+    .message.visible { display: block; }
+    .message.error { background: #fff1f0; border: 1px solid #f1b8b2; color: #9b2c24; }
+    .message.success { background: #edf8ef; border: 1px solid #b5ddbb; color: #166534; }
+    .table-wrap { overflow-x: auto; margin-top: 1rem; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td { padding: .75rem .6rem; border-bottom: 1px solid #e6ece7; text-align: left; vertical-align: top; }
+    th { color: #526157; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+    code { font-size: .86em; color: #166534; word-break: break-word; }
+    .status-ready { color: #9a5b00; font-weight: 700; }
+    .hidden { display: none !important; }
+    @media (max-width: 640px) { .intro { align-items: start; flex-direction: column; } .stats { grid-template-columns: 1fr; } header { align-items: start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Portal Rancajaya · Rilis Konten</strong>
+    <nav aria-label="Navigasi admin">
+      <a class="button secondary" href="/admin/index.html">Kembali ke CMS</a>
+      <button id="logoutButton" class="secondary" type="button">Keluar</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <div class="intro">
+      <div>
+        <p class="muted">Penerbitan terkontrol</p>
+        <h1>Rilis Semua Konten Siap</h1>
+        <p class="muted">Konten berstatus Siap akan divalidasi dan diterbitkan dalam satu commit.</p>
+      </div>
+      <button id="loginButton" class="primary" type="button">Masuk sebagai Publisher</button>
+    </div>
+
+    <section class="panel" aria-labelledby="releaseHeading">
+      <h2 id="releaseHeading">Ringkasan Rilis</h2>
+      <div class="stats">
+        <div class="stat"><span class="muted">Siap dirilis</span><strong id="readyCount">-</strong></div>
+        <div class="stat"><span class="muted">Koleksi</span><strong id="collectionCount">-</strong></div>
+        <div class="stat"><span class="muted">Branch</span><strong id="branchName">-</strong></div>
+      </div>
+      <p id="publisherInfo" class="muted">Memeriksa sesi admin...</p>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <div class="actions">
+        <button id="refreshButton" class="secondary" type="button">Muat Ulang</button>
+        <button id="publishButton" class="primary" type="button" disabled>Terbitkan Semua Siap</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Judul</th><th>Koleksi</th><th>Path</th><th>Validasi</th></tr></thead>
+          <tbody id="entryRows"><tr><td colspan="4" class="muted">Memuat daftar konten...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    const apiUrl = '/api/release-ready';
+    const loginButton = document.getElementById('loginButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const refreshButton = document.getElementById('refreshButton');
+    const publishButton = document.getElementById('publishButton');
+    const message = document.getElementById('message');
+    const readyCount = document.getElementById('readyCount');
+    const collectionCount = document.getElementById('collectionCount');
+    const branchName = document.getElementById('branchName');
+    const publisherInfo = document.getElementById('publisherInfo');
+    const entryRows = document.getElementById('entryRows');
+
+    document.querySelector('header strong').textContent = 'Portal Rancajaya - Rilis Konten';
+
+    function showMessage(text, type) {
+      message.textContent = text || '';
+      message.className = `message visible ${type || ''}`;
+    }
+
+    function clearMessage() {
+      message.textContent = '';
+      message.className = 'message';
+    }
+
+    function currentUser() {
+      return window.netlifyIdentity?.currentUser?.();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>\'"]/g, (character) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;',
+      }[character]));
+    }
+
+    async function authHeaders() {
+      const user = currentUser();
+      if (!user) throw new Error('Silakan masuk sebagai Publisher terlebih dahulu.');
+      return { Authorization: `Bearer ${await user.jwt()}` };
+    }
+
+    function renderEntries(entries) {
+      entryRows.textContent = '';
+      if (!entries.length) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="4" class="muted">Belum ada konten berstatus Siap.</td>';
+        entryRows.appendChild(row);
+        return;
+      }
+
+      entries.forEach((entry) => {
+        const row = document.createElement('tr');
+        const issueText = entry.issues?.length ? entry.issues.join(' ') : 'Lolos';
+        row.innerHTML = `<td>${escapeHtml(entry.title)}</td><td>${escapeHtml(entry.collection || '-')}</td><td><code>${escapeHtml(entry.path)}</code></td><td class="${entry.issues?.length ? '' : 'status-ready'}">${escapeHtml(issueText)}</td>`;
+        entryRows.appendChild(row);
+      });
+    }
+
+    async function loadState() {
+      clearMessage();
+      publishButton.disabled = true;
+      try {
+        const response = await fetch(apiUrl, { headers: await authHeaders() });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Daftar konten gagal dimuat.');
+        readyCount.textContent = data.readyCount;
+        collectionCount.textContent = new Set(data.entries.map((entry) => entry.collection)).size;
+        branchName.textContent = data.branch;
+        publisherInfo.textContent = `Publisher aktif: ${data.publisher?.email || 'akun terverifikasi'}`;
+        renderEntries(data.entries);
+        publishButton.disabled = !data.readyCount || !data.valid;
+        if (!data.valid) showMessage('Perbaiki validasi konten sebelum rilis batch.', 'error');
+      } catch (error) {
+        readyCount.textContent = '-';
+        collectionCount.textContent = '-';
+        branchName.textContent = '-';
+        publisherInfo.textContent = 'Sesi Publisher belum aktif.';
+        renderEntries([]);
+        showMessage(error.message, 'error');
+      }
+    }
+
+    loginButton.addEventListener('click', () => window.netlifyIdentity?.open('login'));
+    logoutButton.addEventListener('click', () => window.netlifyIdentity?.logout());
+    refreshButton.addEventListener('click', loadState);
+    publishButton.addEventListener('click', async () => {
+      if (!window.confirm('Terbitkan semua konten berstatus Siap sekarang? Tindakan ini membuat satu commit publik.')) return;
+      publishButton.disabled = true;
+      showMessage('Sedang memvalidasi dan menerbitkan konten...', '');
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { ...(await authHeaders()), 'content-type': 'application/json' },
+          body: JSON.stringify({ confirm: true }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Rilis batch gagal.');
+        showMessage(`${data.publishedCount} entri berhasil diterbitkan. Commit: ${data.commitSha}`, 'success');
+        await loadState();
+      } catch (error) {
+        showMessage(error.message, 'error');
+        publishButton.disabled = false;
+      }
+    });
+
+    let identityResolved = false;
+
+    function handleIdentityInit(user) {
+      identityResolved = true;
+      loginButton.classList.toggle('hidden', Boolean(user));
+      logoutButton.classList.toggle('hidden', !user);
+      if (user) loadState();
+      else showMessage('Masuk untuk melihat dan menerbitkan konten Siap.', '');
+    }
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', handleIdentityInit);
+      window.netlifyIdentity.on('login', () => window.location.reload());
+      window.netlifyIdentity.on('logout', () => window.location.reload());
+      window.netlifyIdentity.init();
+    } else {
+      handleIdentityInit(null);
+      showMessage('Layanan login belum tersedia.', 'error');
+    }
+
+    window.setTimeout(() => {
+      if (!identityResolved) handleIdentityInit(null);
+    }, 1500);
+  </script>
+</body>
+</html>

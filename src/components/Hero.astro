@@ -36,19 +36,6 @@ const finalBgImage = resolvePublicPath(bgImage, base) || fallbackBg;
   />
   {/* Dark overlay for readability */}
   <div class="absolute inset-0 bg-primary-900/60 z-0"></div>
-  <!-- Decorative pattern -->
-  {!bgImage && (
-    <div class="absolute inset-0 opacity-10 pointer-events-none z-0">
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="leaf" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M20 5c5 0 10 5 10 10s-5 10-10 10S10 20 10 15 15 5 20 5z" fill="currentColor" fill-opacity="0.5"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#leaf)" />
-      </svg>
-    </div>
-  )}
 
   <div class="container-page relative z-10 py-20 md:py-32 flex flex-col items-center text-center justify-center min-h-[300px] md:min-h-[400px]">
     {eyebrow && (
