@@ -1,14 +1,14 @@
 ---
-nama: "Jahit Sengon Kreatif"
-pemilik: "Ibu Rukmini"
-kategori: "Jasa"
-produk_utama: "Jasa jahit dan permak pakaian"
+nama: "Telor Asin"
+pemilik: "Pak Haji Tatang"
+kategori: "Makanan"
+produk_utama: "Telor asin"
 dusun: "Sengon"
-kontak: "0821-9000-3000"
-foto: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1200&auto=format&fit=crop"
-deskripsi: "Usaha jasa jahit warga yang melayani pakaian harian, seragam, dan permak sederhana."
-featured: false
+kontak: "0877 2688 5907"
+foto: "/images/umkm/sengon-telor-asin.jpeg"
+deskripsi: "Usaha telur asin di Dusun Sengon."
+featured: true
+sumber_data: "Data UMKM pada Data.md."
 release_status: "Terbit"
 aktif: true
 ---
-

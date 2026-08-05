@@ -9,6 +9,6 @@ tahun_data: 2026
 sumber_data: "Data dummy APBDes untuk diganti berdasarkan dokumen anggaran desa."
 status_validasi: "Dummy"
 deskripsi: "Operasional pemerintahan desa dan pelayanan publik."
-release_status: "Terbit"
-aktif: true
+release_status: "Draf"
+aktif: false
 ---

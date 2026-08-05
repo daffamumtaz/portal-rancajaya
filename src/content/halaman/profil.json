@@ -1,7 +1,6 @@
 {
-  "foto_kades": "/images/uploads/644648be4e3fe0204006f56d.webp",
-  "nama_kades": "Bapak H. Naufal",
-  "sambutan": "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nSelamat datang di Portal Resmi Desa Rancajaya. Kami berkomitmen untuk terus memajukan desa melalui inovasi pertanian dan pemberdayaan masyarakat.",
+  "nama_kades": "Kosasih",
+  "sambutan": "Assalamu'alaikum Wr. Wb.\n\nSelaku Kepala Desa Rancajaya, saya menyambut baik pembuatan website desa sebagai sarana informasi dan komunikasi bagi masyarakat. Website ini diharapkan dapat mempermudah akses informasi serta memperkenalkan potensi Desa Rancajaya kepada khalayak luas.\n\nSaya mengucapkan terima kasih kepada mahasiswa KKN IPB atas kontribusinya dalam pengembangan website ini. Semoga dapat memberikan manfaat bagi masyarakat.",
   "luas_wilayah": "8.11",
   "batas_wilayah": [
     { "arah": "Utara", "wilayah": "Desa Sukamandijaya" },
@@ -12,41 +11,45 @@
   "tahun_wilayah": 2022,
   "sumber_wilayah": "Peraturan Bupati Subang Nomor 198 Tahun 2022 dan data dummy batas wilayah untuk verifikasi desa.",
   "status_validasi_wilayah": "Perlu Verifikasi",
-  "penduduk_total": "6594",
-  "penduduk_pria": "3364",
-  "penduduk_wanita": "3230",
+  "penduduk_total": "6597",
+  "penduduk_pria": "3366",
+  "penduduk_wanita": "3231",
   "demo_pendidikan": [
-    { "label": "SD/Sederajat", "value": 2050 },
-    { "label": "SMP/Sederajat", "value": 1800 },
-    { "label": "SMA/Sederajat", "value": 1874 },
-    { "label": "Diploma/Sarjana", "value": 870 }
+    { "label": "Tidak/Belum Sekolah", "value": 2454 },
+    { "label": "Tamat SD/Sederajat", "value": 1611 },
+    { "label": "SLTP/Sederajat", "value": 948 },
+    { "label": "SLTA/Sederajat", "value": 775 },
+    { "label": "Belum Tamat SD/Sederajat", "value": 730 },
+    { "label": "Diploma IV/Strata I", "value": 48 },
+    { "label": "Diploma III/Sarjana Muda", "value": 15 },
+    { "label": "Diploma I/II", "value": 13 },
+    { "label": "Strata II-III", "value": 3 }
   ],
   "demografi_umur": [
-    { "label": "0-5 tahun", "value": 420 },
-    { "label": "6-12 tahun", "value": 760 },
-    { "label": "13-17 tahun", "value": 650 },
-    { "label": "18-24 tahun", "value": 970 },
-    { "label": "25-44 tahun", "value": 2010 },
-    { "label": "45-59 tahun", "value": 1250 },
-    { "label": "60 tahun ke atas", "value": 534 }
+    { "label": "0-4 tahun", "value": 199 },
+    { "label": "5-9 tahun", "value": 397 },
+    { "label": "10-14 tahun", "value": 451 },
+    { "label": "15-19 tahun", "value": 519 },
+    { "label": "20-29 tahun", "value": 1097 },
+    { "label": "30-39 tahun", "value": 1071 },
+    { "label": "40-49 tahun", "value": 1032 },
+    { "label": "50-59 tahun", "value": 850 },
+    { "label": "60-69 tahun", "value": 570 },
+    { "label": "70 tahun ke atas", "value": 411 }
   ],
   "data_pekerjaan_warga": [
-    { "label": "Petani", "value": 2050 },
-    { "label": "Pelajar/Mahasiswa", "value": 1420 },
-    { "label": "Karyawan/Wiraswasta", "value": 1320 },
-    { "label": "Ibu Rumah Tangga", "value": 980 },
-    { "label": "Buruh", "value": 560 },
-    { "label": "Belum Bekerja", "value": 264 }
+    { "label": "Belum/Tidak Bekerja", "value": 1910 },
+    { "label": "Mengurus Rumah Tangga", "value": 1759 },
+    { "label": "Wiraswasta", "value": 967 },
+    { "label": "Pelajar/Mahasiswa", "value": 781 },
+    { "label": "Buruh Tani/Perkebunan", "value": 382 },
+    { "label": "Petani/Pekebun", "value": 244 },
+    { "label": "Karyawan Swasta", "value": 201 },
+    { "label": "Buruh Harian Lepas", "value": 191 },
+    { "label": "Pekerjaan Lainnya", "value": 162 }
   ],
   "status_pernikahan": [
-    { "label": "Belum Menikah", "value": 2460 },
-    { "label": "Menikah", "value": 3450 },
-    { "label": "Cerai Hidup", "value": 382 },
-    { "label": "Cerai Mati", "value": 302 }
   ],
-  "tahun_demografi": 2026,
-  "sumber_demografi": "Data dummy untuk diganti berdasarkan rekap administrasi kependudukan desa.",
-  "status_validasi_demografi": "Dummy",
   "release_status": "Terbit",
   "aktif": true
 }

@@ -1,7 +1,14 @@
 {
   "hero_title": "Potensi Desa",
-  "hero_subtitle": "Pertanian, peternakan, dan UMKM sebagai penggerak ekonomi masyarakat Desa Rancajaya.",
-  "deskripsi": "Halaman Potensi menampilkan data sektoral yang dapat diperbarui melalui Decap CMS, mulai dari statistik pertanian, statistik peternakan, kelompok tani, UMKM, hingga galeri dokumentasi.",
+  "hero_subtitle": "Pertanian, peternakan domba, dan UMKM sebagai potensi masyarakat Desa Rancajaya.",
+  "deskripsi": "Potensi Desa Rancajaya tumbuh dari aktivitas pertanian, peternakan domba warga, dan usaha lokal di tiga dusun.",
+  "peternakan_copywriting": "Peternakan domba menjadi salah satu potensi yang menonjol di Desa Rancajaya. Kandang-kandang warga memperlihatkan praktik pemeliharaan skala rumah tangga yang menjadi bagian dari aktivitas ekonomi keluarga.",
+  "peternakan_galeri": [
+    { "foto": "/images/peternakan/domba-1.jpeg", "alt_text": "Kandang domba warga Desa Rancajaya" },
+    { "foto": "/images/peternakan/domba-2.jpeg", "alt_text": "Domba peliharaan warga Desa Rancajaya" },
+    { "foto": "/images/peternakan/domba-3.jpeg", "alt_text": "Aktivitas peternakan domba di Desa Rancajaya" },
+    { "foto": "/images/peternakan/domba-4.jpeg", "alt_text": "Dokumentasi kandang domba warga Desa Rancajaya" }
+  ],
   "luas_lahan": "450",
   "komoditas": "Padi",
   "jumlah_kelompok": "12",

@@ -1,16 +1,11 @@
 ---
 nama: "Buwer"
-kepala_dusun: "Ibu Nining"
-jumlah_penduduk: 2274
-jumlah_pria: 1155
-jumlah_wanita: 1119
-jumlah_kk: 670
-luas_wilayah: "2.74 km2"
-deskripsi: "Dusun Buwer dikenal dengan aktivitas ekonomi warga, peternakan skala rumah tangga, dan UMKM lokal."
-urutan: 3
-tahun_data: 2026
-sumber_data: "Data dummy untuk diganti berdasarkan rekap Dusun Buwer."
-status_validasi: "Dummy"
+kepala_dusun: "Miska"
+jumlah_penduduk: 2586
+deskripsi: "Data penduduk Dusun Buwer ditampilkan berdasarkan Laporan Demografi Penduduk Desa Rancajaya."
+urutan: 1
+sumber_data: "Laporan Demografi Penduduk Desa Rancajaya pada Data.md."
+status_validasi: "Terverifikasi"
 release_status: "Terbit"
 aktif: true
 ---

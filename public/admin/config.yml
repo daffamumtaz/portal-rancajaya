@@ -126,8 +126,8 @@ collections:
     create: true
     delete: false
     identifier_field: "nama"
-    summary: "{{tahun}} - {{jenis}} - {{nama}}"
-    sortable_fields: ["tahun", "jenis", "jumlah", "nama"]
+    summary: "{{tahun}} {{versi}} - {{jenis}} - {{nama}}"
+    sortable_fields: ["tahun", "versi", "jenis", "jumlah", "nama"]
     view_filters:
       - { label: "Pendapatan", field: "jenis", pattern: "Pendapatan" }
       - { label: "Belanja", field: "jenis", pattern: "Belanja" }
@@ -141,6 +141,11 @@ collections:
         widget: "select"
         options: ["Pendapatan", "Belanja"]
       - { label: "Tahun Anggaran", name: "tahun", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
+      - label: "Versi APBDes"
+        name: "versi"
+        widget: "select"
+        options: ["Awal", "Perubahan"]
+        default: "Awal"
       - { label: "Jumlah Rupiah", name: "jumlah", widget: "number", value_type: "int", min: 0 }
       - { label: "Realisasi Rupiah", name: "realisasi", widget: "number", value_type: "int", min: 0, required: false, hint: "Isi saat data realisasi sudah tersedia." }
       - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
@@ -379,6 +384,10 @@ collections:
             name: "misi"
             widget: "list"
             field: { label: "Butir Misi", name: "item", widget: "string" }
+          - label: "Tujuan Desa"
+            name: "tujuan"
+            widget: "list"
+            field: { label: "Butir Tujuan", name: "item", widget: "string" }
           - { label: "Alamat Kantor", name: "alamat_kantor", widget: "text" }
           - { label: "Telepon", name: "telepon", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
@@ -478,6 +487,13 @@ collections:
           - { label: "Judul Hero", name: "hero_title", widget: "string" }
           - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
           - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
+          - { label: "Narasi Peternakan Domba", name: "peternakan_copywriting", widget: "text", required: false }
+          - label: "Galeri Peternakan"
+            name: "peternakan_galeri"
+            widget: "list"
+            fields:
+              - { label: "Foto", name: "foto", widget: "image" }
+              - { label: "Teks Alternatif", name: "alt_text", widget: "string" }
           - *publication_status
           - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 

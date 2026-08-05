@@ -1,14 +1,14 @@
 ---
-nama: "Beras Rancajaya"
-pemilik: "Gapoktan Rancajaya"
-kategori: "Pertanian"
-produk_utama: "Beras premium"
+nama: "Ikan Pindang Bapak Slamet"
+pemilik: "Bapak Slamet"
+kategori: "Makanan"
+produk_utama: "Ikan pindang"
 dusun: "Mulyasari"
-kontak: "0813-8000-2000"
-foto: "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=1200&auto=format&fit=crop"
-deskripsi: "Produk beras lokal dari hasil panen petani Rancajaya yang dikemas untuk kebutuhan rumah tangga."
+kontak: "0857 5933 8910 (Bapak Darhim)"
+foto: "/images/umkm/mulyasari-ikan-pindang.jpeg"
+deskripsi: "Usaha olahan ikan pindang di Dusun Mulyasari."
 featured: true
+sumber_data: "Data UMKM pada Data.md."
 release_status: "Terbit"
 aktif: true
 ---
-

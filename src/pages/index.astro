@@ -20,6 +20,7 @@ const apbdesEntries = (await getCollection('apbdes'))
   .filter((entry) => entry.data.tahun === (common.tahun_apbdes_aktif || new Date().getFullYear()));
 const potensiStats = (await getCollection('potensi-statistik'))
   .filter((entry) => isPublishedContent(entry.data))
+  .filter((entry) => entry.data.kategori === 'Pertanian')
   .sort((a, b) => a.data.urutan - b.data.urutan);
 const layananEntries = (await getCollection('layanan-administrasi'))
   .filter((entry) => isPublishedContent(entry.data))

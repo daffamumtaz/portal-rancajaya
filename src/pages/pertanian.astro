@@ -17,7 +17,6 @@ const galeri = (await getCollection('galeri')).filter((entry) => isPublishedCont
 
 const sortByOrder = (a, b) => (a.data.urutan || 0) - (b.data.urutan || 0);
 const pertanianStats = stats.filter((entry) => entry.data.kategori === 'Pertanian').sort(sortByOrder);
-const peternakanStats = stats.filter((entry) => entry.data.kategori === 'Peternakan').sort(sortByOrder);
 const sortedKelompokTani = kelompokTani.sort((a, b) => a.data.nama.localeCompare(b.data.nama));
 const sortedUmkm = umkm.sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.nama.localeCompare(b.data.nama));
 const potensiGallery = galeri
@@ -62,24 +61,26 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-paper border-b border-line">
     <div class="container-page">
       <div class="section-header">
-        <div class="flex items-start justify-between gap-4">
+        <div>
           <div>
             <span class="eyebrow">Peternakan</span>
-            <h2 class="section-title">Statistik Peternakan</h2>
-            <p class="section-subtitle">Data peternakan yang diperbarui melalui Decap CMS.</p>
+            <h2 class="section-title">Peternakan Domba Warga</h2>
+            <p class="section-subtitle">{potensi.peternakan_copywriting || 'Peternakan domba menjadi salah satu potensi masyarakat Desa Rancajaya.'}</p>
           </div>
-          <span class="pill-primary shrink-0">{peternakanStats.length} indikator</span>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {peternakanStats.map((stat, index) => (
-          <StatCard label={stat.data.label} value={stat.data.value} variant={index === 0 ? 'dark' : 'light'}>
-            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c3-6 13-6 16 0"/><path d="M4 18h16"/><path d="M8 18v3"/><path d="M16 18v3"/></svg>
-          </StatCard>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {(potensi.peternakan_galeri || []).map((item) => (
+          <figure class="card overflow-hidden bg-white">
+            <div class="h-52 overflow-hidden">
+              <img src={resolvePublicPath(item.foto, base)} alt={item.alt_text} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+            <figcaption class="px-4 py-3 text-sm text-muted">{item.alt_text}</figcaption>
+          </figure>
         ))}
-        {peternakanStats.length === 0 && (
-          <p class="text-muted col-span-2 md:col-span-4 text-center">Data statistik peternakan belum ditambahkan.</p>
+        {(potensi.peternakan_galeri || []).length === 0 && (
+          <p class="text-muted col-span-1 sm:col-span-2 lg:col-span-4 text-center">Dokumentasi peternakan domba belum ditambahkan.</p>
         )}
       </div>
     </div>

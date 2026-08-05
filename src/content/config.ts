@@ -70,6 +70,7 @@ const apbdesCollection = defineCollection({
     nama: z.string(),
     jenis: z.enum(['Pendapatan', 'Belanja']),
     tahun: z.coerce.number().int().min(2000).max(2100),
+    versi: z.enum(['Awal', 'Perubahan']).default('Awal'),
     jumlah: z.number(),
     realisasi: z.number().optional(),
     urutan: z.number(),
@@ -195,10 +196,13 @@ const pengaturanCollection = defineCollection({
     visi: z.string().optional(),
     sejarah: z.string().optional(),
     misi: z.array(z.string()).optional(),
+    tujuan: z.array(z.string()).optional(),
     alamat_kantor: z.string().optional(),
     telepon: z.string().optional(),
     email: z.string().optional(),
     jam_operasional: z.string().optional(),
+    facebook: z.string().url().optional(),
+    youtube: z.string().url().optional(),
     koordinat_latitude: z.coerce.number().min(-90).max(90).optional(),
     koordinat_longitude: z.coerce.number().min(-180).max(180).optional(),
     peta_zoom: z.coerce.number().int().min(1).max(21).default(18),
@@ -254,6 +258,11 @@ const halamanCollection = defineCollection({
     irigasi: z.string().optional(),
     produktivitas: z.string().optional(),
     deskripsi: z.string().optional(),
+    peternakan_copywriting: z.string().optional(),
+    peternakan_galeri: z.array(z.object({
+      foto: z.string(),
+      alt_text: z.string(),
+    })).default([]),
 
     // Layanan
     administrasi: z.array(z.object({

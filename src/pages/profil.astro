@@ -12,10 +12,13 @@ const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 const strukturOrganisasi = (await getCollection('struktur-organisasi')).filter((entry) => isPublishedContent(entry.data));
 const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
 const allApbdesEntries = (await getCollection('apbdes')).filter((entry) => isPublishedContent(entry.data));
-const apbdesYears = [...new Set(allApbdesEntries.map((entry) => entry.data.tahun))].sort((a, b) => b - a);
+const apbdesPeriods = [...new Map(allApbdesEntries.map((entry) => {
+  const key = `${entry.data.tahun}-${entry.data.versi.toLowerCase()}`;
+  return [key, { key, tahun: entry.data.tahun, versi: entry.data.versi }];
+})).values()].sort((a, b) => b.tahun - a.tahun || a.versi.localeCompare(b.versi));
 const configuredApbdesYear = common.tahun_apbdes_aktif || new Date().getFullYear();
-const activeApbdesYear = apbdesYears.includes(configuredApbdesYear) ? configuredApbdesYear : (apbdesYears[0] || configuredApbdesYear);
-const apbdesEntries = allApbdesEntries.filter((entry) => entry.data.tahun === activeApbdesYear);
+const activeApbdesPeriod = apbdesPeriods.find((period) => period.tahun === configuredApbdesYear && period.versi === 'Awal') || apbdesPeriods[0] || { key: `${configuredApbdesYear}-awal`, tahun: configuredApbdesYear, versi: 'Awal' };
+const apbdesEntries = allApbdesEntries.filter((entry) => entry.data.tahun === activeApbdesPeriod.tahun && entry.data.versi === activeApbdesPeriod.versi);
 const sortedStruktur = strukturOrganisasi.sort((a, b) => a.data.urutan - b.data.urutan);
 const sortedDusun = dusunEntries.sort((a, b) => a.data.urutan - b.data.urutan);
 
@@ -59,13 +62,12 @@ const demoDusun = sortedDusun
 const pendidikanRows = profil.demo_pendidikan || [];
 const umurRows = profil.demografi_umur || [];
 const pekerjaanRows = profil.data_pekerjaan_warga || [];
-const pernikahanRows = profil.status_pernikahan || [];
 const formatNumber = (value) => new Intl.NumberFormat('id-ID').format(value);
 const totalDusunPopulation = demoDusun.reduce((sum, item) => sum + item.value, 0);
 const chartPalette = ['#15803d', '#ca8a04', '#2563eb', '#dc2626', '#7c3aed', '#0891b2', '#c2410c'];
-const apbdesByYear = Object.fromEntries(apbdesYears.map((year) => {
+const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
   const rows = allApbdesEntries
-    .filter((entry) => entry.data.tahun === year)
+    .filter((entry) => entry.data.tahun === period.tahun && entry.data.versi === period.versi)
     .map((entry) => ({
       nama: entry.data.nama,
       jenis: entry.data.jenis,
@@ -74,7 +76,7 @@ const apbdesByYear = Object.fromEntries(apbdesYears.map((year) => {
       deskripsi: entry.data.deskripsi || '',
       urutan: entry.data.urutan,
     }));
-  return [year, {
+  return [period.key, {
     rows,
     pendapatan: rows.filter((row) => row.jenis === 'Pendapatan').sort((a, b) => b.jumlah - a.jumlah),
     belanja: rows.filter((row) => row.jenis === 'Belanja').sort((a, b) => b.jumlah - a.jumlah),
@@ -156,12 +158,12 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
     </div>
   </section>
 
-  <!-- 3. Visi & Misi -->
+  <!-- 3. Visi, Misi, dan Tujuan -->
   <section id="tentang-desa" class="section bg-paper">
     <div class="container-page">
       <div class="section-header">
         <span class="eyebrow">Tentang Desa</span>
-        <h2 class="section-title">Visi & Misi</h2>
+        <h2 class="section-title">Visi, Misi, & Tujuan</h2>
       </div>
 
       <!-- Visi -->
@@ -190,6 +192,22 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
           )}
         </div>
       </div>
+
+      {common.tujuan && common.tujuan.length > 0 && (
+        <div class="mt-10">
+          <h3 class="text-center font-display font-bold text-ink mb-6">Tujuan Desa</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            {common.tujuan.map((tujuanItem, index) => (
+              <div class="card p-5 animate-fade-in-up">
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-500 text-ink flex items-center justify-center font-bold font-display text-sm">{index + 1}</div>
+                  <p class="text-muted leading-relaxed">{tujuanItem}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </section>
 
@@ -308,8 +326,10 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
                 </div>
                 <div>
                   <h4 class="font-semibold text-sm text-ink">Dusun {dusun.data.nama}</h4>
-                  <p class="text-xs text-muted">{dusun.data.kepala_dusun || 'Kepala dusun belum diisi'} / {formatNumber(dusun.data.jumlah_penduduk || 0)} jiwa / {formatNumber(dusun.data.jumlah_kk || 0)} KK</p>
-                  <p class="text-xs text-muted mt-1">Laki-laki {formatNumber(dusun.data.jumlah_pria || 0)} / Perempuan {formatNumber(dusun.data.jumlah_wanita || 0)}</p>
+                  <p class="text-xs text-muted">{dusun.data.kepala_dusun || 'Kepala dusun belum diisi'} / {formatNumber(dusun.data.jumlah_penduduk || 0)} jiwa{typeof dusun.data.jumlah_kk === 'number' ? ` / ${formatNumber(dusun.data.jumlah_kk)} KK` : ''}</p>
+                  {(typeof dusun.data.jumlah_pria === 'number' || typeof dusun.data.jumlah_wanita === 'number') && (
+                    <p class="text-xs text-muted mt-1">Laki-laki {formatNumber(dusun.data.jumlah_pria || 0)} / Perempuan {formatNumber(dusun.data.jumlah_wanita || 0)}</p>
+                  )}
                   <p class="text-xs text-muted mt-1">{dusun.data.deskripsi}</p>
                 </div>
               </div>
@@ -341,7 +361,7 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
 
       <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <p class="text-sm text-muted">Setiap legenda menampilkan jumlah warga per kelompok.</p>
-        <span class="pill-primary">Data {profil.tahun_demografi || '-'} / {profil.status_validasi_demografi || 'Dummy'}</span>
+        {profil.sumber_demografi && <span class="pill-primary">{profil.tahun_demografi ? `Data ${profil.tahun_demografi}` : 'Laporan Demografi'} / {profil.status_validasi_demografi || 'Dummy'}</span>}
       </div>
 
       <!-- Charts -->
@@ -410,27 +430,12 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
           </div>
         </div>
 
-        <div class="card p-6 lg:col-span-2">
-          <div class="flex items-start justify-between gap-4 mb-4">
-            <h3 class="font-display font-bold text-ink text-sm">Status Pernikahan</h3>
-            <span class="pill-primary shrink-0 text-right">{formatNumber(pernikahanRows.reduce((sum, row) => sum + row.value, 0))} warga</span>
-          </div>
-          <div class="relative h-64 w-full"><canvas id="chartPernikahan"></canvas></div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-4" aria-label="Legenda status pernikahan">
-            {pernikahanRows.map((row, index) => (
-              <div class="flex items-center justify-between gap-3 rounded-md bg-paper px-3 py-2 text-xs">
-                <span class="flex items-center gap-2 min-w-0"><span class="h-2.5 w-2.5 rounded-full shrink-0" style={`background-color: ${chartPalette[index % chartPalette.length]}`}></span><span class="truncate">{row.label}</span></span>
-                <strong class="text-ink whitespace-nowrap">{formatNumber(row.value)} warga</strong>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
   <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows, demoUmur: umurRows, demoPekerjaan: pekerjaanRows, demoPernikahan: pernikahanRows, chartPalette }}>
+  <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows, demoUmur: umurRows, demoPekerjaan: pekerjaanRows, chartPalette }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
 
@@ -482,7 +487,6 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
       renderBarChart('chartPendidikan', demoPendidikan, '#15803d');
       renderBarChart('chartUmur', demoUmur, '#2563eb');
       renderBarChart('chartPekerjaan', demoPekerjaan, '#ca8a04');
-      renderBarChart('chartPernikahan', demoPernikahan, '#7c3aed');
     });
   </script>
 
@@ -493,12 +497,12 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div>
             <span class="eyebrow">Keuangan Desa</span>
-            <h2 class="section-title">Transparansi APBDes <span id="apbdesHeadingYear">{activeApbdesYear}</span></h2>
-            <p class="section-subtitle">Ringkasan anggaran yang dapat difilter berdasarkan tahun dari collection APBDes.</p>
+            <h2 class="section-title">Transparansi APBDes <span id="apbdesHeadingYear">{activeApbdesPeriod.tahun} - {activeApbdesPeriod.versi}</span></h2>
+            <p class="section-subtitle">Ringkasan anggaran yang dapat difilter berdasarkan tahun dan versi dokumen APBDes.</p>
           </div>
-          <label class="text-sm font-semibold text-ink">Tahun Anggaran
+          <label class="text-sm font-semibold text-ink">Periode APBDes
             <select id="apbdesYearSelect" class="mt-2 block w-full sm:w-auto rounded-md border border-line bg-white px-3 py-2 text-sm">
-              {apbdesYears.map((year) => <option value={year} selected={year === activeApbdesYear}>{year}</option>)}
+              {apbdesPeriods.map((period) => <option value={period.key} selected={period.key === activeApbdesPeriod.key}>{period.tahun} - APBDes {period.versi}</option>)}
             </select>
           </label>
         </div>
@@ -517,7 +521,7 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
             <p id="apbdesTotalBelanja" class="text-2xl font-display font-bold text-blue-700">{formatRupiah(totalBelanja)}</p>
           </div>
           <div class="card p-6 border-gold-200 bg-gradient-to-br from-white to-gold-50">
-            <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Saldo Anggaran</p>
+            <p class="text-xs text-muted uppercase tracking-wider font-semibold mb-1">Surplus/(Defisit)</p>
             <p id="apbdesTotalSaldo" class="text-2xl font-display font-bold text-gold-700">{formatRupiah(totalSaldo)}</p>
           </div>
         </div>
@@ -567,8 +571,8 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
   </section>
 
   <script is:inline define:vars={{
-    apbdesByYear,
-    activeApbdesYear,
+    apbdesByPeriod,
+    activeApbdesPeriod,
   }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
@@ -620,11 +624,12 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
           .join('');
       }
 
-      function renderApbdes(year) {
-        const data = apbdesByYear[year] || { rows: [], pendapatan: [], belanja: [] };
+      function renderApbdes(periodKey) {
+        const data = apbdesByPeriod[periodKey] || { rows: [], pendapatan: [], belanja: [] };
         const totalPendapatan = data.pendapatan.reduce((sum, row) => sum + row.jumlah, 0);
         const totalBelanja = data.belanja.reduce((sum, row) => sum + row.jumlah, 0);
-        document.getElementById('apbdesHeadingYear').textContent = year;
+        const [year, version] = periodKey.split('-');
+        document.getElementById('apbdesHeadingYear').textContent = `${year} - ${version === 'perubahan' ? 'Perubahan' : 'Awal'}`;
         document.getElementById('apbdesTotalPendapatan').textContent = formatCurrency(totalPendapatan);
         document.getElementById('apbdesTotalBelanja').textContent = formatCurrency(totalBelanja);
         document.getElementById('apbdesTotalSaldo').textContent = formatCurrency(totalPendapatan - totalBelanja);
@@ -642,7 +647,7 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
 
       const select = document.getElementById('apbdesYearSelect');
       select?.addEventListener('change', (event) => renderApbdes(event.target.value));
-      renderApbdes(String(activeApbdesYear));
+      renderApbdes(activeApbdesPeriod.key);
     });
   </script>
 </Layout>
