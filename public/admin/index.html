@@ -65,28 +65,14 @@
 
 <body>
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
 <div id="nc-root"></div>
 
-<a class="admin-upload-link" href="/admin/upload.html" aria-label="Buka halaman unggah media">
+<a class="admin-upload-link" href="upload.html" aria-label="Buka halaman unggah media">
   Unggah Media
 </a>
 
 <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
-<script src="/admin/locale-id.js"></script>
-
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/index.html";
-        });
-      }
-    });
-  }
-</script>
+<script src="locale-id.js"></script>
 
 </body>
 </html>

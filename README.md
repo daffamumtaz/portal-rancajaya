@@ -2,10 +2,14 @@
 
 Website resmi (Portal) untuk profil, informasi, potensi pertanian, dan layanan administrasi Desa Rancajaya. Dibangun menggunakan [Astro](https://astro.build) dan [Decap CMS](https://decapcms.org/).
 
-## Konfigurasi GitHub Pages
-Website ini dikonfigurasi untuk berjalan di GitHub Pages.
+## Deployment dan CMS
+Website publik dibangun dan di-deploy ke GitHub Pages melalui GitHub Actions.
+Decap CMS tersimpan di `/admin/` dan menggunakan GitHub backend. Netlify hanya
+digunakan sebagai OAuth proxy untuk login GitHub; Netlify tidak perlu membuild
+atau meng-host website ini.
+
 URL repositori: `https://github.com/Neuraly4/portal-rancajaya`
-Live URL: `https://Neuraly4.github.io/portal-rancajaya`
+Live URL: `https://neuraly4.github.io/portal-rancajaya`
 
 ## Cara Menjalankan di Lokal
 
@@ -26,9 +30,9 @@ Live URL: `https://Neuraly4.github.io/portal-rancajaya`
    ```
 
 4. Buka browser dan arahkan ke `http://localhost:4321`. 
-5. Untuk mengakses halaman Admin CMS, kunjungi `http://localhost:4321/admin/index.html`. 
+5. Untuk mengakses halaman Admin CMS, kunjungi `http://localhost:4321/admin/index.html`.
 
-*(Catatan: Saat ini backend Decap CMS terhubung ke GitHub `Neuraly4/portal-rancajaya`, pastikan Anda login menggunakan GitHub OAuth jika sudah disetup).*
+*(Catatan: backend Decap CMS terhubung ke GitHub `Neuraly4/portal-rancajaya` melalui OAuth proxy Netlify. Pengguna CMS harus memiliki akses tulis ke repository.)*
 
 ## Struktur Proyek
 - `src/pages/`: Berisi semua rute halaman website (`index.astro`, `profil.astro`, dll).

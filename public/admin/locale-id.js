@@ -15,7 +15,7 @@
       errors: {
         email: "Masukkan alamat email.",
         password: "Masukkan kata sandi.",
-        identitySettings: "Pengaturan Identity tidak dapat diakses. Untuk git-gateway, aktifkan layanan Identity dan Git Gateway.",
+        identitySettings: "Pengaturan autentikasi tidak dapat diakses. Periksa konfigurasi OAuth GitHub dan koneksi repository.",
       },
     },
     app: {

@@ -1,7 +1,10 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Neuraly4/portal-rancajaya
   branch: main
-  squash_merges: true
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+  site_id: portal-rancajaya.netlify.app
 
 # Decap memakai workflow native: Draf, Dalam Review, dan Siap Terbit.
 # Struktur Organisasi dan Dusun tetap; koleksi lain dapat menambah entri.
@@ -9,7 +12,7 @@ publish_mode: editorial_workflow
 show_preview_links: true
 
 media_folder: "public/images/uploads"
-public_folder: "/images/uploads"
+public_folder: "/portal-rancajaya/images/uploads"
 
 locale: "id"
 
