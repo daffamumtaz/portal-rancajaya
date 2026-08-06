@@ -1,5 +1,6 @@
 ---
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const homeHref = `${base}/`;
 const pathname = Astro.url.pathname;
 const navLinks = [
   { name: 'Beranda', href: `${base}/` },
@@ -24,7 +25,7 @@ const navLinks = [
     <!-- Center: Desktop Nav Links -->
     <div class="hidden md:flex items-center gap-8 h-full">
       {navLinks.map((link) => {
-        const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+        const isActive = pathname === link.href || (link.href !== homeHref && pathname.startsWith(link.href));
         return (
           <a
             href={link.href}

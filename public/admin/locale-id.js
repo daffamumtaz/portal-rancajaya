@@ -26,7 +26,7 @@
         quickAdd: "Tambah Cepat",
       },
       app: {
-        errorHeader: "Konfigurasi CMS gagal dimuat",
+        errorHeader: "Konfigurasi panel gagal dimuat",
         configErrors: "Kesalahan Konfigurasi",
         checkConfigYml: "Periksa berkas config.yml.",
         loadingConfig: "Memuat konfigurasi...",

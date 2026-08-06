@@ -21,7 +21,7 @@ const {
   bgImage
 } = Astro.props;
 
-// Jika bgImage kosong/undefined tapi diminta dari CMS, kita gunakan gambar fallback
+// Gunakan gambar fallback apabila gambar latar belum tersedia
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const fallbackBg = resolvePublicPath('/images/SawahRancajaya.jpg', base);
 const finalBgImage = resolvePublicPath(bgImage, base) || fallbackBg;

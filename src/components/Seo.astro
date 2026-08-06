@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  schema?: Record<string, unknown>;
+}
+
+const { title, description, image, schema } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const origin = Astro.site ? new URL(Astro.site).origin : Astro.url.origin;
+const canonicalUrl = Astro.url.href;
+const imageUrl = image ? (image.startsWith('http') ? image : `${origin}${base}${image.startsWith('/') ? image : `/${image}`}`) : undefined;
+const keywords = 'Desa Rancajaya, Rancajaya Patokbeusi, Desa Patokbeusi, Kabupaten Subang, Jawa Barat, Pemerintah Desa Rancajaya, Balai Desa Rancajaya';
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalUrl} />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+<meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{imageUrl && <meta name="twitter:image" content={imageUrl} />}
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>}

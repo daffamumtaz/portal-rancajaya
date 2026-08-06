@@ -39,7 +39,6 @@ export function toSafeFormUrl(value: string | undefined) {
 
 export function toTelHref(phone: string | undefined) {
   if (!phone) return undefined;
-  if (/[a-z]/i.test(phone)) return undefined;
 
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 5) return undefined;
@@ -49,7 +48,6 @@ export function toTelHref(phone: string | undefined) {
 
 export function toWhatsAppHref(phone: string | undefined) {
   if (!phone) return undefined;
-  if (/[a-z]/i.test(phone)) return undefined;
 
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 9) return undefined;

@@ -183,7 +183,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
             {common.tujuan.map((tujuanItem, index) => (
               <div class="card p-5 animate-fade-in-up">
                 <div class="flex gap-4">
-                  <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-500 text-ink flex items-center justify-center font-bold font-display text-sm">{index + 1}</div>
+                  <span class="mt-0.5 flex-shrink-0 text-sm font-bold text-primary-700">{index + 1}.</span>
                   <p class="text-muted leading-relaxed">{tujuanItem}</p>
                 </div>
               </div>
@@ -310,7 +310,6 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
                   {(typeof dusun.data.jumlah_pria === 'number' || typeof dusun.data.jumlah_wanita === 'number') && (
                     <p class="text-xs text-muted mt-1">Laki-laki {formatNumber(dusun.data.jumlah_pria || 0)} / Perempuan {formatNumber(dusun.data.jumlah_wanita || 0)}</p>
                   )}
-                  <p class="text-xs text-muted mt-1">{dusun.data.deskripsi}</p>
                 </div>
               </div>
             ))}

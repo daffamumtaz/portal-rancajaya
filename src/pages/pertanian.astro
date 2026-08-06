@@ -13,41 +13,34 @@ const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 const stats = (await getCollection('potensi-statistik')).filter((entry) => isPublishedContent(entry.data));
 const kelompokTani = (await getCollection('kelompok-tani')).filter((entry) => isPublishedContent(entry.data));
 const umkm = (await getCollection('umkm')).filter((entry) => isPublishedContent(entry.data));
-const galeri = (await getCollection('galeri')).filter((entry) => isPublishedContent(entry.data));
 
 const sortByOrder = (a, b) => (a.data.urutan || 0) - (b.data.urutan || 0);
 const pertanianStats = stats.filter((entry) => entry.data.kategori === 'Pertanian').sort(sortByOrder);
 const sortedKelompokTani = kelompokTani.sort((a, b) => a.data.nama.localeCompare(b.data.nama));
 const sortedUmkm = umkm.sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.nama.localeCompare(b.data.nama));
-const potensiGallery = galeri
-  .filter((entry) => ['Pertanian', 'Peternakan', 'UMKM', 'Potensi'].includes(entry.data.kategori))
-  .sort((a, b) => b.data.tanggal.valueOf() - a.data.tanggal.valueOf())
-  .slice(0, 8);
-
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const whatsappHref = toWhatsAppHref(common.telepon);
+const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
+  src: resolvePublicPath(item.foto, base),
+  alt: item.alt_text,
+})).filter((item) => item.src);
 ---
 
-<Layout title={`Potensi - ${common.nama_desa || 'Desa Rancajaya'}`} description={`Potensi pertanian, peternakan, UMKM, dan ekonomi lokal ${common.nama_desa || 'Desa Rancajaya'}.`}>
-  <Hero
-    eyebrow="Potensi Desa"
-    title={potensi.hero_title || 'Potensi Desa'}
-    subtitle={potensi.hero_subtitle || `Data potensi pertanian, peternakan, UMKM, dan ekonomi lokal ${common.nama_desa || 'Desa Rancajaya'}`}
-  />
+<Layout title={`Potensi Desa Rancajaya - Pertanian, Peternakan & UMKM`} description={`Potensi pertanian, peternakan domba, UMKM, dan ekonomi lokal Desa Rancajaya, Kecamatan Patokbeusi, Kabupaten Subang.`}>
+  <Hero eyebrow="Potensi Desa" title={potensi.hero_title || 'Potensi Desa'} subtitle={potensi.hero_subtitle || `Potensi pertanian, peternakan domba, UMKM, dan ekonomi lokal ${common.nama_desa || 'Desa Rancajaya'}`} />
 
   <section class="section bg-white border-b border-line">
     <div class="container-page">
       <div class="section-header">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <span class="eyebrow">Ringkasan</span>
-            <h2 class="section-title">Potensi Ekonomi Lokal</h2>
-            <p class="section-subtitle">{potensi.deskripsi || 'Data potensi dapat diperbarui melalui Decap CMS.'}</p>
+            <span class="eyebrow">Pertanian</span>
+            <h2 class="section-title">Potensi Pertanian</h2>
+            <p class="section-subtitle">{potensi.deskripsi || 'Potensi Desa Rancajaya mencakup pertanian, peternakan domba, dan UMKM warga.'}</p>
           </div>
           <span class="pill-primary shrink-0">{pertanianStats.length} indikator</span>
         </div>
       </div>
-
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {pertanianStats.slice(0, 4).map((stat, index) => (
           <StatCard label={stat.data.label} value={stat.data.value} variant={index === 0 ? 'dark' : 'light'}>
@@ -59,29 +52,29 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   </section>
 
   <section class="section bg-paper border-b border-line">
-    <div class="container-page">
-      <div class="section-header">
-        <div>
-          <div>
-            <span class="eyebrow">Peternakan</span>
-            <h2 class="section-title">Peternakan Domba Warga</h2>
-            <p class="section-subtitle">{potensi.peternakan_copywriting || 'Peternakan domba menjadi salah satu potensi masyarakat Desa Rancajaya.'}</p>
-          </div>
-        </div>
+    <div class="container-page grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <div class="section-header mb-0">
+        <span class="eyebrow">Peternakan</span>
+        <h2 class="section-title">Peternakan Domba Warga</h2>
+        <p class="section-subtitle">{potensi.peternakan_copywriting || 'Peternakan domba menjadi salah satu potensi masyarakat Desa Rancajaya.'}</p>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {(potensi.peternakan_galeri || []).map((item) => (
-          <figure class="card overflow-hidden bg-white">
-            <div class="h-52 overflow-hidden">
-              <img src={resolvePublicPath(item.foto, base)} alt={item.alt_text} class="w-full h-full object-cover" loading="lazy" />
+      <div data-peternakan-carousel class="relative overflow-hidden rounded-2xl bg-primary-100 shadow-lg">
+        {peternakanSlides.length > 0 ? (
+          <>
+            <div class="h-72 sm:h-96">
+              {peternakanSlides.map((slide, index) => <img data-peternakan-slide src={slide.src} alt={slide.alt} class:list={["w-full h-full object-cover", { hidden: index !== 0 }]} loading={index === 0 ? 'eager' : 'lazy'} />)}
             </div>
-            <figcaption class="px-4 py-3 text-sm text-muted">{item.alt_text}</figcaption>
-          </figure>
-        ))}
-        {(potensi.peternakan_galeri || []).length === 0 && (
-          <p class="text-muted col-span-1 sm:col-span-2 lg:col-span-4 text-center">Dokumentasi peternakan domba belum ditambahkan.</p>
-        )}
+            {peternakanSlides.length > 1 && (
+              <>
+                <button data-peternakan-prev type="button" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-primary-800 shadow flex items-center justify-center hover:bg-white" aria-label="Foto sebelumnya"><span aria-hidden="true">‹</span></button>
+                <button data-peternakan-next type="button" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-primary-800 shadow flex items-center justify-center hover:bg-white" aria-label="Foto berikutnya"><span aria-hidden="true">›</span></button>
+                <div class="absolute bottom-4 inset-x-0 flex justify-center gap-2">
+                  {peternakanSlides.map((_, index) => <button data-peternakan-dot={index} type="button" class:list={["w-2.5 h-2.5 rounded-full bg-white/70", { "bg-white w-6": index === 0 }]} aria-label={`Tampilkan foto ${index + 1}`} />)}
+                </div>
+              </>
+            )}
+          </>
+        ) : <p class="h-72 flex items-center justify-center text-muted">Dokumentasi peternakan domba belum ditambahkan.</p>}
       </div>
     </div>
   </section>
@@ -89,134 +82,45 @@ const whatsappHref = toWhatsAppHref(common.telepon);
   <section class="section bg-white border-b border-line">
     <div class="container-page">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-        <div>
-          <span class="eyebrow mb-2">Pertanian</span>
-          <h2 class="section-title">Kelompok Tani</h2>
-          <p class="section-subtitle">Kelompok tani dan komoditas utama yang dikelola warga.</p>
-        </div>
+        <div><span class="eyebrow mb-2">Pertanian</span><h2 class="section-title">Kelompok Tani</h2><p class="section-subtitle">Kelompok tani dan komoditas utama yang dikelola warga.</p></div>
         <span class="pill-primary">{sortedKelompokTani.length} kelompok terdata</span>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {sortedKelompokTani.map((poktan) => (
-          <div class="card p-5">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </div>
-              <div>
-                <h3 class="font-bold text-ink text-lg">{poktan.data.nama}</h3>
-                <p class="text-xs text-muted mb-3">Ketua: {poktan.data.ketua}</p>
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span class="block text-muted text-xs">Dusun</span>
-                    <span class="font-semibold text-ink">{poktan.data.dusun}</span>
-                  </div>
-                  <div>
-                    <span class="block text-muted text-xs">Anggota</span>
-                    <span class="font-semibold text-ink">{poktan.data.jumlah_anggota} Orang</span>
-                  </div>
-                </div>
-                <p class="text-sm text-muted mt-3">{poktan.data.deskripsi}</p>
-                <p class="text-xs text-primary-700 font-semibold mt-2">Komoditas: {poktan.data.komoditas_utama}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-        {sortedKelompokTani.length === 0 && (
-          <p class="text-muted col-span-2 text-center">Data kelompok tani belum ditambahkan.</p>
-        )}
+        {sortedKelompokTani.map((poktan) => <div class="card p-5"><div class="flex items-start gap-4"><div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><h3 class="font-bold text-ink text-lg">{poktan.data.nama}</h3><p class="text-xs text-muted mb-3">Ketua: {poktan.data.ketua}</p><div class="grid grid-cols-2 gap-3 text-sm"><div><span class="block text-muted text-xs">Dusun</span><span class="font-semibold text-ink">{poktan.data.dusun}</span></div><div><span class="block text-muted text-xs">Anggota</span><span class="font-semibold text-ink">{poktan.data.jumlah_anggota} Orang</span></div></div><p class="text-sm text-muted mt-3">{poktan.data.deskripsi}</p><p class="text-xs text-primary-700 font-semibold mt-2">Komoditas: {poktan.data.komoditas_utama}</p></div></div></div>)}
+        {sortedKelompokTani.length === 0 && <p class="text-muted col-span-2 text-center">Data kelompok tani belum ditambahkan.</p>}
       </div>
     </div>
   </section>
 
   <section class="section bg-paper border-b border-line">
-    <div class="container-page">
-      <div class="section-header">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <span class="eyebrow">UMKM</span>
-            <h2 class="section-title">UMKM Desa</h2>
-            <p class="section-subtitle">Semua data UMKM berasal dari satu collection Decap CMS.</p>
-          </div>
-          <span class="pill-primary shrink-0">{sortedUmkm.length} UMKM</span>
-        </div>
-      </div>
-
+    <div class="container-page"><div class="section-header"><div class="flex items-start justify-between gap-4"><div><span class="eyebrow">UMKM</span><h2 class="section-title">UMKM Desa</h2><p class="section-subtitle">Pelaku usaha lokal dari tiga dusun di Desa Rancajaya.</p></div><span class="pill-primary shrink-0">{sortedUmkm.length} UMKM</span></div></div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {sortedUmkm.map((item) => (
-          <div class="card overflow-hidden">
-            <div class="h-44 bg-primary-50 flex items-center justify-center overflow-hidden">
-              {item.data.foto ? (
-                <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.nama} class="w-full h-full object-cover" loading="lazy" />
-              ) : (
-                <span class="text-primary-300 font-medium">Foto UMKM</span>
-              )}
-            </div>
-            <div class="p-5">
-              <div class="flex items-center justify-between gap-3 mb-2">
-                <h3 class="font-bold text-ink">{item.data.nama}</h3>
-                {item.data.featured && <span class="pill-gold">Unggulan</span>}
-              </div>
-              <p class="text-xs text-muted mb-2">{item.data.kategori} / {item.data.dusun || 'Dusun belum diisi'}</p>
-              <p class="text-sm text-muted">{item.data.deskripsi}</p>
-              <p class="text-xs text-primary-700 font-semibold mt-3">Produk: {item.data.produk_utama}</p>
-            </div>
-          </div>
-        ))}
-        {sortedUmkm.length === 0 && (
-          <p class="text-muted col-span-3 text-center">Data UMKM belum ditambahkan.</p>
-        )}
+        {sortedUmkm.map((item) => <div class="card overflow-hidden"><div class="h-44 bg-primary-50 flex items-center justify-center overflow-hidden">{item.data.foto ? <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.nama} class="w-full h-full object-cover" loading="lazy" /> : <span class="text-primary-300 font-medium">Foto UMKM</span>}</div><div class="p-5"><div class="flex items-center justify-between gap-3 mb-2"><h3 class="font-bold text-ink">{item.data.nama}</h3>{item.data.featured && <span class="pill-gold">Unggulan</span>}</div><p class="text-xs text-muted mb-2">{item.data.kategori} / {item.data.dusun || 'Dusun belum diisi'}</p><p class="text-sm text-muted">{item.data.deskripsi}</p><p class="text-xs text-primary-700 font-semibold mt-3">Produk: {item.data.produk_utama}</p></div></div>)}
+        {sortedUmkm.length === 0 && <p class="text-muted col-span-3 text-center">Data UMKM belum ditambahkan.</p>}
       </div>
     </div>
   </section>
 
-  <section class="section bg-white border-b border-line">
-    <div class="container-page text-center">
-      <div class="section-header">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <span class="eyebrow mb-2">Galeri</span>
-            <h2 class="section-title">Galeri Potensi</h2>
-            <p class="section-subtitle">Foto dokumentasi ini berasal dari collection Galeri Foto.</p>
-          </div>
-          <span class="pill-primary shrink-0">{potensiGallery.length} foto</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {potensiGallery.map((item) => (
-          <div class="card overflow-hidden">
-            <div class="h-48 overflow-hidden">
-              <img src={resolvePublicPath(item.data.foto, base)} alt={item.data.alt_text || item.data.judul} class="w-full h-full object-cover" loading="lazy" />
-            </div>
-            <div class="p-4 text-left">
-              <h3 class="font-bold text-sm text-ink truncate">{item.data.judul}</h3>
-              <p class="text-xs text-muted mt-1">{item.data.kategori}</p>
-            </div>
-          </div>
-        ))}
-        {potensiGallery.length === 0 && (
-          <p class="text-muted col-span-1 sm:col-span-2 md:col-span-4 text-center">Galeri potensi belum ditambahkan.</p>
-        )}
-      </div>
-    </div>
-  </section>
-
-  <section class="section bg-paper">
-    <div class="container-page">
-      <div class="card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div>
-          <span class="eyebrow">Kolaborasi</span>
-          <h2 class="text-2xl font-bold font-display text-ink mt-2">Kembangkan Potensi {common.nama_desa || 'Desa Rancajaya'}</h2>
-          <p class="text-sm text-muted mt-2 max-w-2xl">Warga dapat menghubungi desa untuk memperbarui data kelompok tani, peternakan, UMKM, dan galeri potensi.</p>
-        </div>
-        {whatsappHref ? (
-          <a href={whatsappHref} class="btn-primary" target="_blank" rel="noopener noreferrer">Hubungi Desa</a>
-        ) : (
-          <a href={`${base}/layanan`} class="btn-primary">Lihat Kontak Desa</a>
-        )}
-      </div>
-    </div>
-  </section>
+  <section class="section bg-paper"><div class="container-page"><div class="card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"><div><span class="eyebrow">Kolaborasi</span><h2 class="text-2xl font-bold font-display text-ink mt-2">Kembangkan Potensi {common.nama_desa || 'Desa Rancajaya'}</h2><p class="text-sm text-muted mt-2 max-w-2xl">Warga dapat menghubungi desa untuk memperbarui data kelompok tani, peternakan, dan UMKM.</p></div>{whatsappHref ? <a href={whatsappHref} class="btn-primary" target="_blank" rel="noopener noreferrer">Hubungi Desa</a> : <a href={`${base}/layanan`} class="btn-primary">Lihat Kontak Desa</a>}</div></div></section>
 </Layout>
+
+<script>
+  document.querySelectorAll('[data-peternakan-carousel]').forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll('[data-peternakan-slide]'));
+    const dots = Array.from(carousel.querySelectorAll('[data-peternakan-dot]'));
+    if (slides.length < 2) return;
+    let activeIndex = 0;
+    const showSlide = (index) => {
+      activeIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => slide.classList.toggle('hidden', slideIndex !== activeIndex));
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('bg-white', dotIndex === activeIndex);
+        dot.classList.toggle('w-6', dotIndex === activeIndex);
+        dot.setAttribute('aria-current', String(dotIndex === activeIndex));
+      });
+    };
+    carousel.querySelector('[data-peternakan-prev]')?.addEventListener('click', () => showSlide(activeIndex - 1));
+    carousel.querySelector('[data-peternakan-next]')?.addEventListener('click', () => showSlide(activeIndex + 1));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => showSlide(index)));
+  });
+</script>
