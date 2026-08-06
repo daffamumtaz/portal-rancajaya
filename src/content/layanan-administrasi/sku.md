@@ -15,5 +15,5 @@ diperbarui_pada: 2026-01-01
 sumber_data: "Data dummy untuk diganti operator layanan desa."
 urutan: 3
 release_status: "Terbit"
-aktif: true
+aktif: false
 ---

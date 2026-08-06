@@ -1,7 +1,9 @@
 {
   "nama_kades": "Kosasih",
   "sambutan": "Assalamu'alaikum Wr. Wb.\n\nSelaku Kepala Desa Rancajaya, saya menyambut baik pembuatan website desa sebagai sarana informasi dan komunikasi bagi masyarakat. Website ini diharapkan dapat mempermudah akses informasi serta memperkenalkan potensi Desa Rancajaya kepada khalayak luas.\n\nSaya mengucapkan terima kasih kepada mahasiswa KKN IPB atas kontribusinya dalam pengembangan website ini. Semoga dapat memberikan manfaat bagi masyarakat.",
-  "luas_wilayah": "8.11",
+  "luas_wilayah": "643 Hektar",
+  "luas_sawah": "447 Hektar",
+  "jumlah_rt": "15 RT",
   "batas_wilayah": [
     { "arah": "Utara", "wilayah": "Desa Sukamandijaya" },
     { "arah": "Timur", "wilayah": "Desa Rancabango" },

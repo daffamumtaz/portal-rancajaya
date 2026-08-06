@@ -1,11 +1,9 @@
 ---
-nama: "Pengaduan Layanan Desa"
+nama: "Ibu"
 jenis: "Layanan"
-telepon: "0812-4444-5555"
-email: "pengaduan.rancajaya@example.com"
-deskripsi: "Kanal pengaduan dan masukan warga terkait pelayanan desa."
+telepon: "+62 812-9044-8136"
+deskripsi: "Ketua PKK"
 urutan: 4
 release_status: "Terbit"
 aktif: true
 ---
-

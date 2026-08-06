@@ -59,15 +59,17 @@ export function toWhatsAppHref(phone: string | undefined) {
   return normalized.startsWith('628') ? `https://wa.me/${normalized}` : undefined;
 }
 
-export function toGoogleMapsEmbedUrl(latitude?: number, longitude?: number, zoom = 18) {
+export function toGoogleMapsEmbedUrl(latitude?: number, longitude?: number, zoom = 18, query?: string) {
   const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3796663;
   const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461475;
   const level = Number.isFinite(zoom) ? Math.min(21, Math.max(1, Math.round(zoom))) : 18;
 
-  return `https://maps.google.com/maps?q=${lat},${lon}&z=${level}&output=embed`;
+  const location = query?.trim() ? encodeURIComponent(query.trim()) : `${lat},${lon}`;
+  return `https://maps.google.com/maps?q=${location}&z=${level}&t=k&output=embed`;
 }
 
-export function toGoogleMapsUrl(latitude?: number, longitude?: number) {
+export function toGoogleMapsUrl(latitude?: number, longitude?: number, directUrl?: string) {
+  if (directUrl?.trim()) return directUrl.trim();
   const lat = typeof latitude === 'number' && Number.isFinite(latitude) ? latitude : -6.3796663;
   const lon = typeof longitude === 'number' && Number.isFinite(longitude) ? longitude : 107.6461475;
 

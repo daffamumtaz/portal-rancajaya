@@ -2,183 +2,41 @@
 import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { isPublishedContent, toGoogleMapsEmbedUrl, toGoogleMapsUrl, toSafeFormUrl, toTelHref } from '../utils/content';
+import { isPublishedContent, toGoogleMapsEmbedUrl, toGoogleMapsUrl, toSafeFormUrl, toWhatsAppHref } from '../utils/content';
 
 const umumData = await getEntry('pengaturan', 'umum');
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
-
 const layananData = await getEntry('halaman', 'layanan');
 const layananPage = isPublishedContent(layananData?.data) ? layananData.data : {};
-
 const administrasiData = (await getCollection('layanan-administrasi')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakData = (await getCollection('kontak')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const formUrl = toSafeFormUrl(administrasiData.find((item) => item.data.link)?.data.link);
 const layananMapZoom = common.peta_zoom || 18;
-const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, layananMapZoom);
-const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longitude);
+const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, layananMapZoom, common.peta_query);
+const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longitude, common.peta_url);
 ---
 
 <Layout title={`Layanan Publik - ${common.nama_desa || 'Desa Rancajaya'}`} description={`Layanan administrasi dan kontak Balai Desa Rancajaya, Kecamatan ${common.kecamatan || 'Patokbeusi'}, Kabupaten ${common.kabupaten || 'Subang'}, Jawa Barat.`}>
-  <Hero 
-    eyebrow="Layanan" 
-    title={layananPage.hero_title || 'Layanan Desa'}
-    subtitle={layananPage.hero_subtitle || `Informasi layanan administrasi, pengaduan, dan kontak penting di lingkungan ${common.nama_desa || 'Desa Rancajaya'}`}
-  />
+  <Hero eyebrow="Layanan" title={layananPage.hero_title || 'Layanan Desa'} subtitle={layananPage.hero_subtitle || `Informasi layanan administrasi dan kontak penting di lingkungan ${common.nama_desa || 'Desa Rancajaya'}`} />
 
   <section class="section">
-    <div class="container-page">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Kolom Kiri: Kontak & Peta -->
-        <div class="lg:col-span-4 space-y-6">
-          <div class="card p-6">
-            <h3 class="font-display font-bold text-lg text-ink mb-4">Kontak Desa</h3>
-            <ul class="flex flex-col gap-4 text-sm">
-              <li class="flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-600 shrink-0 mt-0.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span class="text-muted leading-relaxed">{kontakUtama?.data.alamat || common.alamat_kantor || 'Alamat kantor belum diisi'}</span>
-              </li>
-              <li class="flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-600 shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                <span class="text-muted leading-relaxed">{kontakUtama?.data.email || common.email || 'Email belum diisi'}</span>
-              </li>
-              <li class="flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-600 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span class="text-muted leading-relaxed">{kontakUtama?.data.telepon || common.telepon || 'Telepon belum diisi'}</span>
-              </li>
-            </ul>
-            
-            <div class="mt-6 pt-6 border-t border-line">
-              <h4 class="font-semibold text-sm text-ink mb-3">Jam Pelayanan</h4>
-              <ul class="flex flex-col gap-2 text-sm text-muted">
-                <li class="flex justify-between">
-                  <span class="leading-relaxed">{common.jam_operasional || 'Senin - Jumat 08:00 - 16:00'}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+    <div class="container-page"><div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <aside class="lg:col-span-4 space-y-6">
+        <div class="card p-6"><h3 class="font-display font-bold text-lg text-ink mb-4">Kontak Desa</h3><ul class="flex flex-col gap-4 text-sm">
+          <li class="flex items-start gap-3"><span class="text-primary-600">⌖</span><span class="text-muted leading-relaxed">{kontakUtama?.data.alamat || common.alamat_kantor || 'Alamat kantor belum diisi'}</span></li>
+          <li class="flex items-center gap-3"><span class="text-primary-600">✉</span><span class="text-muted">{kontakUtama?.data.email || common.email || 'Email belum diisi'}</span></li>
+          <li class="flex items-center gap-3"><span class="text-primary-600">☎</span>{toWhatsAppHref(kontakUtama?.data.telepon || common.telepon) ? <a href={toWhatsAppHref(kontakUtama?.data.telepon || common.telepon)} target="_blank" rel="noopener noreferrer" class="text-primary-700 font-semibold hover:underline">{kontakUtama?.data.telepon || common.telepon}</a> : <span class="text-muted">{kontakUtama?.data.telepon || common.telepon || 'Telepon belum diisi'}</span>}</li>
+        </ul><div class="mt-6 pt-6 border-t border-line"><h4 class="font-semibold text-sm text-ink mb-2">Jam Pelayanan</h4><span class="text-sm text-muted">{common.jam_operasional || 'Senin - Jumat 08:00 - 16:00'}</span></div></div>
+        <div class="card overflow-hidden bg-paper border border-line"><div class="h-80 md:h-96"><iframe src={mapEmbedUrl} title={`Peta satelit Balai Desa ${common.nama_desa || 'Rancajaya'}`} width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><div class="px-5 py-4 border-t border-line bg-white flex items-center justify-between gap-4"><div><h3 class="font-display font-bold text-sm text-ink">Balai Desa Rancajaya</h3><p class="text-xs text-muted mt-1">Tampilan satelit lokasi balai desa</p></div><a href={mapUrl} class="text-xs font-semibold text-primary-700 hover:underline whitespace-nowrap" target="_blank" rel="noopener noreferrer">Buka di Maps</a></div></div>
+      </aside>
 
-          <div class="card overflow-hidden bg-paper border border-line">
-            <div class="h-80 md:h-96 flex items-center justify-center">
-              <iframe src={mapEmbedUrl} title={`Lokasi Balai Desa ${common.nama_desa || 'Rancajaya'}`} width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-            <div class="px-5 py-4 border-t border-line bg-white">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="font-display font-bold text-sm text-ink">Balai Desa Rancajaya</h3>
-                  <p class="text-xs text-muted mt-1">Zoom {common.peta_zoom || 18} · {common.koordinat_latitude || -6.3796663}, {common.koordinat_longitude || 107.6461475}</p>
-                </div>
-                <a href={mapUrl} class="text-xs font-semibold text-primary-700 hover:underline whitespace-nowrap" target="_blank" rel="noopener noreferrer">Buka di Maps</a>
-              </div>
-              {common.sumber_koordinat && <p class="text-[11px] text-muted mt-2">Sumber: {common.sumber_koordinat}</p>}
-            </div>
-          </div>
-        </div>
-
-        <!-- Kolom Kanan: Formulir & Kontak -->
-        <div class="lg:col-span-8 space-y-10">
-          <!-- Surat Pengantar -->
-          <div>
-            <h2 class="font-display font-bold text-2xl text-ink mb-4">Layanan Administrasi Daring</h2>
-            <p class="text-sm text-muted mb-4">Ajukan permohonan surat pengantar dan administrasi lainnya melalui formulir online untuk mempercepat pelayanan sebelum datang ke balai desa.</p>
-            <a href={`${base}/tracking`} class="btn-outline inline-flex mb-6">Lacak Progress Permohonan</a>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {administrasiData.map((entry) => {
-                const item = entry.data;
-                const safeLink = toSafeFormUrl(item.link);
-                const hasLink = Boolean(safeLink);
-                const cardClass = hasLink ? 'card-hover p-5 flex items-start gap-4' : 'card p-5 flex items-start gap-4 opacity-80';
-
-                return hasLink ? (
-                  <a href={safeLink} class={cardClass} target="_blank" rel="noopener noreferrer">
-                    <div class="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
-                      {item.ikon ? (
-                        <span class="text-xs font-bold">{item.ikon}</span>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
-                      )}
-                    </div>
-                    <div class="min-w-0">
-                      <div class="flex flex-wrap items-start justify-between gap-2">
-                        <h3 class="font-bold text-ink text-sm mb-1">{item.nama}</h3>
-                        <span class="pill-primary text-[10px]">{item.kategori}</span>
-                      </div>
-                      <p class="text-xs text-muted leading-relaxed">{item.deskripsi}</p>
-                      <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
-                        <div><span class="block text-muted">Biaya</span><strong class="text-ink">{item.biaya}</strong></div>
-                        <div><span class="block text-muted">Durasi</span><strong class="text-ink">{item.durasi}</strong></div>
-                      </div>
-                      {item.persyaratan.length > 0 && <p class="text-xs text-primary-700 mt-3">{item.persyaratan.slice(0, 2).join(' / ')}</p>}
-                      <p class="text-xs text-primary-700 font-semibold mt-2">Buka formulir layanan</p>
-                    </div>
-                  </a>
-                ) : (
-                  <div class={cardClass}>
-                    <div class="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-700 shrink-0">
-                      {item.ikon ? (
-                        <span class="text-xs font-bold">{item.ikon}</span>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
-                      )}
-                    </div>
-                    <div class="min-w-0">
-                      <div class="flex flex-wrap items-start justify-between gap-2">
-                        <h3 class="font-bold text-ink text-sm mb-1">{item.nama}</h3>
-                        <span class="pill-primary text-[10px]">{item.kategori}</span>
-                      </div>
-                      <p class="text-xs text-muted leading-relaxed">{item.deskripsi}</p>
-                      <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
-                        <div><span class="block text-muted">Biaya</span><strong class="text-ink">{item.biaya}</strong></div>
-                        <div><span class="block text-muted">Durasi</span><strong class="text-ink">{item.durasi}</strong></div>
-                      </div>
-                      {item.persyaratan.length > 0 && <p class="text-xs text-primary-700 mt-3">{item.persyaratan.slice(0, 2).join(' / ')}</p>}
-                      <p class="text-xs text-muted font-semibold mt-2">Formulir belum tersedia</p>
-                    </div>
-                  </div>
-                );
-              })}
-              {administrasiData.length === 0 && (
-                <p class="text-sm text-muted sm:col-span-2">Belum ada layanan administrasi yang didaftarkan.</p>
-              )}
-            </div>
-          </div>
-
-          <!-- Layanan Darurat -->
-          <div>
-            <h2 class="font-display font-bold text-2xl text-ink mb-4">Kontak Penting</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {kontakData.map((kontak) => (
-                <div class={`card p-4 flex items-center justify-between gap-4 border-l-4 ${kontak.data.jenis === 'Kesehatan' ? 'border-l-red-500' : kontak.data.jenis === 'Keamanan' ? 'border-l-blue-500' : kontak.data.jenis === 'Desa' ? 'border-l-primary-500' : 'border-l-gold-500'}`}>
-                  <div class="flex items-center gap-3">
-                    <div class={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${kontak.data.jenis === 'Kesehatan' ? 'bg-red-50 text-red-500' : kontak.data.jenis === 'Keamanan' ? 'bg-blue-50 text-blue-500' : 'bg-primary-50 text-primary-700'}`}>
-                      {kontak.data.jenis === 'Kesehatan' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                      )}
-                    </div>
-                    <div>
-                      <span class="font-bold text-ink text-sm block">{kontak.data.nama}</span>
-                      <span class="text-xs text-muted">{kontak.data.jenis}</span>
-                    </div>
-                  </div>
-                  {toTelHref(kontak.data.telepon) ? (
-                    <a href={toTelHref(kontak.data.telepon)} class="text-sm font-semibold text-primary-700 hover:underline whitespace-nowrap">{kontak.data.telepon}</a>
-                  ) : (
-                    <span class="text-sm font-semibold text-primary-700 whitespace-nowrap">{kontak.data.telepon}</span>
-                  )}
-                </div>
-              ))}
-              {kontakData.length === 0 && (
-                <p class="text-sm text-muted">Belum ada kontak yang didaftarkan.</p>
-              )}
-            </div>
-          </div>
-
-        </div>
+      <div class="lg:col-span-8 space-y-10">
+        <section><span class="eyebrow">Surat Daring</span><h2 class="font-display font-bold text-2xl text-ink mt-2">Layanan Surat Daring</h2><p class="text-sm text-muted mt-3 max-w-2xl">Pilih jenis surat yang dibutuhkan, lalu isi formulir yang sama. Jenis surat lainnya akan ditambahkan bertahap.</p>{formUrl && <a href={formUrl} class="btn-primary inline-flex mt-5" target="_blank" rel="noopener noreferrer">Isi Formulir Surat Daring</a>}
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">{administrasiData.map((item) => <article class="card p-5"><h3 class="font-bold text-ink">{item.data.nama}</h3><p class="text-sm text-muted mt-2">{item.data.deskripsi}</p></article>)}{administrasiData.length === 0 && <p class="text-sm text-muted">Jenis surat akan segera ditambahkan.</p>}</div>
+        </section>
+        <section><h2 class="font-display font-bold text-2xl text-ink mb-4">Kontak Penting</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">{kontakData.map((kontak) => { const whatsappHref = toWhatsAppHref(kontak.data.telepon); return <article class="card p-4 flex items-center justify-between gap-4 border-l-4 border-l-primary-500"><div><span class="font-bold text-ink text-sm block">{kontak.data.nama}</span><span class="text-xs text-muted">{kontak.data.deskripsi}</span></div>{whatsappHref ? <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-primary-700 hover:underline whitespace-nowrap">WhatsApp</a> : <span class="text-sm text-muted">Menyusul</span>}</article>; })}</div></section>
       </div>
-    </div>
+    </div></div>
   </section>
 </Layout>

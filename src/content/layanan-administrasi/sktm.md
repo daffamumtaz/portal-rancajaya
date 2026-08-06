@@ -1,12 +1,11 @@
 ---
-nama: "Surat Keterangan Tidak Mampu (SKTM)"
-kategori: "Sosial"
-deskripsi: "Layanan pengajuan SKTM untuk kebutuhan pendidikan, kesehatan, dan bantuan sosial."
+nama: "Surat Keterangan Kematian"
+kategori: "Administrasi Kependudukan"
+deskripsi: "Surat keterangan untuk keperluan administrasi setelah warga meninggal dunia."
 link: "https://forms.gle/xyz123"
-ikon: "SK"
+ikon: "KM"
 persyaratan:
-  - "Fotokopi KTP"
-  - "Fotokopi KK"
+  - "KTP dan Kartu Keluarga almarhum/almarhumah"
   - "Surat pengantar RT/RW"
 biaya: "Gratis"
 durasi: "1 hari kerja jika berkas lengkap"

@@ -1,12 +1,12 @@
 ---
-nama: "Surat Pengantar RT/RW"
-kategori: "Surat Pengantar"
-deskripsi: "Pengajuan surat pengantar untuk keperluan administrasi awal warga."
+nama: "Surat Keterangan Domisili"
+kategori: "Administrasi Kependudukan"
+deskripsi: "Surat keterangan alamat domisili bagi warga Desa Rancajaya."
 link: "https://forms.gle/xyz123"
-ikon: "SP"
+ikon: "SD"
 persyaratan:
   - "KTP atau identitas pemohon"
-  - "Keterangan keperluan dari RT/RW"
+  - "Kartu Keluarga"
 biaya: "Gratis"
 durasi: "Sesuai antrean pelayanan"
 kontak: "Kantor Desa Rancajaya"

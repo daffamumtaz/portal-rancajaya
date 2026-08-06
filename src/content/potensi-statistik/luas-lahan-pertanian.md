@@ -1,10 +1,9 @@
 ---
 kategori: "Pertanian"
-label: "Luas Lahan Produktif"
-value: "450 Ha"
-keterangan: "Hamparan sawah dan lahan produktif warga."
+label: "Luas Sawah"
+value: "447 Hektar"
+keterangan: "Hamparan sawah Desa Rancajaya."
 urutan: 1
 release_status: "Terbit"
 aktif: true
 ---
-

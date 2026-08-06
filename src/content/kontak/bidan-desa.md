@@ -1,11 +1,9 @@
 ---
-nama: "Bidan Desa / Puskesmas Pembantu"
-jenis: "Kesehatan"
-telepon: "0812-1234-5678"
-alamat: "Komplek layanan kesehatan Desa Rancajaya"
-deskripsi: "Kontak pelayanan kesehatan dasar dan konsultasi ibu-anak di desa."
+nama: "Pak Kosasih"
+jenis: "Desa"
+telepon: "+62 821-2937-1123"
+deskripsi: "Kepala Desa"
 urutan: 2
 release_status: "Terbit"
 aktif: true
 ---
-

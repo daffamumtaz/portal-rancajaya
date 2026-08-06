@@ -206,6 +206,8 @@ const pengaturanCollection = defineCollection({
     koordinat_latitude: z.coerce.number().min(-90).max(90).optional(),
     koordinat_longitude: z.coerce.number().min(-180).max(180).optional(),
     peta_zoom: z.coerce.number().int().min(1).max(21).default(18),
+    peta_query: z.string().optional(),
+    peta_url: z.string().url().optional(),
     sumber_koordinat: z.string().optional(),
     tahun_apbdes_aktif: z.coerce.number().int().min(2000).max(2100).default(2026),
     ...publicationFields,
@@ -232,6 +234,8 @@ const halamanCollection = defineCollection({
     nama_kades: z.string().optional(),
     foto_kades: z.string().optional(),
     luas_wilayah: z.string().optional(),
+    luas_sawah: z.string().optional(),
+    jumlah_rt: z.string().optional(),
     batas_wilayah: z.array(z.object({
       arah: z.string(),
       wilayah: z.string(),

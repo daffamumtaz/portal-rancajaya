@@ -1,10 +1,9 @@
 ---
-nama: "Bhabinkamtibmas"
+nama: "Pak Agus"
 jenis: "Keamanan"
-telepon: "0813-2222-3333"
-deskripsi: "Kontak koordinasi keamanan dan ketertiban masyarakat."
+telepon: "+62 813-6119-8551"
+deskripsi: "Babinsa"
 urutan: 3
 release_status: "Terbit"
 aktif: true
 ---
-
