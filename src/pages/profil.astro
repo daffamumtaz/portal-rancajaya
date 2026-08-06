@@ -3,7 +3,7 @@ import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import StatCard from '../components/StatCard.astro';
-import { isPublishedContent, resolvePublicPath } from '../utils/content';
+import { isPublishedContent } from '../utils/content';
 
 const profilData = await getEntry('halaman', 'profil');
 const umumData = await getEntry('pengaturan', 'umum');
@@ -83,8 +83,6 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
   }];
 }));
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const fotoKades = resolvePublicPath(profil.foto_kades, base);
 ---
 
 <Layout title={`Profil Desa - ${common.nama_desa || 'Desa Rancajaya'}`} description={`Profil lengkap Desa ${common.nama_desa || 'Rancajaya'} meliputi visi misi, perangkat desa, wilayah administrasi, demografi, dan transparansi APBDes.`}>
@@ -104,25 +102,10 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
         <h2 class="section-title animate-fade-in-up stagger-1">Sambutan Kepala Desa</h2>
       </div>
       <div class="card p-6 md:p-8 animate-fade-in-up stagger-2">
-        <div class="flex flex-col md:flex-row gap-6 md:gap-8">
-          <!-- Photo Placeholder Left -->
-          <div class="flex-shrink-0 text-center md:text-left">
-            <div class="w-32 h-40 bg-gradient-to-br from-primary-200 via-primary-100 to-primary-50 rounded-xl mx-auto md:mx-0 flex items-center justify-center">
-              {fotoKades ? (
-                <img src={fotoKades} alt={profil.nama_kades || 'Kepala Desa'} class="w-full h-full object-cover rounded-xl" />
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary-300">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              )}
-            </div>
-            <h3 class="font-bold text-ink mt-3">{profil.nama_kades || '[Nama Kepala Desa]'}</h3>
-            <p class="text-sm text-muted">Kepala Desa {common.nama_desa || 'Rancajaya'}</p>
-          </div>
-
-          <!-- Quote/Greeting Right -->
-          <div class="flex-1">
+        <div>
+          <div>
+            <p class="font-bold text-ink mb-1">{profil.nama_kades || '[Nama Kepala Desa]'}</p>
+            <p class="text-sm text-muted mb-4">Kepala Desa {common.nama_desa || 'Rancajaya'}</p>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-primary-200 mb-3">
               <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
               <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
@@ -144,13 +127,13 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
   <section class="container-page -mt-4 relative z-20 mb-12">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <a href="#tentang-desa" class="card-hover p-4 flex flex-col items-center justify-center text-center group bg-white shadow-sm">
-        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Tentang Desa</span>
+        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Visi, Misi, dan Tujuan</span>
       </a>
       <a href="#struktur-organisasi" class="card-hover p-4 flex flex-col items-center justify-center text-center group bg-white shadow-sm">
-        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Struktur Tree</span>
+        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Struktur Organisasi</span>
       </a>
       <a href="#demografi" class="card-hover p-4 flex flex-col items-center justify-center text-center group bg-white shadow-sm">
-        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Demografi</span>
+        <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Demografi Warga</span>
       </a>
       <a href="#apbdes" class="card-hover p-4 flex flex-col items-center justify-center text-center group bg-white shadow-sm">
         <span class="font-semibold text-sm text-ink group-hover:text-primary-700">Transparansi APBDes</span>
@@ -162,8 +145,8 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
   <section id="tentang-desa" class="section bg-paper">
     <div class="container-page">
       <div class="section-header">
-        <span class="eyebrow">Tentang Desa</span>
-        <h2 class="section-title">Visi, Misi, & Tujuan</h2>
+        <span class="eyebrow">Arah Pembangunan Desa</span>
+        <h2 class="section-title">Visi, Misi, dan Tujuan</h2>
       </div>
 
       <!-- Visi -->
@@ -216,8 +199,8 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
     <div class="container-page">
       <div class="section-header">
         <span class="eyebrow animate-fade-in-up">Struktur Organisasi</span>
-        <h2 class="section-title animate-fade-in-up stagger-1">Struktur Tree Pemerintahan Desa</h2>
-        <p class="section-subtitle animate-fade-in-up stagger-2">Data struktur ini berasal dari collection Decap CMS dan dapat disusun dengan parent node.</p>
+        <h2 class="section-title animate-fade-in-up stagger-1">Struktur Organisasi Pemerintah Desa</h2>
+        <p class="section-subtitle animate-fade-in-up stagger-2">Susunan perangkat Pemerintah Desa Rancajaya.</p>
       </div>
 
       {orgRoots.length > 0 ? (
@@ -233,7 +216,7 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
               {root.children.length > 0 && (
                 <div class="mt-6 w-full">
                   <div class="mx-auto h-6 w-px bg-line"></div>
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {root.children.map((child) => (
                       <div class="flex flex-col items-center">
                         <div class="card p-4 text-center w-full">
@@ -302,9 +285,6 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
             <span class="text-sm font-bold text-primary-700">Luas Wilayah</span>
             <span class="text-sm font-bold text-primary-700">{profil.luas_wilayah || '0'} km2</span>
           </div>
-          <div class="px-5 py-3 border-t border-line bg-white">
-            <p class="text-[11px] text-muted">Sumber {profil.sumber_wilayah || 'Belum diisi'} / Tahun {profil.tahun_wilayah || '-'} / Status {profil.status_validasi_wilayah || 'Dummy'}</p>
-          </div>
         </div>
 
         <!-- Dusun List -->
@@ -348,15 +328,21 @@ const fotoKades = resolvePublicPath(profil.foto_kades, base);
     <div class="container-page">
       <div class="section-header">
         <span class="eyebrow">Data Penduduk</span>
-        <h2 class="section-title">Demografi</h2>
+        <h2 class="section-title">Demografi Warga</h2>
         <p class="section-subtitle">Visualisasi data kependudukan Desa {common.nama_desa || 'Rancajaya'}</p>
       </div>
 
       <!-- Stat Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <StatCard value={`${profil.penduduk_total || '0'}`} label="Total Penduduk (Jiwa)" variant="dark" />
-        <StatCard value={`${profil.penduduk_pria || '0'}`} label="Laki-laki (Jiwa)" />
-        <StatCard value={`${profil.penduduk_wanita || '0'}`} label="Perempuan (Jiwa)" />
+        <StatCard value={`${profil.penduduk_total || '0'}`} label="Total Penduduk" variant="dark">
+          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </StatCard>
+        <StatCard value={`${profil.penduduk_pria || '0'}`} label="Laki-laki" variant="male">
+          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+        </StatCard>
+        <StatCard value={`${profil.penduduk_wanita || '0'}`} label="Perempuan" variant="female">
+          <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/><path d="M9 14h6"/></svg>
+        </StatCard>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-3 mb-6">

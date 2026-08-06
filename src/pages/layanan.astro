@@ -12,12 +12,7 @@ const layananPage = isPublishedContent(layananData?.data) ? layananData.data : {
 
 const administrasiData = (await getCollection('layanan-administrasi')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakData = (await getCollection('kontak')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
-const faqData = (await getCollection('faq')).filter((entry) => isPublishedContent(entry.data)).sort((a, b) => a.data.urutan - b.data.urutan);
 const kontakUtama = kontakData.find((kontak) => kontak.data.jenis === 'Desa');
-const faqGroups = [...new Set(faqData.map((entry) => entry.data.kategori || 'Umum'))].map((kategori) => ({
-  kategori,
-  entries: faqData.filter((entry) => (entry.data.kategori || 'Umum') === kategori),
-}));
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, common.peta_zoom);
 const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longitude);
@@ -80,7 +75,7 @@ const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longi
           </div>
         </div>
 
-        <!-- Kolom Kanan: Formulir & FAQ -->
+        <!-- Kolom Kanan: Formulir & Kontak -->
         <div class="lg:col-span-8 space-y-10">
           <!-- Surat Pengantar -->
           <div>
@@ -181,34 +176,6 @@ const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longi
             </div>
           </div>
 
-          <!-- FAQ -->
-          <div>
-            <h2 class="font-display font-bold text-2xl text-ink mb-4">Tanya Jawab (FAQ)</h2>
-            <div class="space-y-6">
-              {faqGroups.map((group) => (
-                <div>
-                  <div class="flex items-center justify-between gap-3 mb-3">
-                    <h3 class="text-sm font-bold text-primary-700">{group.kategori}</h3>
-                    <span class="pill-primary">{group.entries.length} pertanyaan</span>
-                  </div>
-                  <div class="space-y-3">
-                    {group.entries.map((faq) => (
-                      <details class="card group">
-                        <summary class="flex items-center justify-between font-semibold p-4 cursor-pointer list-none text-sm text-ink group-open:text-primary-700">
-                          {faq.data.pertanyaan}
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-open:rotate-180"><polyline points="6 9 12 15 18 9"/></svg>
-                        </summary>
-                        <div class="px-4 pb-4 text-sm text-muted border-t border-line/50 pt-3">
-                          {faq.data.jawaban}
-                        </div>
-                      </details>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              {faqData.length === 0 && <p class="text-sm text-muted">Belum ada FAQ yang ditambahkan.</p>}
-            </div>
-          </div>
         </div>
       </div>
     </div>

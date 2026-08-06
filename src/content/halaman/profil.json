@@ -9,8 +9,8 @@
     { "arah": "Barat", "wilayah": "Desa Gempolsari dan Rancamulya" }
   ],
   "tahun_wilayah": 2022,
-  "sumber_wilayah": "Peraturan Bupati Subang Nomor 198 Tahun 2022 dan data dummy batas wilayah untuk verifikasi desa.",
-  "status_validasi_wilayah": "Perlu Verifikasi",
+  "sumber_wilayah": "Peraturan Bupati Subang Nomor 198 Tahun 2022",
+  "status_validasi_wilayah": "Terverifikasi",
   "penduduk_total": "6597",
   "penduduk_pria": "3366",
   "penduduk_wanita": "3231",

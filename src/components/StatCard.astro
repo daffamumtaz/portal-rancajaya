@@ -2,22 +2,29 @@
 interface Props {
   value: string;
   label: string;
-  variant?: 'default' | 'dark';
+  variant?: 'default' | 'dark' | 'male' | 'female';
 }
 
 const { value, label, variant = 'default' } = Astro.props;
 
 const isDark = variant === 'dark';
 const baseClass = isDark ? 'stat-card-dark' : 'stat-card';
-const iconContainerClass = isDark ? 'bg-white/10 text-gold-300' : 'bg-primary-50 text-primary-700';
-const labelClass = isDark ? 'text-primary-100' : 'text-muted';
+const iconContainerClass = isDark
+  ? 'bg-white/10 text-gold-300'
+  : variant === 'male'
+    ? 'bg-sky-100 text-sky-700'
+    : variant === 'female'
+      ? 'bg-rose-100 text-rose-700'
+      : 'bg-primary-50 text-primary-700';
+const valueClass = variant === 'male' ? 'text-sky-800' : variant === 'female' ? 'text-rose-800' : '';
+const labelClass = isDark ? 'text-primary-100' : variant === 'male' ? 'text-sky-700' : variant === 'female' ? 'text-rose-700' : 'text-muted';
 ---
 
 <div class={`${baseClass} flex flex-col items-center justify-center text-center h-full transition-transform hover:-translate-y-1`}>
   <div class={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${iconContainerClass}`}>
     <slot name="icon" />
   </div>
-  <span class="font-display text-2xl md:text-3xl font-bold leading-none mb-1 tracking-tight">
+  <span class={`font-display text-2xl md:text-3xl font-bold leading-none mb-1 tracking-tight ${valueClass}`}>
     {value}
   </span>
   <span class={`text-xs font-semibold uppercase tracking-wide ${labelClass}`}>
