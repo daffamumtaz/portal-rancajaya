@@ -22,27 +22,18 @@ const apbdesEntries = allApbdesEntries.filter((entry) => entry.data.tahun === ac
 const sortedStruktur = strukturOrganisasi.sort((a, b) => a.data.urutan - b.data.urutan);
 const sortedDusun = dusunEntries.sort((a, b) => a.data.urutan - b.data.urutan);
 
-const orgNodes = sortedStruktur.map((entry) => ({
-  ...entry,
-  nodeId: entry.slug || entry.id,
-  children: [],
-}));
-const orgById = new Map(orgNodes.map((node) => [node.nodeId, node]));
-const orgRoots = [];
-orgNodes.forEach((node) => {
-  const parent = node.data.parent ? orgById.get(node.data.parent) : undefined;
-  if (parent) parent.children.push(node);
-  else orgRoots.push(node);
-});
+const kepalaDesa = sortedStruktur.find((entry) => entry.data.jabatan === 'Kepala Desa');
+const sekretarisDesa = sortedStruktur.find((entry) => entry.data.jabatan === 'Sekretaris Desa');
+const organizationColumns = [
+  ['Kaur Kesra', 'Kaur Umum', 'Kawil Dusun Buwer'],
+  ['Kaur Pemerintahan', 'Staff', 'Kawil Dusun Mulyasari'],
+  ['Kaur Keuangan', 'Staff', 'Kawil Dusun Sengon'],
+].map((column, columnIndex) => column.map((jabatan, rowIndex) => {
+  const matches = sortedStruktur.filter((entry) => entry.data.jabatan === jabatan);
+  if (jabatan === 'Staff') return matches[columnIndex - 1];
+  return matches[0];
+}).filter(Boolean));
 
-const apbdesPendapatan = apbdesEntries
-  .filter((entry) => entry.data.jenis === 'Pendapatan')
-  .sort((a, b) => b.data.jumlah - a.data.jumlah)
-  .slice(0, 5);
-const apbdesBelanja = apbdesEntries
-  .filter((entry) => entry.data.jenis === 'Belanja')
-  .sort((a, b) => b.data.jumlah - a.data.jumlah)
-  .slice(0, 5);
 const totalPendapatan = apbdesEntries
   .filter((entry) => entry.data.jenis === 'Pendapatan')
   .reduce((sum, entry) => sum + entry.data.jumlah, 0);
@@ -50,7 +41,6 @@ const totalBelanja = apbdesEntries
   .filter((entry) => entry.data.jenis === 'Belanja')
   .reduce((sum, entry) => sum + entry.data.jumlah, 0);
 const totalSaldo = totalPendapatan - totalBelanja;
-const apbdesTableRows = [...apbdesEntries].sort((a, b) => a.data.jenis.localeCompare(b.data.jenis) || a.data.urutan - b.data.urutan);
 const formatRupiah = (value) => new Intl.NumberFormat('id-ID', {
   style: 'currency',
   currency: 'IDR',
@@ -183,7 +173,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
             {common.tujuan.map((tujuanItem, index) => (
               <div class="card p-5 animate-fade-in-up">
                 <div class="flex gap-4">
-                  <span class="mt-0.5 flex-shrink-0 text-sm font-bold text-primary-700">{index + 1}.</span>
+                  <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary-700 text-white flex items-center justify-center font-bold font-display text-sm">{index + 1}</div>
                   <p class="text-muted leading-relaxed">{tujuanItem}</p>
                 </div>
               </div>
@@ -203,45 +193,28 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
         <p class="section-subtitle animate-fade-in-up stagger-2">Susunan perangkat Pemerintah Desa Rancajaya.</p>
       </div>
 
-      {orgRoots.length > 0 ? (
-        <div class="space-y-8">
-          {orgRoots.map((root) => (
-            <div class="flex flex-col items-center">
-              <div class="card p-5 text-center w-full max-w-xs border-primary-200 bg-primary-50">
-                <h3 class="font-bold text-ink">{root.data.jabatan}</h3>
-                <p class="text-sm text-primary-700 font-semibold mt-1">{root.data.nama}</p>
-                {root.data.deskripsi && <p class="text-xs text-muted mt-2">{root.data.deskripsi}</p>}
-              </div>
-
-              {root.children.length > 0 && (
-                <div class="mt-6 w-full">
-                  <div class="mx-auto h-6 w-px bg-line"></div>
-                  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {root.children.map((child) => (
-                      <div class="flex flex-col items-center">
-                        <div class="card p-4 text-center w-full">
-                          <h4 class="font-semibold text-sm text-ink">{child.data.jabatan}</h4>
-                          <p class="text-xs text-primary-700 font-semibold mt-1">{child.data.nama}</p>
-                          {child.data.deskripsi && <p class="text-xs text-muted mt-2">{child.data.deskripsi}</p>}
-                        </div>
-
-                        {child.children.length > 0 && (
-                          <div class="mt-4 w-full space-y-3">
-                            {child.children.map((grandChild) => (
-                              <div class="card p-3 text-center bg-paper">
-                                <h5 class="font-semibold text-xs text-ink">{grandChild.data.jabatan}</h5>
-                                <p class="text-xs text-muted">{grandChild.data.nama}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+      {kepalaDesa ? (
+        <div class="max-w-5xl mx-auto">
+          <div class="flex flex-col items-center">
+            <div class="w-full max-w-xs rounded-xl border border-primary-300 bg-primary-700 px-5 py-4 text-center shadow-sm">
+              <h3 class="text-sm font-semibold text-primary-100">{kepalaDesa.data.jabatan}</h3>
+              <p class="font-display font-bold text-white mt-1">{kepalaDesa.data.nama}</p>
             </div>
-          ))}
+            {sekretarisDesa && <><div class="h-6 w-px bg-primary-300"></div><div class="w-full max-w-xs rounded-xl border border-gold-300 bg-gold-50 px-5 py-4 text-center shadow-sm"><h4 class="text-sm font-semibold text-ink">{sekretarisDesa.data.jabatan}</h4><p class="font-display font-bold text-primary-800 mt-1">{sekretarisDesa.data.nama}</p></div></>}
+          </div>
+          <div class="mx-auto h-8 w-px bg-primary-300"></div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {organizationColumns.map((column) => (
+              <div class="space-y-4">
+                {column.map((member) => (
+                  <div class="rounded-xl border border-line bg-white px-4 py-4 text-center shadow-sm">
+                    <h4 class="text-sm font-semibold text-ink">{member.data.jabatan}</h4>
+                    <p class="text-sm font-bold text-primary-700 mt-1">{member.data.nama}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
           <p class="text-muted text-center">Data struktur organisasi belum ditambahkan.</p>
@@ -483,7 +456,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
           <div>
             <span class="eyebrow">Keuangan Desa</span>
             <h2 class="section-title">Transparansi APBDes <span id="apbdesHeadingYear">{activeApbdesPeriod.tahun} - {activeApbdesPeriod.versi}</span></h2>
-            <p class="section-subtitle">Ringkasan anggaran yang dapat difilter berdasarkan tahun dan versi dokumen APBDes.</p>
+            <p class="section-subtitle">Data pemasukan dan belanja desa yang dapat difilter berdasarkan tahun dan versi dokumen APBDes.</p>
           </div>
           <label class="text-sm font-semibold text-ink">Periode APBDes
             <select id="apbdesYearSelect" class="mt-2 block w-full sm:w-auto rounded-md border border-line bg-white px-3 py-2 text-sm">
@@ -514,7 +487,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <div class="card p-6">
             <div class="flex items-start justify-between gap-4 mb-4">
-              <h3 class="font-display font-bold text-ink text-sm">Top 5 Sumber Pendapatan</h3>
+              <h3 class="font-display font-bold text-ink text-sm">Rincian Pemasukan</h3>
               <span id="apbdesBadgePendapatan" class="pill-primary shrink-0 text-right">{formatRupiah(totalPendapatan)}</span>
             </div>
             <div class="relative h-80 w-full"><canvas id="chartPendapatan"></canvas></div>
@@ -522,7 +495,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
           </div>
           <div class="card p-6">
             <div class="flex items-start justify-between gap-4 mb-4">
-              <h3 class="font-display font-bold text-ink text-sm">Top 5 Belanja</h3>
+              <h3 class="font-display font-bold text-ink text-sm">Rincian Belanja</h3>
               <span id="apbdesBadgeBelanja" class="pill-primary shrink-0 text-right">{formatRupiah(totalBelanja)}</span>
             </div>
             <div class="relative h-80 w-full"><canvas id="chartBelanja"></canvas></div>
@@ -530,27 +503,6 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
           </div>
         </div>
 
-        <div class="card overflow-hidden">
-          <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-line">
-            <div>
-              <h3 class="font-display font-bold text-ink text-sm">Rincian APBDes</h3>
-              <p class="text-xs text-muted mt-1">Kolom realisasi disiapkan untuk tahap integrasi berikutnya.</p>
-            </div>
-            <span id="apbdesRowCount" class="pill-primary">{apbdesTableRows.length} pos</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full min-w-[680px] text-sm">
-              <thead class="bg-paper text-left text-xs uppercase tracking-wide text-muted">
-                <tr><th class="px-5 py-3">Pos</th><th class="px-5 py-3">Jenis</th><th class="px-5 py-3 text-right">Anggaran</th><th class="px-5 py-3 text-right">Realisasi</th></tr>
-              </thead>
-              <tbody id="apbdesRows">
-                {apbdesTableRows.map((row) => (
-                  <tr class="border-t border-line"><td class="px-5 py-3"><strong class="text-ink">{row.data.nama}</strong><span class="block text-xs text-muted mt-1">{row.data.deskripsi || ''}</span></td><td class="px-5 py-3 text-muted">{row.data.jenis}</td><td class="px-5 py-3 text-right font-semibold text-ink">{formatRupiah(row.data.jumlah)}</td><td class="px-5 py-3 text-right text-muted">{row.data.realisasi != null ? formatRupiah(row.data.realisasi) : '-'}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -594,19 +546,20 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
             responsive: true,
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { x: { beginAtZero: true, ticks: { callback: compactCurrency } } }
+            scales: {
+              x: { beginAtZero: true, ticks: { callback: compactCurrency } },
+              y: {
+                ticks: {
+                  autoSkip: false,
+                  callback(value) {
+                    const label = this.getLabelForValue(value);
+                    return label.length > 30 ? `${label.slice(0, 30)}…` : label;
+                  }
+                }
+              }
+            }
           }
         });
-      }
-
-      function renderRows(rows) {
-        const body = document.getElementById('apbdesRows');
-        if (!body) return;
-        body.innerHTML = rows
-          .slice()
-          .sort((a, b) => a.jenis.localeCompare(b.jenis) || a.urutan - b.urutan)
-          .map((row) => `<tr class="border-t border-line"><td class="px-5 py-3"><strong class="text-ink">${escapeHtml(row.nama)}</strong><span class="block text-xs text-muted mt-1">${escapeHtml(row.deskripsi)}</span></td><td class="px-5 py-3 text-muted">${escapeHtml(row.jenis)}</td><td class="px-5 py-3 text-right font-semibold text-ink">${formatCurrency(row.jumlah)}</td><td class="px-5 py-3 text-right text-muted">${row.realisasi == null ? '-' : formatCurrency(row.realisasi)}</td></tr>`)
-          .join('');
       }
 
       function renderApbdes(periodKey) {
@@ -620,14 +573,12 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
         document.getElementById('apbdesTotalSaldo').textContent = formatCurrency(totalPendapatan - totalBelanja);
         document.getElementById('apbdesBadgePendapatan').textContent = formatCurrency(totalPendapatan);
         document.getElementById('apbdesBadgeBelanja').textContent = formatCurrency(totalBelanja);
-        document.getElementById('apbdesRowCount').textContent = `${data.rows.length} pos`;
         document.getElementById('apbdesContent').classList.toggle('hidden', data.rows.length === 0);
         document.getElementById('apbdesEmpty').classList.toggle('hidden', data.rows.length > 0);
-        renderRows(data.rows);
-        renderLegend('legendPendapatan', data.pendapatan.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a');
-        renderLegend('legendBelanja', data.belanja.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb');
-        chartPendapatan = renderBarChart('chartPendapatan', data.pendapatan.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a', chartPendapatan);
-        chartBelanja = renderBarChart('chartBelanja', data.belanja.slice(0, 5).map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb', chartBelanja);
+        renderLegend('legendPendapatan', data.pendapatan.map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a');
+        renderLegend('legendBelanja', data.belanja.map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb');
+        chartPendapatan = renderBarChart('chartPendapatan', data.pendapatan.map((row) => ({ label: row.nama, value: row.jumlah })), '#16a34a', chartPendapatan);
+        chartBelanja = renderBarChart('chartBelanja', data.belanja.map((row) => ({ label: row.nama, value: row.jumlah })), '#2563eb', chartBelanja);
       }
 
       const select = document.getElementById('apbdesYearSelect');
