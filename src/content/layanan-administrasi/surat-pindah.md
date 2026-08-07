@@ -1,19 +1,18 @@
 ---
-nama: "Surat Pindah/Datang"
+nama: "Surat Keterangan Izin Cuti"
 kategori: "Administrasi Kependudukan"
-deskripsi: "Layanan administrasi perpindahan domisili warga masuk atau keluar desa."
+deskripsi: "Surat keterangan untuk mendukung pengajuan izin cuti sesuai kebutuhan warga."
 link: "https://forms.gle/xyz123"
-ikon: "PD"
+ikon: "IC"
 persyaratan:
-  - "KTP dan KK"
-  - "Dokumen perpindahan domisili"
-  - "Surat pengantar RT/RW"
+  - "KTP pemohon"
+  - "Data keperluan dan waktu cuti"
 biaya: "Gratis"
 durasi: "Sesuai kelengkapan dan verifikasi berkas"
 kontak: "Kantor Desa Rancajaya"
-diperbarui_pada: 2026-01-01
-sumber_data: "Data dummy untuk diganti operator layanan desa."
+diperbarui_pada: 2026-08-08
+sumber_data: "Daftar surat pada Data.md."
 urutan: 4
 release_status: "Terbit"
-aktif: false
+aktif: true
 ---

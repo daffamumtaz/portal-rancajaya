@@ -203,17 +203,21 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
             {sekretarisDesa && <><div class="h-6 w-px bg-primary-300"></div><div class="w-full max-w-xs rounded-xl border border-gold-300 bg-gold-50 px-5 py-4 text-center shadow-sm"><h4 class="text-sm font-semibold text-ink">{sekretarisDesa.data.jabatan}</h4><p class="font-display font-bold text-primary-800 mt-1">{sekretarisDesa.data.nama}</p></div></>}
           </div>
           <div class="mx-auto h-8 w-px bg-primary-300"></div>
+          <div class="relative">
+            <div aria-hidden="true" class="hidden md:block absolute top-0 left-[16.666%] right-[16.666%] h-px bg-primary-300"></div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {organizationColumns.map((column) => (
-              <div class="space-y-4">
+              <div class="relative space-y-4 md:pt-8">
+                <div aria-hidden="true" class="hidden md:block absolute inset-y-0 left-1/2 w-px bg-primary-200"></div>
                 {column.map((member) => (
-                  <div class="rounded-xl border border-line bg-white px-4 py-4 text-center shadow-sm">
+                  <div class="relative z-10 rounded-xl border border-line bg-white px-4 py-4 text-center shadow-sm">
                     <h4 class="text-sm font-semibold text-ink">{member.data.jabatan}</h4>
                     <p class="text-sm font-bold text-primary-700 mt-1">{member.data.nama}</p>
                   </div>
                 ))}
               </div>
             ))}
+          </div>
           </div>
         </div>
       ) : (

@@ -5,10 +5,10 @@
   "luas_sawah": "447 Hektar",
   "jumlah_rt": "15 RT",
   "batas_wilayah": [
-    { "arah": "Utara", "wilayah": "Desa Sukamandijaya" },
-    { "arah": "Timur", "wilayah": "Desa Rancabango" },
-    { "arah": "Selatan", "wilayah": "Desa Rancajaya dan Rancabango" },
-    { "arah": "Barat", "wilayah": "Desa Gempolsari dan Rancamulya" }
+    { "arah": "Utara", "wilayah": "Desa Sukamandijaya, Kecamatan Ciasem" },
+    { "arah": "Timur", "wilayah": "Desa Rancabango, Kecamatan Patokbeusi" },
+    { "arah": "Selatan", "wilayah": "Desa Rancajaya dan Desa Rancabango, Kecamatan Patokbeusi" },
+    { "arah": "Barat", "wilayah": "Desa Gempolsari dan Desa Rancamulya, Kecamatan Patokbeusi" }
   ],
   "tahun_wilayah": 2022,
   "sumber_wilayah": "Peraturan Bupati Subang Nomor 198 Tahun 2022",

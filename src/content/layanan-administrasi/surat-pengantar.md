@@ -5,13 +5,14 @@ deskripsi: "Surat keterangan alamat domisili bagi warga Desa Rancajaya."
 link: "https://forms.gle/xyz123"
 ikon: "SD"
 persyaratan:
-  - "KTP atau identitas pemohon"
+  - "KTP pemohon"
   - "Kartu Keluarga"
+  - "Data alamat domisili"
 biaya: "Gratis"
 durasi: "Sesuai antrean pelayanan"
 kontak: "Kantor Desa Rancajaya"
-diperbarui_pada: 2026-01-01
-sumber_data: "Data dummy untuk diganti operator layanan desa."
+diperbarui_pada: 2026-08-08
+sumber_data: "Daftar surat pada Data.md."
 urutan: 1
 release_status: "Terbit"
 aktif: true

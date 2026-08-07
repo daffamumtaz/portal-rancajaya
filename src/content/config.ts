@@ -203,6 +203,8 @@ const pengaturanCollection = defineCollection({
     jam_operasional: z.string().optional(),
     facebook: z.string().url().optional(),
     youtube: z.string().url().optional(),
+    instagram: z.string().url().optional(),
+    tiktok: z.string().url().optional(),
     koordinat_latitude: z.coerce.number().min(-90).max(90).optional(),
     koordinat_longitude: z.coerce.number().min(-180).max(180).optional(),
     peta_zoom: z.coerce.number().int().min(1).max(21).default(18),

@@ -32,12 +32,18 @@ const navLinks = [
           Desa yang terletak di Kecamatan Patokbeusi, Kabupaten Subang, Provinsi Jawa Barat, Indonesia.
         </p>
         <div class="flex items-center gap-3 mt-2">
-          <a href={common.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
+          {common.facebook && <a href={common.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href={common.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
+          </a>}
+          {common.youtube && <a href={common.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10C3 4.5 4.5 3 7 3h10c2.5 0 4 1.5 4.5 4a24.12 24.12 0 0 1 0 10c-.5 2.5-2 4-4.5 4H7c-2.5 0-4-1.5-4.5-4Z"/><path d="m10 9 5 3-5 3Z"/></svg>
-          </a>
+          </a>}
+          {common.instagram && <a href={common.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z"/><path d="M17.5 6.5h.01"/></svg>
+          </a>}
+          {common.tiktok && <a href={common.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok Pemerintah Desa Rancajaya" class="w-8 h-8 rounded-full bg-primary-800 flex items-center justify-center hover:bg-gold-500 hover:text-primary-900 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>
+          </a>}
         </div>
       </div>
 

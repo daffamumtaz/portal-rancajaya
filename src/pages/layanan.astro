@@ -15,6 +15,14 @@ const formUrl = toSafeFormUrl(administrasiData.find((item) => item.data.link)?.d
 const layananMapZoom = common.peta_zoom || 18;
 const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koordinat_longitude, layananMapZoom, common.peta_query);
 const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longitude, common.peta_url);
+const serviceSteps = [
+  { title: 'Siapkan Data dan KTP', detail: 'Siapkan KTP serta data yang dibutuhkan untuk surat yang akan diajukan.' },
+  { title: 'Klik Formulir', detail: 'Buka formulir surat daring melalui tombol yang tersedia.' },
+  { title: 'Pilih Jenis Surat', detail: 'Pilih surat yang sesuai dengan kebutuhan Anda.' },
+  { title: 'Isi Data', detail: 'Lengkapi data pemohon dengan benar dan periksa kembali isian Anda.' },
+  { title: 'Kirim Formulir', detail: 'Tekan tombol kirim setelah seluruh data terisi lengkap.' },
+  { title: 'Tunggu Konfirmasi', detail: 'Pak Ujang akan menghubungi Anda untuk proses selanjutnya.' },
+];
 ---
 
 <Layout title={`Layanan Publik - ${common.nama_desa || 'Desa Rancajaya'}`} description={`Layanan administrasi dan kontak Balai Desa Rancajaya, Kecamatan ${common.kecamatan || 'Patokbeusi'}, Kabupaten ${common.kabupaten || 'Subang'}, Jawa Barat.`}>
@@ -32,10 +40,16 @@ const mapUrl = toGoogleMapsUrl(common.koordinat_latitude, common.koordinat_longi
       </aside>
 
       <div class="lg:col-span-8 space-y-10">
-        <section><span class="eyebrow">Surat Daring</span><h2 class="font-display font-bold text-2xl text-ink mt-2">Layanan Surat Daring</h2><p class="text-sm text-muted mt-3 max-w-2xl">Pilih jenis surat yang dibutuhkan, lalu isi formulir yang sama. Jenis surat lainnya akan ditambahkan bertahap.</p>{formUrl && <a href={formUrl} class="btn-primary inline-flex mt-5" target="_blank" rel="noopener noreferrer">Isi Formulir Surat Daring</a>}
+        <section><span class="eyebrow">Surat Daring</span><h2 class="font-display font-bold text-2xl text-ink mt-2">Layanan Surat Daring</h2><p class="text-sm text-muted mt-3 max-w-2xl">Ajukan kebutuhan surat melalui satu formulir. Pilih jenis surat, isi data dengan lengkap, lalu tunggu konfirmasi dari petugas desa.</p>{formUrl && <a href={formUrl} class="btn-primary inline-flex mt-5" target="_blank" rel="noopener noreferrer">Isi Formulir Surat Daring</a>}
+          <div class="mt-8">
+            <h3 class="font-display font-bold text-lg text-ink">Cara Mengajukan Surat</h3>
+            <ol class="mt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {serviceSteps.map((step, index) => <li class="card p-4 flex gap-3"><span class="w-9 h-9 rounded-full bg-primary-700 text-white flex items-center justify-center shrink-0 text-sm font-bold">{index + 1}</span><div><h4 class="font-semibold text-sm text-ink">{step.title}</h4><p class="text-xs text-muted leading-relaxed mt-1">{step.detail}</p></div></li>)}
+            </ol>
+          </div>
           <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">{administrasiData.map((item) => <article class="card p-5"><h3 class="font-bold text-ink">{item.data.nama}</h3><p class="text-sm text-muted mt-2">{item.data.deskripsi}</p></article>)}{administrasiData.length === 0 && <p class="text-sm text-muted">Jenis surat akan segera ditambahkan.</p>}</div>
         </section>
-        <section><h2 class="font-display font-bold text-2xl text-ink mb-4">Kontak Penting</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">{kontakData.map((kontak) => { const whatsappHref = toWhatsAppHref(kontak.data.telepon); return <article class="card p-4 flex items-center justify-between gap-4 border-l-4 border-l-primary-500"><div><span class="font-bold text-ink text-sm block">{kontak.data.nama}</span><span class="text-xs text-muted">{kontak.data.deskripsi}</span>{whatsappHref && <p class="text-xs text-muted mt-2">Klik nomor untuk menghubungi via WhatsApp.</p>}</div>{whatsappHref ? <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-primary-700 hover:underline whitespace-nowrap">{kontak.data.telepon}</a> : <span class="text-sm text-muted">Menyusul</span>}</article>; })}</div></section>
+        <section><h2 class="font-display font-bold text-2xl text-ink">Kontak Penting</h2><p class="text-sm text-muted mt-2 mb-4">Klik nomor untuk menghubungi via WhatsApp.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">{kontakData.map((kontak) => { const whatsappHref = toWhatsAppHref(kontak.data.telepon); return <article class="card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-l-4 border-l-primary-500"><div><span class="font-bold text-ink text-sm block">{kontak.data.nama}</span><span class="text-xs text-muted">{kontak.data.deskripsi}</span></div>{whatsappHref ? <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-primary-700 hover:underline">{kontak.data.telepon}</a> : <span class="text-sm text-muted">Nomor belum tersedia</span>}</article>; })}</div></section>
       </div>
     </div></div>
   </section>

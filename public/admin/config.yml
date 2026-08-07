@@ -392,6 +392,10 @@ collections:
           - { label: "Telepon", name: "telepon", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "Jam Operasional", name: "jam_operasional", widget: "text" }
+          - { label: "Facebook", name: "facebook", widget: "string", required: false }
+          - { label: "YouTube", name: "youtube", widget: "string", required: false }
+          - { label: "Instagram", name: "instagram", widget: "string", required: false }
+          - { label: "TikTok", name: "tiktok", widget: "string", required: false }
           - { label: "Lintang Kantor Desa", name: "koordinat_latitude", widget: "number", value_type: "float", min: -90, max: 90, step: 0.0000001, default: -6.3796663 }
           - { label: "Bujur Kantor Desa", name: "koordinat_longitude", widget: "number", value_type: "float", min: -180, max: 180, step: 0.0000001, default: 107.6461475 }
           - { label: "Zoom Peta", name: "peta_zoom", widget: "number", value_type: "int", min: 1, max: 21, default: 18 }
