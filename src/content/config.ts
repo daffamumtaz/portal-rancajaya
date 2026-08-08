@@ -99,11 +99,13 @@ const kelompokTaniCollection = defineCollection({
   schema: z.object({
     nama: z.string(),
     ketua: z.string(),
-    dusun: z.string(),
+    dusun: z.string().optional(),
     komoditas_utama: z.string(),
+    luas_ha: z.number().nonnegative(),
     jumlah_anggota: z.number(),
     deskripsi: z.string(),
     kontak: z.string().optional(),
+    ...sourceMetadataFields,
     ...publicationFields,
   }),
 });
@@ -111,11 +113,26 @@ const kelompokTaniCollection = defineCollection({
 const potensiStatistikCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    kategori: z.enum(['Pertanian', 'Peternakan']),
+    kategori: z.enum(['Pertanian', 'Peternakan', 'Sarana Pertanian']),
     label: z.string(),
     value: z.string(),
     keterangan: z.string().optional(),
     satuan: z.string().optional(),
+    urutan: z.number(),
+    ...sourceMetadataFields,
+    ...publicationFields,
+  }),
+});
+
+const produksiPertanianCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    nama: z.string(),
+    kategori: z.enum(['Tanaman Pangan', 'Sayuran', 'Buah-buahan', 'Perkebunan']),
+    luas_ha: z.number().nonnegative(),
+    produktivitas: z.string(),
+    produksi_ton: z.number().nonnegative(),
+    catatan: z.string().optional(),
     urutan: z.number(),
     ...sourceMetadataFields,
     ...publicationFields,
@@ -265,6 +282,12 @@ const halamanCollection = defineCollection({
     produktivitas: z.string().optional(),
     deskripsi: z.string().optional(),
     peternakan_copywriting: z.string().optional(),
+    gapoktan_nama: z.string().optional(),
+    gapoktan_ketua: z.string().optional(),
+    kondisi_lahan: z.array(z.object({
+      label: z.string(),
+      nilai: z.string(),
+    })).default([]),
     peternakan_galeri: z.array(z.object({
       foto: z.string(),
       alt_text: z.string(),
@@ -300,6 +323,7 @@ export const collections = {
   'galeri': galeriCollection,
   'kelompok-tani': kelompokTaniCollection,
   'potensi-statistik': potensiStatistikCollection,
+  'produksi-pertanian': produksiPertanianCollection,
   'umkm': umkmCollection,
   'layanan-administrasi': layananAdministrasiCollection,
   'kontak': kontakCollection,

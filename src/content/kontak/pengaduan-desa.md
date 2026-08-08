@@ -1,5 +1,5 @@
 ---
-nama: "Ibu Narcy"
+nama: "Ibu Cicih"
 jenis: "Layanan"
 telepon: "+62 812-9044-8136"
 deskripsi: "Ketua PKK"

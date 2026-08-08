@@ -2,7 +2,7 @@
 nama: "Surat Keterangan Usaha"
 kategori: "Usaha"
 deskripsi: "Pengajuan surat keterangan usaha bagi warga pelaku UMKM atau usaha rumahan."
-link: "https://forms.gle/xyz123"
+link: "https://forms.gle/jmu5QRToacBfipTi6"
 ikon: "SU"
 persyaratan:
   - "KTP pemohon"

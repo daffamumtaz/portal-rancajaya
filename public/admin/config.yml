@@ -178,7 +178,7 @@ collections:
       - label: "Kategori"
         name: "kategori"
         widget: "select"
-        options: ["Pertanian", "Peternakan"]
+        options: ["Pertanian", "Peternakan", "Sarana Pertanian"]
       - { label: "Label", name: "label", widget: "string" }
       - { label: "Nilai", name: "value", widget: "string" }
       - { label: "Keterangan", name: "keterangan", widget: "text", required: false }
@@ -201,8 +201,8 @@ collections:
     create: true
     delete: false
     identifier_field: "nama"
-    summary: "{{nama}} - {{dusun}}"
-    sortable_fields: ["nama", "dusun", "jumlah_anggota"]
+    summary: "{{nama}} - {{luas_ha}} ha - {{jumlah_anggota}} anggota"
+    sortable_fields: ["nama", "luas_ha", "jumlah_anggota"]
     view_filters:
       - { label: "Draf", field: "release_status", pattern: "Draf" }
     fields:
@@ -215,10 +215,49 @@ collections:
         search_fields: ["nama"]
         value_field: "nama"
         display_fields: ["nama"]
+        required: false
       - { label: "Komoditas Utama", name: "komoditas_utama", widget: "string" }
+      - { label: "Luas Areal (Ha)", name: "luas_ha", widget: "number", value_type: "float", min: 0 }
       - { label: "Jumlah Anggota", name: "jumlah_anggota", widget: "number", value_type: "int", min: 0 }
       - { label: "Deskripsi", name: "deskripsi", widget: "text" }
       - { label: "Kontak", name: "kontak", widget: "string", required: false }
+      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
+      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
+      - label: "Status Validasi"
+        name: "status_validasi"
+        widget: "select"
+        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
+        default: "Dummy"
+      - *publication_status
+      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
+
+  - name: "produksi-pertanian"
+    label: "Produksi Pertanian"
+    label_singular: "Produksi Komoditas"
+    folder: "src/content/produksi-pertanian"
+    create: true
+    delete: false
+    identifier_field: "nama"
+    summary: "{{kategori}} - {{nama}}: {{produksi_ton}} ton"
+    sortable_fields: ["urutan", "kategori", "nama"]
+    fields:
+      - { label: "Komoditas", name: "nama", widget: "string" }
+      - label: "Kategori"
+        name: "kategori"
+        widget: "select"
+        options: ["Tanaman Pangan", "Sayuran", "Buah-buahan", "Perkebunan"]
+      - { label: "Luas Tanam/Panen (Ha)", name: "luas_ha", widget: "number", value_type: "float", min: 0 }
+      - { label: "Produktivitas", name: "produktivitas", widget: "string", hint: "Pertahankan satuan, misalnya 6,9 ton/ha atau 15 kuintal/ha." }
+      - { label: "Produksi (Ton)", name: "produksi_ton", widget: "number", value_type: "float", min: 0 }
+      - { label: "Catatan", name: "catatan", widget: "text", required: false }
+      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
+      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
+      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
+      - label: "Status Validasi"
+        name: "status_validasi"
+        widget: "select"
+        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
+        default: "Perlu Verifikasi"
       - *publication_status
       - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
@@ -491,6 +530,15 @@ collections:
           - { label: "Judul Hero", name: "hero_title", widget: "string" }
           - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
           - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
+          - { label: "Nama Gapoktan", name: "gapoktan_nama", widget: "string", required: false }
+          - { label: "Ketua Gapoktan", name: "gapoktan_ketua", widget: "string", required: false }
+          - label: "Kondisi Lahan"
+            name: "kondisi_lahan"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Nilai", name: "nilai", widget: "string" }
           - { label: "Narasi Peternakan Domba", name: "peternakan_copywriting", widget: "text", required: false }
           - label: "Galeri Peternakan"
             name: "peternakan_galeri"

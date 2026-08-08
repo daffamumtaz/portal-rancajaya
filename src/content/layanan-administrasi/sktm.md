@@ -2,7 +2,7 @@
 nama: "Surat Keterangan Kematian"
 kategori: "Administrasi Kependudukan"
 deskripsi: "Surat keterangan untuk keperluan administrasi setelah warga meninggal dunia."
-link: "https://forms.gle/xyz123"
+link: "https://forms.gle/jmu5QRToacBfipTi6"
 ikon: "KM"
 persyaratan:
   - "KTP pelapor"

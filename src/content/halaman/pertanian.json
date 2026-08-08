@@ -1,7 +1,15 @@
 {
   "hero_title": "Potensi Desa",
   "hero_subtitle": "Pertanian, peternakan domba, dan UMKM sebagai potensi masyarakat Desa Rancajaya.",
-  "deskripsi": "Potensi Desa Rancajaya tumbuh dari aktivitas pertanian, peternakan domba warga, dan usaha lokal di tiga dusun.",
+  "deskripsi": "Pertanian Desa Rancajaya ditopang oleh 488 hektare sawah beririgasi teknis, delapan kelompok tani padi, serta kegiatan hortikultura warga.",
+  "gapoktan_nama": "SRIJAYA",
+  "gapoktan_ketua": "Pak Syarif",
+  "kondisi_lahan": [
+    { "label": "Irigasi Sawah", "nilai": "Teknis" },
+    { "label": "Kemiringan Lahan", "nilai": "< 8%" },
+    { "label": "pH Tanah Sawah", "nilai": "5,5–5,9" },
+    { "label": "Bulan Basah", "nilai": "7–9 bulan" }
+  ],
   "peternakan_copywriting": "Peternakan domba menjadi salah satu potensi yang menonjol di Desa Rancajaya. Kandang-kandang warga memperlihatkan praktik pemeliharaan skala rumah tangga yang menjadi bagian dari aktivitas ekonomi keluarga.",
   "peternakan_galeri": [
     { "foto": "/images/peternakan/domba-1.jpeg", "alt_text": "Kandang domba warga Desa Rancajaya" },
@@ -9,12 +17,12 @@
     { "foto": "/images/peternakan/domba-3.jpeg", "alt_text": "Aktivitas peternakan domba di Desa Rancajaya" },
     { "foto": "/images/peternakan/domba-4.jpeg", "alt_text": "Dokumentasi kandang domba warga Desa Rancajaya" }
   ],
-  "luas_lahan": "450",
+  "luas_lahan": "488",
   "komoditas": "Padi",
-  "jumlah_kelompok": "12",
-  "jumlah_petani": "2.500",
+  "jumlah_kelompok": "8",
+  "jumlah_petani": "378 anggota Gapoktan",
   "irigasi": "Teknis",
-  "produktivitas": "6.5",
+  "produktivitas": "6,9",
   "release_status": "Terbit",
   "aktif": true
 }
