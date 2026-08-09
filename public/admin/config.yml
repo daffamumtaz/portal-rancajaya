@@ -93,7 +93,8 @@ collections:
           - label: Terbit
             value: Terbit
         default: Terbit
-        hint: Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul
+        hint:
+          Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul
           setelah situs selesai dibangun.
       - label: Tampilkan di Publik
         name: aktif
@@ -379,7 +380,8 @@ collections:
               - Perlu Verifikasi
               - Terverifikasi
             default: Perlu Verifikasi
-            hint: Isi status validasi demografi sesuai data terbaru dan sumber yang
+            hint:
+              Isi status validasi demografi sesuai data terbaru dan sumber yang
               tersedia.
           - *a1
           - label: Tampilkan di Publik
@@ -1238,7 +1240,3 @@ collections:
             widget: boolean
             default: true
             hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
-media_library:
-  name: default
-  config:
-    max_file_size: 5242880
