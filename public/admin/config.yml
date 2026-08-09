@@ -4,7 +4,9 @@ backend:
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
-  site_id: portalrancajayaauth.netlify.app
+  # Domain proyek Netlify yang khusus menangani GitHub OAuth.
+  # Decap meneruskannya sebagai parameter site_id ke endpoint Netlify.
+  site_domain: portalrancajayaauth.netlify.app
 
 # Mode simpan langsung. Status Draf/Terbit tetap diatur lewat field Status Publikasi.
 # Tambah + edit: berita, APBDes, potensi, kelompok tani, produksi, UMKM, layanan, kontak, dan galeri.
