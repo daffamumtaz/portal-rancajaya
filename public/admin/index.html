@@ -127,23 +127,6 @@
   </button>
 </div>
 
-<script>
-  // GitHub dapat memutus window.opener selama OAuth. Callback di halaman ini
-  // memakai BroadcastChannel, lalu meneruskan hasilnya ke listener Decap.
-  (() => {
-    const oauthOrigin = "https://portalrancajayaauth.netlify.app";
-    const oauthChannel = new BroadcastChannel("portalrancajaya-decap-oauth");
-
-    oauthChannel.addEventListener("message", ({ data }) => {
-      if (data?.type !== "github-oauth-success" || !data.payload?.token) return;
-
-      window.dispatchEvent(new MessageEvent("message", {
-        origin: oauthOrigin,
-        data: `authorization:github:success:${JSON.stringify(data.payload)}`,
-      }));
-    });
-  })();
-</script>
 <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
 <script src="locale-id.js"></script>
 <script>
