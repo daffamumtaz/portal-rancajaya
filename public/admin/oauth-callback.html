@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menyelesaikan login…</title>
+</head>
+<body>
+  <p>Menyelesaikan login…</p>
+  <script>
+    (() => {
+      const encodedPayload = new URLSearchParams(window.location.hash.slice(1)).get("payload");
+
+      try {
+        if (!encodedPayload) throw new Error("Data login tidak ditemukan.");
+        const normalized = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+        const payload = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(padded), char => char.charCodeAt(0))));
+        if (!payload?.token) throw new Error("Token login tidak valid.");
+
+        const channel = new BroadcastChannel("portalrancajaya-decap-oauth");
+        channel.postMessage({ type: "github-oauth-success", payload });
+        channel.close();
+        window.history.replaceState(null, "", window.location.pathname);
+        document.body.textContent = "Login berhasil. Jendela ini akan ditutup…";
+        window.setTimeout(() => window.close(), 250);
+      } catch (error) {
+        document.body.textContent = `Login gagal: ${error.message}`;
+      }
+    })();
+  </script>
+</body>
+</html>
