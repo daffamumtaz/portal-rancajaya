@@ -1,4 +1,6 @@
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 const labelValueSchema = z.object({
   label: z.string(),
@@ -20,7 +22,7 @@ const publicationFields = {
 };
 
 const beritaCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/berita' }),
   schema: z.object({
     title: z.string(),
     date: z.date(),
@@ -36,7 +38,7 @@ const beritaCollection = defineCollection({
 });
 
 const dusunCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/dusun' }),
   schema: z.object({
     nama: z.string(),
     kepala_dusun: z.string().optional(),
@@ -53,7 +55,7 @@ const dusunCollection = defineCollection({
 });
 
 const apbdesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/apbdes' }),
   schema: z.object({
     tahun: z.coerce.number().int().min(2000).max(2100),
     versi: z.enum(['Awal', 'Perubahan']).default('Awal'),
@@ -70,7 +72,7 @@ const apbdesCollection = defineCollection({
 });
 
 const galeriCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/galeri' }),
   schema: z.object({
     judul: z.string(),
     tanggal: z.date(),
@@ -83,7 +85,7 @@ const galeriCollection = defineCollection({
 });
 
 const umkmCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/umkm' }),
   schema: z.object({
     nama: z.string(),
     pemilik: z.string(),
@@ -101,7 +103,7 @@ const umkmCollection = defineCollection({
 });
 
 const layananAdministrasiCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/layanan-administrasi' }),
   schema: z.object({
     nama: z.string(),
     kategori: z.enum(['Administrasi Kependudukan', 'Surat Pengantar', 'Usaha', 'Sosial', 'Lainnya']).default('Administrasi Kependudukan'),
@@ -120,7 +122,7 @@ const layananAdministrasiCollection = defineCollection({
 });
 
 const kontakCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/kontak' }),
   schema: z.object({
     nama: z.string(),
     jenis: z.enum(['Desa', 'Kesehatan', 'Keamanan', 'Darurat', 'Layanan']),
@@ -134,7 +136,7 @@ const kontakCollection = defineCollection({
 });
 
 const pengaturanCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/pengaturan' }),
   schema: z.object({
     nama_desa: z.string().optional(),
     kecamatan: z.string().optional(),
@@ -164,7 +166,7 @@ const pengaturanCollection = defineCollection({
 });
 
 const halamanCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/halaman' }),
   schema: z.object({
     // Beranda
     hero_title: z.string().optional(),

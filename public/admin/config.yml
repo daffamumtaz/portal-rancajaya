@@ -572,21 +572,12 @@ collections:
     folder: src/content/apbdes
     create: true
     delete: false
-    identifier_field: nama
+    identifier_field: tahun
     summary: "{{tahun}} — APBDes {{versi}}"
     sortable_fields:
       - tahun
       - versi
-      - jenis
-      - jumlah
-      - nama
     view_filters:
-      - label: Pendapatan
-        field: jenis
-        pattern: Pendapatan
-      - label: Belanja
-        field: jenis
-        pattern: Belanja
       - label: Draf
         field: release_status
         pattern: Draf

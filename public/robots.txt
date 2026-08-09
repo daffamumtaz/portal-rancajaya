@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://neuraly4.github.io/portal-rancajaya/sitemap-index.xml
+Sitemap: https://portalrancajaya.github.io/sitemap-index.xml
