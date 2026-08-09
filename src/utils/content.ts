@@ -12,13 +12,11 @@ export function resolvePublicPath(path: string | undefined, base = '') {
 
 type PublishableData = {
   aktif?: boolean;
-  release_status?: 'Draf' | 'Siap' | 'Terbit';
+  release_status?: 'Draf' | 'Terbit';
 };
 
 export function isPublishedContent(data: PublishableData | undefined) {
   if (!data || data.aktif === false) return false;
-  // Siap is kept as a legacy value so older entries remain visible after the
-  // previous controlled workflow is removed. Only an explicit Draf hides content.
   return data.release_status !== 'Draf';
 }
 

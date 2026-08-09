@@ -4,528 +4,1239 @@ backend:
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
-  # Domain proyek Netlify yang khusus menangani GitHub OAuth.
-  # Decap meneruskannya sebagai parameter site_id ke endpoint Netlify.
   site_domain: portalrancajayaauth.netlify.app
-
-# Mode simpan langsung. Status Draf/Terbit tetap diatur lewat field Status Publikasi.
-# Tambah + edit: berita, APBDes, potensi, kelompok tani, produksi, UMKM, layanan, kontak, dan galeri.
-# Hanya edit entri yang ada: struktur organisasi, dusun, pengaturan umum, serta halaman website.
 show_preview_links: true
-
-media_folder: "public/images/uploads"
-public_folder: "/images/uploads"
-
-locale: "id"
-
+media_folder: public/images/uploads
+public_folder: /images/uploads
+locale: id
 collections:
-  - name: "berita"
-    label: "Berita & Informasi"
-    label_singular: "Informasi"
-    folder: "src/content/berita"
+  - name: berita
+    label: Publikasi — Berita & Informasi
+    label_singular: Informasi
+    folder: src/content/berita
     create: true
     delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     summary: "{{category}} - {{title}}"
-    sortable_fields: ["date", "title", "category"]
+    sortable_fields:
+      - date
+      - title
+      - category
     view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-      - { label: "Terbit", field: "release_status", pattern: "Terbit" }
+      - label: Draf
+        field: release_status
+        pattern: Draf
+      - label: Terbit
+        field: release_status
+        pattern: Terbit
     view_groups:
-      - { label: "Kategori", field: "category" }
+      - label: Kategori
+        field: category
     fields:
-      - { label: "Judul", name: "title", widget: "string" }
-      - { label: "Tanggal", name: "date", widget: "datetime" }
-      - label: "Kategori"
-        name: "category"
-        widget: "select"
-        options: ["Berita", "Agenda", "Artikel", "Pengumuman"]
-      - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
-      - { label: "Ringkasan", name: "excerpt", widget: "text" }
-      - { label: "Penulis", name: "author", widget: "string", default: "Admin Desa" }
-      - { label: "Tautan Artikel Lengkap", name: "external_url", widget: "string", required: false, hint: "Isi jika artikel memiliki versi lengkap di media lain." }
-      - { label: "Nama Media Sumber", name: "external_source", widget: "string", required: false, hint: "Contoh: Kompasiana, Good News From Indonesia, atau IDN Times." }
-      - { label: "Tampilkan di Beranda", name: "featured", widget: "boolean", default: false }
-      - { label: "Konten", name: "body", widget: "markdown" }
-      - &publication_status
-        label: "Status Publikasi"
-        name: "release_status"
-        widget: "select"
+      - label: Judul
+        name: title
+        widget: string
+        hint: Masukkan judul singkat yang mudah dipahami warga.
+      - label: Tanggal
+        name: date
+        widget: datetime
+        hint: Pilih tanggal publikasi informasi.
+      - label: Kategori
+        name: category
+        widget: select
         options:
-          - { label: "Draf", value: "Draf" }
-          - { label: "Terbit", value: "Terbit" }
-        default: "Terbit"
-        hint: "Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul setelah situs selesai dibangun."
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "struktur-organisasi"
-    label: "Struktur Organisasi"
-    label_singular: "Posisi Struktur"
-    folder: "src/content/struktur-organisasi"
-    create: false
-    delete: false
-    identifier_field: "nama"
-    summary: "{{jabatan}} - {{nama}}"
-    sortable_fields: ["urutan", "jabatan", "nama"]
-    view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Nama", name: "nama", widget: "string" }
-      - { label: "Jabatan", name: "jabatan", widget: "string" }
-      - label: "Atasan Langsung"
-        name: "parent"
-        widget: "relation"
-        collection: "struktur-organisasi"
-        search_fields: ["nama", "jabatan"]
-        value_field: "{{slug}}"
-        display_fields: ["{{jabatan}} - {{nama}}"]
+          - Berita
+          - Agenda
+          - Artikel
+          - Pengumuman
+        hint: Isi kategori sesuai data terbaru dan sumber yang tersedia.
+      - label: Thumbnail
+        name: thumbnail
+        widget: image
         required: false
-        hint: "Kosongkan hanya untuk Kepala Desa."
-      - { label: "Foto", name: "foto", widget: "image", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Dummy"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "dusun"
-    label: "Dusun"
-    label_singular: "Dusun"
-    folder: "src/content/dusun"
-    create: false
-    delete: false
-    identifier_field: "nama"
-    summary: "{{nama}} - {{jumlah_penduduk}} jiwa"
-    sortable_fields: ["urutan", "nama", "jumlah_penduduk"]
-    fields:
-      - { label: "Nama Dusun", name: "nama", widget: "string" }
-      - { label: "Kepala Dusun", name: "kepala_dusun", widget: "string", required: false }
-      - { label: "Jumlah Penduduk", name: "jumlah_penduduk", widget: "number", value_type: "int", min: 0, required: false }
-      - { label: "Jumlah Laki-laki", name: "jumlah_pria", widget: "number", value_type: "int", min: 0, required: false }
-      - { label: "Jumlah Perempuan", name: "jumlah_wanita", widget: "number", value_type: "int", min: 0, required: false }
-      - { label: "Jumlah Kepala Keluarga", name: "jumlah_kk", widget: "number", value_type: "int", min: 0, required: false }
-      - { label: "Luas Wilayah", name: "luas_wilayah", widget: "string", required: false }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Dummy"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "apbdes"
-    label: "Transparansi APBDes"
-    label_singular: "Pos APBDes"
-    folder: "src/content/apbdes"
-    create: true
-    delete: false
-    identifier_field: "nama"
-    summary: "{{tahun}} {{versi}} - {{jenis}} - {{nama}}"
-    sortable_fields: ["tahun", "versi", "jenis", "jumlah", "nama"]
-    view_filters:
-      - { label: "Pendapatan", field: "jenis", pattern: "Pendapatan" }
-      - { label: "Belanja", field: "jenis", pattern: "Belanja" }
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    view_groups:
-      - { label: "Tahun Anggaran", field: "tahun" }
-    fields:
-      - { label: "Nama Sumber atau Pos", name: "nama", widget: "string" }
-      - label: "Jenis"
-        name: "jenis"
-        widget: "select"
-        options: ["Pendapatan", "Belanja"]
-      - { label: "Tahun Anggaran", name: "tahun", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
-      - label: "Versi APBDes"
-        name: "versi"
-        widget: "select"
-        options: ["Awal", "Perubahan"]
-        default: "Awal"
-      - { label: "Jumlah Rupiah", name: "jumlah", widget: "number", value_type: "int", min: 0 }
-      - { label: "Realisasi Rupiah", name: "realisasi", widget: "number", value_type: "int", min: 0, required: false, hint: "Isi saat data realisasi sudah tersedia." }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text", required: false }
-      - { label: "Tanggal Pembaruan", name: "tanggal_pembaruan", widget: "date", required: false }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Dummy"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "potensi-statistik"
-    label: "Statistik Potensi"
-    label_singular: "Statistik Potensi"
-    folder: "src/content/potensi-statistik"
-    create: true
-    delete: false
-    identifier_field: "label"
-    summary: "{{kategori}} - {{label}}: {{value}}"
-    sortable_fields: ["kategori", "urutan", "label"]
-    view_filters:
-      - { label: "Pertanian", field: "kategori", pattern: "Pertanian" }
-      - { label: "Peternakan", field: "kategori", pattern: "Peternakan" }
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Pertanian", "Peternakan", "Sarana Pertanian"]
-      - { label: "Label", name: "label", widget: "string" }
-      - { label: "Nilai", name: "value", widget: "string" }
-      - { label: "Keterangan", name: "keterangan", widget: "text", required: false }
-      - { label: "Satuan", name: "satuan", widget: "string", required: false, hint: "Contoh: jiwa, hektar, ekor, ton/ha." }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Dummy"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "kelompok-tani"
-    label: "Kelompok Tani"
-    label_singular: "Kelompok Tani"
-    folder: "src/content/kelompok-tani"
-    create: true
-    delete: false
-    identifier_field: "nama"
-    summary: "{{nama}} - {{luas_ha}} ha - {{jumlah_anggota}} anggota"
-    sortable_fields: ["nama", "luas_ha", "jumlah_anggota"]
-    view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Nama Kelompok", name: "nama", widget: "string" }
-      - { label: "Ketua", name: "ketua", widget: "string" }
-      - label: "Dusun"
-        name: "dusun"
-        widget: "relation"
-        collection: "dusun"
-        search_fields: ["nama"]
-        value_field: "nama"
-        display_fields: ["nama"]
+        hint: Unggah gambar pendukung. Maksimal 5 MB.
+      - label: Ringkasan
+        name: excerpt
+        widget: text
+        hint: Tulis ringkasan singkat yang tampil pada daftar informasi.
+      - label: Penulis
+        name: author
+        widget: string
+        default: Admin Desa
+        hint: Masukkan nama penulis atau unit yang menerbitkan.
+      - label: Tautan Artikel Lengkap
+        name: external_url
+        widget: string
         required: false
-      - { label: "Komoditas Utama", name: "komoditas_utama", widget: "string" }
-      - { label: "Luas Areal (Ha)", name: "luas_ha", widget: "number", value_type: "float", min: 0 }
-      - { label: "Jumlah Anggota", name: "jumlah_anggota", widget: "number", value_type: "int", min: 0 }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Kontak", name: "kontak", widget: "string", required: false }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Dummy"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "produksi-pertanian"
-    label: "Produksi Pertanian"
-    label_singular: "Produksi Komoditas"
-    folder: "src/content/produksi-pertanian"
-    create: true
-    delete: false
-    identifier_field: "nama"
-    summary: "{{kategori}} - {{nama}}: {{produksi_ton}} ton"
-    sortable_fields: ["urutan", "kategori", "nama"]
-    fields:
-      - { label: "Komoditas", name: "nama", widget: "string" }
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Tanaman Pangan", "Sayuran", "Buah-buahan", "Perkebunan"]
-      - { label: "Luas Tanam/Panen (Ha)", name: "luas_ha", widget: "number", value_type: "float", min: 0 }
-      - { label: "Produktivitas", name: "produktivitas", widget: "string", hint: "Pertahankan satuan, misalnya 6,9 ton/ha atau 15 kuintal/ha." }
-      - { label: "Produksi (Ton)", name: "produksi_ton", widget: "number", value_type: "float", min: 0 }
-      - { label: "Catatan", name: "catatan", widget: "text", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Tahun Data", name: "tahun_data", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - label: "Status Validasi"
-        name: "status_validasi"
-        widget: "select"
-        options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-        default: "Perlu Verifikasi"
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "umkm"
-    label: "UMKM"
-    label_singular: "UMKM"
-    folder: "src/content/umkm"
-    create: true
-    delete: false
-    identifier_field: "nama"
-    summary: "{{nama}} - {{kategori}}"
-    sortable_fields: ["nama", "kategori", "dusun"]
-    view_filters:
-      - { label: "Unggulan", field: "featured", pattern: true }
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Nama UMKM", name: "nama", widget: "string" }
-      - { label: "Pemilik", name: "pemilik", widget: "string" }
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Makanan", "Minuman", "Kerajinan", "Jasa", "Pertanian", "Lainnya"]
-      - { label: "Produk Utama", name: "produk_utama", widget: "string" }
-      - label: "Dusun"
-        name: "dusun"
-        widget: "relation"
-        collection: "dusun"
-        search_fields: ["nama"]
-        value_field: "nama"
-        display_fields: ["nama"]
+        hint: Isi jika artikel memiliki versi lengkap di media lain.
+      - label: Nama Media Sumber
+        name: external_source
+        widget: string
         required: false
-      - { label: "Kontak", name: "kontak", widget: "string", required: false }
-      - { label: "Foto", name: "foto", widget: "image", required: false }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Tampilkan sebagai Unggulan", name: "featured", widget: "boolean", default: false }
-      - { label: "Tanggal Pembaruan", name: "tanggal_pembaruan", widget: "date", required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "layanan-administrasi"
-    label: "Administrasi Daring"
-    label_singular: "Layanan Administrasi"
-    folder: "src/content/layanan-administrasi"
+        hint: "Contoh: Kompasiana, Good News From Indonesia, atau IDN Times."
+      - label: Tampilkan di Beranda
+        name: featured
+        widget: boolean
+        default: false
+        hint: Aktifkan jika konten perlu ditonjolkan di beranda.
+      - label: Konten
+        name: body
+        widget: markdown
+        hint: Tulis isi lengkap. Gunakan judul dan paragraf agar mudah dibaca.
+      - &a1
+        label: Status Publikasi
+        name: release_status
+        widget: select
+        options:
+          - label: Draf
+            value: Draf
+          - label: Terbit
+            value: Terbit
+        default: Terbit
+        hint: Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul
+          setelah situs selesai dibangun.
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: galeri
+    label: Publikasi — Galeri Foto
+    label_singular: Foto Galeri
+    folder: src/content/galeri
     create: true
     delete: false
-    identifier_field: "nama"
-    summary: "{{nama}}"
-    sortable_fields: ["urutan", "nama"]
-    view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Nama Layanan", name: "nama", widget: "string" }
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Administrasi Kependudukan", "Surat Pengantar", "Usaha", "Sosial", "Lainnya"]
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Link Formulir", name: "link", widget: "string", required: false, pattern: ["^(https?://|/).+$", "Gunakan URL http(s) atau path internal yang diawali /." ] }
-      - { label: "Ikon atau Singkatan", name: "ikon", widget: "string", required: false }
-      - label: "Persyaratan"
-        name: "persyaratan"
-        widget: "list"
-        field: { label: "Syarat", name: "item", widget: "string" }
-      - { label: "Biaya", name: "biaya", widget: "string", default: "Gratis" }
-      - { label: "Estimasi Durasi", name: "durasi", widget: "string", default: "Sesuai kelengkapan berkas" }
-      - { label: "Kontak Petugas", name: "kontak", widget: "string", required: false }
-      - { label: "Diperbarui Pada", name: "diperbarui_pada", widget: "date", required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "kontak"
-    label: "Kontak"
-    label_singular: "Kontak"
-    folder: "src/content/kontak"
-    create: true
-    delete: false
-    identifier_field: "nama"
-    summary: "{{jenis}} - {{nama}}"
-    sortable_fields: ["urutan", "jenis", "nama"]
-    view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Nama Kontak", name: "nama", widget: "string" }
-      - label: "Jenis"
-        name: "jenis"
-        widget: "select"
-        options: ["Desa", "Kesehatan", "Keamanan", "Darurat", "Layanan"]
-      - { label: "Telepon", name: "telepon", widget: "string" }
-      - { label: "Email", name: "email", widget: "string", required: false }
-      - { label: "Alamat", name: "alamat", widget: "string", required: false }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "galeri"
-    label: "Galeri Foto"
-    label_singular: "Foto Galeri"
-    folder: "src/content/galeri"
-    create: true
-    delete: false
-    identifier_field: "judul"
+    identifier_field: judul
     summary: "{{tanggal}} - {{judul}}"
-    sortable_fields: ["tanggal", "kategori", "judul"]
+    sortable_fields:
+      - tanggal
+      - kategori
+      - judul
     view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
+      - label: Draf
+        field: release_status
+        pattern: Draf
     view_groups:
-      - { label: "Kategori", field: "kategori" }
+      - label: Kategori
+        field: kategori
     fields:
-      - { label: "Judul", name: "judul", widget: "string" }
-      - { label: "Tanggal", name: "tanggal", widget: "date" }
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Kegiatan", "Pembangunan", "Budaya", "Pertanian", "Peternakan", "UMKM", "Potensi", "Lainnya"]
-      - { label: "Foto", name: "foto", widget: "image" }
-      - { label: "Teks Alternatif Foto", name: "alt_text", widget: "string", required: false, hint: "Jelaskan isi foto untuk aksesibilitas." }
-      - { label: "Deskripsi", name: "deskripsi", widget: "text" }
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "pengaturan"
-    label: "Pengaturan"
+      - label: Judul
+        name: judul
+        widget: string
+        hint: Masukkan judul singkat yang menjelaskan isi data atau foto.
+      - label: Tanggal
+        name: tanggal
+        widget: datetime
+        hint: Pilih tanggal kegiatan atau pengambilan foto. Jam tidak digunakan.
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+      - label: Kategori
+        name: kategori
+        widget: select
+        options:
+          - Kegiatan
+          - Pembangunan
+          - Budaya
+          - Pertanian
+          - Peternakan
+          - UMKM
+          - Potensi
+          - Lainnya
+        hint: Pilih kategori yang paling sesuai.
+      - label: Foto
+        name: foto
+        widget: image
+        hint: Unggah foto. Maksimal 5 MB.
+      - label: Teks Alternatif Foto
+        name: alt_text
+        widget: string
+        required: false
+        hint: Jelaskan isi foto untuk aksesibilitas.
+      - label: Deskripsi
+        name: deskripsi
+        widget: text
+        hint: Tulis penjelasan singkat dan jelas untuk publik.
+      - *a1
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: halaman-beranda
+    label: Halaman — Beranda
+    label_singular: Beranda
     files:
-      - label: "Pengaturan Umum"
-        name: "umum"
-        file: "src/content/pengaturan/umum.json"
+      - label: Beranda
+        name: beranda
+        file: src/content/halaman/beranda.json
         fields:
-          - { label: "Nama Desa", name: "nama_desa", widget: "string" }
-          - { label: "Kecamatan", name: "kecamatan", widget: "string" }
-          - { label: "Kabupaten", name: "kabupaten", widget: "string" }
-          - { label: "Provinsi", name: "provinsi", widget: "string" }
-          - { label: "Visi", name: "visi", widget: "text" }
-          - { label: "Sejarah Singkat", name: "sejarah", widget: "markdown" }
-          - label: "Misi"
-            name: "misi"
-            widget: "list"
-            field: { label: "Butir Misi", name: "item", widget: "string" }
-          - label: "Tujuan Desa"
-            name: "tujuan"
-            widget: "list"
-            field: { label: "Butir Tujuan", name: "item", widget: "string" }
-          - { label: "Alamat Kantor", name: "alamat_kantor", widget: "text" }
-          - { label: "Telepon", name: "telepon", widget: "string" }
-          - { label: "Email", name: "email", widget: "string" }
-          - { label: "Jam Operasional", name: "jam_operasional", widget: "text" }
-          - { label: "Facebook", name: "facebook", widget: "string", required: false }
-          - { label: "YouTube", name: "youtube", widget: "string", required: false }
-          - { label: "Instagram", name: "instagram", widget: "string", required: false }
-          - { label: "TikTok", name: "tiktok", widget: "string", required: false }
-          - { label: "Lintang Kantor Desa", name: "koordinat_latitude", widget: "number", value_type: "float", min: -90, max: 90, step: 0.0000001, default: -6.3796663 }
-          - { label: "Bujur Kantor Desa", name: "koordinat_longitude", widget: "number", value_type: "float", min: -180, max: 180, step: 0.0000001, default: 107.6461475 }
-          - { label: "Zoom Peta", name: "peta_zoom", widget: "number", value_type: "int", min: 1, max: 21, default: 18 }
-          - { label: "Sumber Koordinat", name: "sumber_koordinat", widget: "text", required: false }
-          - { label: "Tahun APBDes Aktif", name: "tahun_apbdes_aktif", widget: "number", value_type: "int", min: 2000, max: 2100, default: 2026 }
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-  - name: "halaman"
-    label: "Halaman Website"
+          - label: Judul Hero
+            name: hero_title
+            widget: string
+            hint: Isi judul hero sesuai data terbaru dan sumber yang tersedia.
+          - label: Subjudul Hero
+            name: hero_subtitle
+            widget: string
+            hint: Isi subjudul hero sesuai data terbaru dan sumber yang tersedia.
+          - label: Gambar Latar Hero
+            name: hero_bg
+            widget: image
+            required: false
+            hint: Unggah gambar latar bagian utama. Maksimal 5 MB.
+          - label: Judul Sorotan
+            name: highlight_title
+            widget: string
+            hint: Isi judul sorotan sesuai data terbaru dan sumber yang tersedia.
+          - label: Deskripsi Sorotan
+            name: highlight_desc
+            widget: text
+            hint: Isi deskripsi sorotan sesuai data terbaru dan sumber yang tersedia.
+          - label: Gambar Sorotan
+            name: highlight_image
+            widget: image
+            required: false
+            hint: Unggah gambar sorotan. Maksimal 5 MB.
+          - label: Statistik
+            name: statistik
+            widget: list
+            fields:
+              - label: Label
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Nilai
+                name: value
+                widget: string
+                hint: Masukkan nilai yang akan ditampilkan.
+            hint: Isi statistik sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - *a1
+          - label: Tampilkan di Publik
+            name: aktif
+            widget: boolean
+            default: true
+            hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: halaman-profil
+    label: Profil Desa — Data & Organisasi
+    label_singular: Profil Desa & Struktur Organisasi
     files:
-      - label: "Halaman Beranda"
-        name: "beranda"
-        file: "src/content/halaman/beranda.json"
+      - label: Profil Desa & Struktur Organisasi
+        name: profil
+        file: src/content/halaman/profil.json
         fields:
-          - { label: "Judul Hero", name: "hero_title", widget: "string" }
-          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "string" }
-          - { label: "Gambar Latar Hero", name: "hero_bg", widget: "image", required: false }
-          - { label: "Judul Sorotan", name: "highlight_title", widget: "string" }
-          - { label: "Deskripsi Sorotan", name: "highlight_desc", widget: "text" }
-          - { label: "Gambar Sorotan", name: "highlight_image", widget: "image", required: false }
-          - label: "Statistik"
-            name: "statistik"
-            widget: "list"
+          - label: Kata Sambutan
+            name: sambutan
+            widget: text
+            hint: Tulis kata sambutan untuk halaman profil desa.
+          - label: Nama Kepala Desa
+            name: nama_kades
+            widget: string
+            hint: Masukkan nama Kepala Desa yang sedang menjabat.
+          - label: Luas Wilayah (km2)
+            name: luas_wilayah
+            widget: string
+            hint: Isi luas wilayah (km2) sesuai data terbaru dan sumber yang tersedia.
+          - label: Total Penduduk
+            name: penduduk_total
+            widget: string
+            hint: Isi total penduduk sesuai data terbaru dan sumber yang tersedia.
+          - label: Penduduk Pria
+            name: penduduk_pria
+            widget: string
+            hint: Isi penduduk pria sesuai data terbaru dan sumber yang tersedia.
+          - label: Penduduk Wanita
+            name: penduduk_wanita
+            widget: string
+            hint: Isi penduduk wanita sesuai data terbaru dan sumber yang tersedia.
+          - label: Tahun Data Wilayah
+            name: tahun_wilayah
+            widget: number
+            value_type: int
+            min: 2000
+            max: 2100
+            required: false
+            hint: Isi tahun data wilayah sesuai data terbaru dan sumber yang tersedia.
+          - label: Sumber Data Wilayah
+            name: sumber_wilayah
+            widget: string
+            required: false
+            hint: Isi sumber data wilayah sesuai data terbaru dan sumber yang tersedia.
+          - label: Status Validasi Wilayah
+            name: status_validasi_wilayah
+            widget: select
+            options:
+              - Perlu Verifikasi
+              - Terverifikasi
+            default: Perlu Verifikasi
+            hint: Isi status validasi wilayah sesuai data terbaru dan sumber yang tersedia.
+          - label: Batas Wilayah
+            name: batas_wilayah
+            widget: list
             fields:
-              - { label: "Label", name: "label", widget: "string" }
-              - { label: "Nilai", name: "value", widget: "string" }
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-      - label: "Halaman Profil"
-        name: "profil"
-        file: "src/content/halaman/profil.json"
+              - label: Arah
+                name: arah
+                widget: string
+                hint: Isi arah sesuai data terbaru dan sumber yang tersedia.
+              - label: Wilayah
+                name: wilayah
+                widget: string
+                hint: Isi wilayah sesuai data terbaru dan sumber yang tersedia.
+            hint: Isi batas wilayah sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - label: Demografi Pendidikan
+            name: demo_pendidikan
+            widget: list
+            fields:
+              - label: Tingkat Pendidikan
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Jumlah
+                name: value
+                widget: number
+                value_type: int
+                min: 0
+                hint: Masukkan nilai yang akan ditampilkan.
+            hint: Isi demografi pendidikan sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - label: Demografi Kelompok Umur
+            name: demografi_umur
+            widget: list
+            fields:
+              - label: Kelompok Umur
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Jumlah Warga
+                name: value
+                widget: number
+                value_type: int
+                min: 0
+                hint: Masukkan nilai yang akan ditampilkan.
+            hint: Isi demografi kelompok umur sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - label: Data Pekerjaan Warga
+            name: data_pekerjaan_warga
+            widget: list
+            fields:
+              - label: Jenis Pekerjaan
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Jumlah Warga
+                name: value
+                widget: number
+                value_type: int
+                min: 0
+                hint: Masukkan nilai yang akan ditampilkan.
+            hint: Isi data pekerjaan warga sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - label: Status Pernikahan
+            name: status_pernikahan
+            widget: list
+            fields:
+              - label: Status
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Jumlah Warga
+                name: value
+                widget: number
+                value_type: int
+                min: 0
+                hint: Masukkan nilai yang akan ditampilkan.
+            hint: Isi status pernikahan sesuai data terbaru dan sumber yang tersedia.
+            collapsed: true
+          - label: Tahun Data Demografi
+            name: tahun_demografi
+            widget: number
+            value_type: int
+            min: 2000
+            max: 2100
+            required: false
+            hint: Isi tahun data demografi sesuai data terbaru dan sumber yang tersedia.
+          - label: Sumber Data Demografi
+            name: sumber_demografi
+            widget: string
+            required: false
+            hint: Isi sumber data demografi sesuai data terbaru dan sumber yang tersedia.
+          - label: Status Validasi Demografi
+            name: status_validasi_demografi
+            widget: select
+            options:
+              - Perlu Verifikasi
+              - Terverifikasi
+            default: Perlu Verifikasi
+            hint: Isi status validasi demografi sesuai data terbaru dan sumber yang
+              tersedia.
+          - *a1
+          - label: Tampilkan di Publik
+            name: aktif
+            widget: boolean
+            default: true
+            hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+          - label: Struktur Organisasi
+            name: struktur_organisasi
+            widget: list
+            fields:
+              - label: ID Posisi
+                name: slug
+                widget: string
+                hint: Isi id posisi sesuai data terbaru dan sumber yang tersedia.
+              - label: Nama
+                name: nama
+                widget: string
+                hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+              - label: Jabatan
+                name: jabatan
+                widget: string
+                hint: Isi jabatan sesuai data terbaru dan sumber yang tersedia.
+              - label: ID Atasan
+                name: parent
+                widget: string
+                required: false
+                hint: Kosongkan untuk Kepala Desa.
+              - label: Foto
+                name: foto
+                widget: image
+                required: false
+                hint: Unggah foto. Maksimal 5 MB.
+              - label: Urutan
+                name: urutan
+                widget: number
+                value_type: int
+                min: 1
+                hint: Tentukan urutan tampil, mulai dari angka kecil.
+              - label: Deskripsi
+                name: deskripsi
+                widget: text
+                required: false
+                hint: Tulis penjelasan singkat dan jelas untuk publik.
+              - &a2
+                label: Tahun Data
+                name: tahun_data
+                widget: number
+                value_type: int
+                min: 2000
+                max: 2100
+                required: false
+                hint: Masukkan tahun sumber data ini.
+              - &a3
+                label: Sumber Data
+                name: sumber_data
+                widget: string
+                required: false
+                hint: Tuliskan dokumen, instansi, atau tautan sumber data.
+              - &a4
+                label: Status Publikasi
+                name: release_status
+                widget: select
+                options:
+                  - label: Draf
+                    value: Draf
+                  - label: Terbit
+                    value: Terbit
+                default: Terbit
+                hint: Pilih Draf saat belum siap, atau Terbit saat boleh dipublikasikan.
+              - &a5
+                label: Tampilkan di Publik
+                name: aktif
+                widget: boolean
+                default: true
+                hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+            hint: Kelola anggota struktur organisasi dan urutan tampilnya.
+            collapsed: true
+  - name: dusun
+    label: Profil Desa — Wilayah & Dusun
+    label_singular: Dusun
+    folder: src/content/dusun
+    create: false
+    delete: false
+    identifier_field: nama
+    summary: "{{nama}} - {{jumlah_penduduk}} jiwa"
+    sortable_fields:
+      - urutan
+      - nama
+      - jumlah_penduduk
+    fields:
+      - label: Nama Dusun
+        name: nama
+        widget: string
+        hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+      - label: Kepala Dusun
+        name: kepala_dusun
+        widget: string
+        required: false
+        hint: Isi kepala dusun sesuai data terbaru dan sumber yang tersedia.
+      - label: Jumlah Penduduk
+        name: jumlah_penduduk
+        widget: number
+        value_type: int
+        min: 0
+        required: false
+        hint: Isi jumlah penduduk sesuai data terbaru dan sumber yang tersedia.
+      - label: Jumlah Laki-laki
+        name: jumlah_pria
+        widget: number
+        value_type: int
+        min: 0
+        required: false
+        hint: Isi jumlah laki-laki sesuai data terbaru dan sumber yang tersedia.
+      - label: Jumlah Perempuan
+        name: jumlah_wanita
+        widget: number
+        value_type: int
+        min: 0
+        required: false
+        hint: Isi jumlah perempuan sesuai data terbaru dan sumber yang tersedia.
+      - label: Jumlah Kepala Keluarga
+        name: jumlah_kk
+        widget: number
+        value_type: int
+        min: 0
+        required: false
+        hint: Isi jumlah kepala keluarga sesuai data terbaru dan sumber yang tersedia.
+      - label: Luas Wilayah
+        name: luas_wilayah
+        widget: string
+        required: false
+        hint: Isi luas wilayah sesuai data terbaru dan sumber yang tersedia.
+      - label: Deskripsi
+        name: deskripsi
+        widget: text
+        hint: Tulis penjelasan singkat dan jelas untuk publik.
+      - label: Urutan
+        name: urutan
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        hint: Tentukan urutan tampil, mulai dari angka kecil.
+      - label: Tahun Data
+        name: tahun_data
+        widget: number
+        value_type: int
+        min: 2000
+        max: 2100
+        required: false
+        hint: Masukkan tahun sumber data ini.
+      - label: Sumber Data
+        name: sumber_data
+        widget: string
+        required: false
+        hint: Tuliskan dokumen, instansi, atau tautan sumber data.
+      - label: Status Validasi
+        name: status_validasi
+        widget: select
+        options:
+          - Perlu Verifikasi
+          - Terverifikasi
+        default: Perlu Verifikasi
+        hint: Tandai apakah data telah diverifikasi.
+      - *a1
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: apbdes
+    label: Transparansi — APBDes per Periode
+    label_singular: Periode APBDes
+    folder: src/content/apbdes
+    create: true
+    delete: false
+    identifier_field: nama
+    summary: "{{tahun}} — APBDes {{versi}}"
+    sortable_fields:
+      - tahun
+      - versi
+      - jenis
+      - jumlah
+      - nama
+    view_filters:
+      - label: Pendapatan
+        field: jenis
+        pattern: Pendapatan
+      - label: Belanja
+        field: jenis
+        pattern: Belanja
+      - label: Draf
+        field: release_status
+        pattern: Draf
+    view_groups:
+      - label: Tahun Anggaran
+        field: tahun
+    fields:
+      - label: Tahun Anggaran
+        name: tahun
+        widget: number
+        value_type: int
+        min: 2000
+        max: 2100
+        hint: Masukkan tahun anggaran atau tahun data.
+      - label: Versi APBDes
+        name: versi
+        widget: select
+        options:
+          - Awal
+          - Perubahan
+        hint: Pilih APBDes Awal atau Perubahan.
+      - label: Pendapatan
+        name: pendapatan
+        widget: list
+        fields: &a6
+          - label: Nama Pos
+            name: nama
+            widget: string
+            hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+          - label: Jumlah Rupiah
+            name: jumlah
+            widget: number
+            value_type: int
+            min: 0
+            hint: Masukkan nilai anggaran dalam rupiah tanpa titik pemisah.
+          - label: Realisasi Rupiah
+            name: realisasi
+            widget: number
+            value_type: int
+            min: 0
+            required: false
+            hint: Isi nilai realisasi dalam rupiah bila tersedia.
+          - label: Urutan
+            name: urutan
+            widget: number
+            value_type: int
+            min: 1
+            hint: Tentukan urutan tampil, mulai dari angka kecil.
+          - label: Deskripsi
+            name: deskripsi
+            widget: text
+            required: false
+            hint: Tulis penjelasan singkat dan jelas untuk publik.
+          - label: Tanggal Pembaruan
+            name: tanggal_pembaruan
+            widget: date
+            required: false
+            hint: Pilih tanggal terakhir data diperbarui.
+          - *a2
+          - *a3
+          - *a4
+          - *a5
+        hint: Tambahkan seluruh pos pendapatan untuk periode ini.
+        collapsed: true
+      - label: Belanja
+        name: belanja
+        widget: list
+        fields: *a6
+        hint: Tambahkan seluruh pos belanja untuk periode ini.
+        collapsed: true
+      - *a4
+      - *a5
+  - name: halaman-pertanian
+    label: Potensi Desa — Pertanian & Peternakan
+    label_singular: Potensi Pertanian
+    files:
+      - label: Potensi Pertanian
+        name: pertanian
+        file: src/content/halaman/pertanian.json
         fields:
-          - { label: "Kata Sambutan", name: "sambutan", widget: "text" }
-          - { label: "Nama Kepala Desa", name: "nama_kades", widget: "string" }
-          - { label: "Luas Wilayah (km2)", name: "luas_wilayah", widget: "string" }
-          - { label: "Total Penduduk", name: "penduduk_total", widget: "string" }
-          - { label: "Penduduk Pria", name: "penduduk_pria", widget: "string" }
-          - { label: "Penduduk Wanita", name: "penduduk_wanita", widget: "string" }
-          - { label: "Tahun Data Wilayah", name: "tahun_wilayah", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-          - { label: "Sumber Data Wilayah", name: "sumber_wilayah", widget: "string", required: false }
-          - label: "Status Validasi Wilayah"
-            name: "status_validasi_wilayah"
-            widget: "select"
-            options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-            default: "Dummy"
-          - label: "Batas Wilayah"
-            name: "batas_wilayah"
-            widget: "list"
+          - label: Judul Hero
+            name: hero_title
+            widget: string
+            hint: Isi judul hero sesuai data terbaru dan sumber yang tersedia.
+          - label: Subjudul Hero
+            name: hero_subtitle
+            widget: text
+            hint: Isi subjudul hero sesuai data terbaru dan sumber yang tersedia.
+          - label: Deskripsi Potensi
+            name: deskripsi
+            widget: text
+            hint: Tulis penjelasan singkat dan jelas untuk publik.
+          - label: Nama Gapoktan
+            name: gapoktan_nama
+            widget: string
+            required: false
+            hint: Isi nama gapoktan sesuai data terbaru dan sumber yang tersedia.
+          - label: Ketua Gapoktan
+            name: gapoktan_ketua
+            widget: string
+            required: false
+            hint: Isi ketua gapoktan sesuai data terbaru dan sumber yang tersedia.
+          - label: Narasi Peternakan Domba
+            name: peternakan_copywriting
+            widget: text
+            required: false
+            hint: Isi narasi peternakan domba sesuai data terbaru dan sumber yang tersedia.
+          - label: Galeri Peternakan
+            name: peternakan_galeri
+            widget: list
             fields:
-              - { label: "Arah", name: "arah", widget: "string" }
-              - { label: "Wilayah", name: "wilayah", widget: "string" }
-          - label: "Demografi Pendidikan"
-            name: "demo_pendidikan"
-            widget: "list"
+              - label: Foto
+                name: foto
+                widget: image
+                hint: Unggah foto. Maksimal 5 MB.
+              - label: Teks Alternatif
+                name: alt_text
+                widget: string
+                hint: Jelaskan isi gambar singkat agar dapat diakses semua pengguna.
+            hint: Kelola foto peternakan secara terpisah dari data pertanian.
+            collapsed: true
+          - *a1
+          - label: Tampilkan di Publik
+            name: aktif
+            widget: boolean
+            default: true
+            hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+          - label: Statistik Potensi
+            name: statistik_potensi
+            widget: list
             fields:
-              - { label: "Tingkat Pendidikan", name: "label", widget: "string" }
-              - { label: "Jumlah", name: "value", widget: "number", value_type: "int", min: 0 }
-          - label: "Demografi Kelompok Umur"
-            name: "demografi_umur"
-            widget: "list"
+              - label: ID
+                name: slug
+                widget: string
+                hint: Isi id sesuai data terbaru dan sumber yang tersedia.
+              - label: Kategori
+                name: kategori
+                widget: select
+                options:
+                  - Pertanian
+                  - Peternakan
+                  - Sarana Pertanian
+                hint: Pilih kategori yang paling sesuai.
+              - label: Label
+                name: label
+                widget: string
+                hint: Masukkan label singkat yang akan tampil di situs.
+              - label: Nilai
+                name: value
+                widget: string
+                hint: Masukkan nilai yang akan ditampilkan.
+              - label: Keterangan
+                name: keterangan
+                widget: text
+                required: false
+                hint: Tambahkan keterangan bila diperlukan.
+              - label: Satuan
+                name: satuan
+                widget: string
+                required: false
+                hint: Masukkan satuan, misalnya hektare, ton, atau unit.
+              - label: Urutan
+                name: urutan
+                widget: number
+                value_type: int
+                min: 1
+                hint: Tentukan urutan tampil, mulai dari angka kecil.
+              - *a2
+              - *a3
+              - *a4
+              - *a5
+            hint: Kelola angka statistik potensi pertanian dan sarana pendukung.
+            collapsed: true
+          - label: Kelompok Tani
+            name: kelompok_tani
+            widget: list
             fields:
-              - { label: "Kelompok Umur", name: "label", widget: "string" }
-              - { label: "Jumlah Warga", name: "value", widget: "number", value_type: "int", min: 0 }
-          - label: "Data Pekerjaan Warga"
-            name: "data_pekerjaan_warga"
-            widget: "list"
+              - label: ID
+                name: slug
+                widget: string
+                hint: Isi id sesuai data terbaru dan sumber yang tersedia.
+              - label: Nama Kelompok
+                name: nama
+                widget: string
+                hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+              - label: Ketua
+                name: ketua
+                widget: string
+                hint: Masukkan nama ketua kelompok.
+              - label: Dusun
+                name: dusun
+                widget: string
+                required: false
+                hint: Pilih atau tuliskan dusun terkait bila ada.
+              - label: Komoditas Utama
+                name: komoditas_utama
+                widget: string
+                hint: Masukkan komoditas utama kelompok tani.
+              - label: Luas Areal (Ha)
+                name: luas_ha
+                widget: number
+                value_type: float
+                min: 0
+                hint: Masukkan luas lahan dalam hektare.
+              - label: Jumlah Anggota
+                name: jumlah_anggota
+                widget: number
+                value_type: int
+                min: 0
+                hint: Masukkan jumlah anggota kelompok.
+              - label: Deskripsi
+                name: deskripsi
+                widget: text
+                hint: Tulis penjelasan singkat dan jelas untuk publik.
+              - label: Kontak
+                name: kontak
+                widget: string
+                required: false
+                hint: Isi kontak sesuai data terbaru dan sumber yang tersedia.
+              - *a2
+              - *a3
+              - *a4
+              - *a5
+            hint: Kelola data kelompok tani.
+            collapsed: true
+          - label: Produksi Pertanian
+            name: produksi_pertanian
+            widget: list
             fields:
-              - { label: "Jenis Pekerjaan", name: "label", widget: "string" }
-              - { label: "Jumlah Warga", name: "value", widget: "number", value_type: "int", min: 0 }
-          - label: "Status Pernikahan"
-            name: "status_pernikahan"
-            widget: "list"
-            fields:
-              - { label: "Status", name: "label", widget: "string" }
-              - { label: "Jumlah Warga", name: "value", widget: "number", value_type: "int", min: 0 }
-          - { label: "Tahun Data Demografi", name: "tahun_demografi", widget: "number", value_type: "int", min: 2000, max: 2100, required: false }
-          - { label: "Sumber Data Demografi", name: "sumber_demografi", widget: "string", required: false }
-          - label: "Status Validasi Demografi"
-            name: "status_validasi_demografi"
-            widget: "select"
-            options: ["Dummy", "Perlu Verifikasi", "Terverifikasi"]
-            default: "Dummy"
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-      - label: "Halaman Potensi"
-        name: "pertanian"
-        file: "src/content/halaman/pertanian.json"
+              - label: ID
+                name: slug
+                widget: string
+                hint: Isi id sesuai data terbaru dan sumber yang tersedia.
+              - label: Komoditas
+                name: nama
+                widget: string
+                hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+              - label: Kategori
+                name: kategori
+                widget: select
+                options:
+                  - Tanaman Pangan
+                  - Sayuran
+                  - Buah-buahan
+                  - Perkebunan
+                hint: Pilih kategori yang paling sesuai.
+              - label: Luas Tanam/Panen (Ha)
+                name: luas_ha
+                widget: number
+                value_type: float
+                min: 0
+                hint: Masukkan luas lahan dalam hektare.
+              - label: Produktivitas
+                name: produktivitas
+                widget: string
+                hint: Masukkan keterangan produktivitas yang digunakan.
+              - label: Produksi (Ton)
+                name: produksi_ton
+                widget: number
+                value_type: float
+                min: 0
+                hint: Masukkan total produksi dalam ton.
+              - label: Catatan
+                name: catatan
+                widget: text
+                required: false
+                hint: Tambahkan catatan bila diperlukan.
+              - label: Urutan
+                name: urutan
+                widget: number
+                value_type: int
+                min: 1
+                hint: Tentukan urutan tampil, mulai dari angka kecil.
+              - *a2
+              - *a3
+              - *a4
+              - *a5
+            hint: Kelola data produksi tiap komoditas pertanian.
+            collapsed: true
+  - name: umkm
+    label: Potensi Desa — UMKM
+    label_singular: UMKM
+    folder: src/content/umkm
+    create: true
+    delete: false
+    identifier_field: nama
+    summary: "{{nama}} - {{kategori}}"
+    sortable_fields:
+      - nama
+      - kategori
+      - dusun
+    view_filters:
+      - label: Unggulan
+        field: featured
+        pattern: true
+      - label: Draf
+        field: release_status
+        pattern: Draf
+    fields:
+      - label: Nama UMKM
+        name: nama
+        widget: string
+        hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+      - label: Pemilik
+        name: pemilik
+        widget: string
+        hint: Isi pemilik sesuai data terbaru dan sumber yang tersedia.
+      - label: Kategori
+        name: kategori
+        widget: select
+        options:
+          - Makanan
+          - Minuman
+          - Kerajinan
+          - Jasa
+          - Pertanian
+          - Lainnya
+        hint: Pilih kategori yang paling sesuai.
+      - label: Produk Utama
+        name: produk_utama
+        widget: string
+        hint: Isi produk utama sesuai data terbaru dan sumber yang tersedia.
+      - label: Dusun
+        name: dusun
+        widget: relation
+        collection: dusun
+        search_fields:
+          - nama
+        value_field: nama
+        display_fields:
+          - nama
+        required: false
+        hint: Pilih atau tuliskan dusun terkait bila ada.
+      - label: Kontak
+        name: kontak
+        widget: string
+        required: false
+        hint: Isi kontak sesuai data terbaru dan sumber yang tersedia.
+      - label: Foto
+        name: foto
+        widget: image
+        required: false
+        hint: Unggah foto. Maksimal 5 MB.
+      - label: Deskripsi
+        name: deskripsi
+        widget: text
+        hint: Tulis penjelasan singkat dan jelas untuk publik.
+      - label: Tampilkan sebagai Unggulan
+        name: featured
+        widget: boolean
+        default: false
+        hint: Aktifkan jika konten perlu ditonjolkan di beranda.
+      - label: Tanggal Pembaruan
+        name: tanggal_pembaruan
+        widget: date
+        required: false
+        hint: Pilih tanggal terakhir data diperbarui.
+      - label: Sumber Data
+        name: sumber_data
+        widget: string
+        required: false
+        hint: Tuliskan dokumen, instansi, atau tautan sumber data.
+      - *a1
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: halaman-layanan
+    label: Layanan Desa — Pengantar
+    label_singular: Halaman Layanan
+    files:
+      - label: Halaman Layanan
+        name: layanan
+        file: src/content/halaman/layanan.json
         fields:
-          - { label: "Judul Hero", name: "hero_title", widget: "string" }
-          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
-          - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
-          - { label: "Nama Gapoktan", name: "gapoktan_nama", widget: "string", required: false }
-          - { label: "Ketua Gapoktan", name: "gapoktan_ketua", widget: "string", required: false }
-          - { label: "Narasi Peternakan Domba", name: "peternakan_copywriting", widget: "text", required: false }
-          - label: "Galeri Peternakan"
-            name: "peternakan_galeri"
-            widget: "list"
-            fields:
-              - { label: "Foto", name: "foto", widget: "image" }
-              - { label: "Teks Alternatif", name: "alt_text", widget: "string" }
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-      - label: "Halaman Layanan"
-        name: "layanan"
-        file: "src/content/halaman/layanan.json"
+          - label: Judul Hero
+            name: hero_title
+            widget: string
+            required: false
+            hint: Isi judul hero sesuai data terbaru dan sumber yang tersedia.
+          - label: Subjudul Hero
+            name: hero_subtitle
+            widget: text
+            required: false
+            hint: Isi subjudul hero sesuai data terbaru dan sumber yang tersedia.
+          - *a1
+          - label: Tampilkan di Publik
+            name: aktif
+            widget: boolean
+            default: true
+            hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: layanan-administrasi
+    label: Layanan Desa — Administrasi
+    label_singular: Layanan Administrasi
+    folder: src/content/layanan-administrasi
+    create: true
+    delete: false
+    identifier_field: nama
+    summary: "{{nama}}"
+    sortable_fields:
+      - urutan
+      - nama
+    view_filters:
+      - label: Draf
+        field: release_status
+        pattern: Draf
+    fields:
+      - label: Nama Layanan
+        name: nama
+        widget: string
+        hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+      - label: Kategori
+        name: kategori
+        widget: select
+        options:
+          - Administrasi Kependudukan
+          - Surat Pengantar
+          - Usaha
+          - Sosial
+          - Lainnya
+        hint: Pilih kategori yang paling sesuai.
+      - label: Deskripsi
+        name: deskripsi
+        widget: text
+        hint: Tulis penjelasan singkat dan jelas untuk publik.
+      - label: Link Formulir
+        name: link
+        widget: string
+        required: false
+        pattern:
+          - ^(https?://|/).+$
+          - Gunakan URL http(s) atau path internal yang diawali /.
+        hint: Isi link formulir sesuai data terbaru dan sumber yang tersedia.
+      - label: Ikon atau Singkatan
+        name: ikon
+        widget: string
+        required: false
+        hint: Isi ikon atau singkatan sesuai data terbaru dan sumber yang tersedia.
+      - label: Persyaratan
+        name: persyaratan
+        widget: list
+        field:
+          label: Syarat
+          name: item
+          widget: string
+        hint: Isi persyaratan sesuai data terbaru dan sumber yang tersedia.
+      - label: Biaya
+        name: biaya
+        widget: string
+        default: Gratis
+        hint: Isi biaya sesuai data terbaru dan sumber yang tersedia.
+      - label: Estimasi Durasi
+        name: durasi
+        widget: string
+        default: Sesuai kelengkapan berkas
+        hint: Isi estimasi durasi sesuai data terbaru dan sumber yang tersedia.
+      - label: Kontak Petugas
+        name: kontak
+        widget: string
+        required: false
+        hint: Isi kontak petugas sesuai data terbaru dan sumber yang tersedia.
+      - label: Diperbarui Pada
+        name: diperbarui_pada
+        widget: date
+        required: false
+        hint: Isi diperbarui pada sesuai data terbaru dan sumber yang tersedia.
+      - label: Sumber Data
+        name: sumber_data
+        widget: string
+        required: false
+        hint: Tuliskan dokumen, instansi, atau tautan sumber data.
+      - label: Urutan
+        name: urutan
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        hint: Tentukan urutan tampil, mulai dari angka kecil.
+      - *a1
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: kontak
+    label: Layanan Desa — Kontak
+    label_singular: Kontak
+    folder: src/content/kontak
+    create: true
+    delete: false
+    identifier_field: nama
+    summary: "{{jenis}} - {{nama}}"
+    sortable_fields:
+      - urutan
+      - jenis
+      - nama
+    view_filters:
+      - label: Draf
+        field: release_status
+        pattern: Draf
+    fields:
+      - label: Nama Kontak
+        name: nama
+        widget: string
+        hint: Masukkan nama resmi sesuai dokumen atau data sumber.
+      - label: Jenis
+        name: jenis
+        widget: select
+        options:
+          - Desa
+          - Kesehatan
+          - Keamanan
+          - Darurat
+          - Layanan
+        hint: Isi jenis sesuai data terbaru dan sumber yang tersedia.
+      - label: Telepon
+        name: telepon
+        widget: string
+        hint: Isi telepon sesuai data terbaru dan sumber yang tersedia.
+      - label: Email
+        name: email
+        widget: string
+        required: false
+        hint: Isi email sesuai data terbaru dan sumber yang tersedia.
+      - label: Alamat
+        name: alamat
+        widget: string
+        required: false
+        hint: Isi alamat sesuai data terbaru dan sumber yang tersedia.
+      - label: Deskripsi
+        name: deskripsi
+        widget: text
+        hint: Tulis penjelasan singkat dan jelas untuk publik.
+      - label: Urutan
+        name: urutan
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        hint: Tentukan urutan tampil, mulai dari angka kecil.
+      - *a1
+      - label: Tampilkan di Publik
+        name: aktif
+        widget: boolean
+        default: true
+        hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+  - name: pengaturan
+    label: Sistem — Identitas Desa
+    files:
+      - label: Pengaturan Umum
+        name: umum
+        file: src/content/pengaturan/umum.json
         fields:
-          - { label: "Judul Hero", name: "hero_title", widget: "string", required: false }
-          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text", required: false }
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
+          - label: Nama Desa
+            name: nama_desa
+            widget: string
+            hint: Isi nama desa sesuai data terbaru dan sumber yang tersedia.
+          - label: Kecamatan
+            name: kecamatan
+            widget: string
+            hint: Isi kecamatan sesuai data terbaru dan sumber yang tersedia.
+          - label: Kabupaten
+            name: kabupaten
+            widget: string
+            hint: Isi kabupaten sesuai data terbaru dan sumber yang tersedia.
+          - label: Provinsi
+            name: provinsi
+            widget: string
+            hint: Isi provinsi sesuai data terbaru dan sumber yang tersedia.
+          - label: Visi
+            name: visi
+            widget: text
+            hint: Isi visi sesuai data terbaru dan sumber yang tersedia.
+          - label: Sejarah Singkat
+            name: sejarah
+            widget: markdown
+            hint: Isi sejarah singkat sesuai data terbaru dan sumber yang tersedia.
+          - label: Misi
+            name: misi
+            widget: list
+            field:
+              label: Butir Misi
+              name: item
+              widget: string
+            hint: Isi misi sesuai data terbaru dan sumber yang tersedia.
+          - label: Tujuan Desa
+            name: tujuan
+            widget: list
+            field:
+              label: Butir Tujuan
+              name: item
+              widget: string
+            hint: Isi tujuan desa sesuai data terbaru dan sumber yang tersedia.
+          - label: Alamat Kantor
+            name: alamat_kantor
+            widget: text
+            hint: Isi alamat kantor sesuai data terbaru dan sumber yang tersedia.
+          - label: Telepon
+            name: telepon
+            widget: string
+            hint: Isi telepon sesuai data terbaru dan sumber yang tersedia.
+          - label: Email
+            name: email
+            widget: string
+            hint: Isi email sesuai data terbaru dan sumber yang tersedia.
+          - label: Jam Operasional
+            name: jam_operasional
+            widget: text
+            hint: Isi jam operasional sesuai data terbaru dan sumber yang tersedia.
+          - label: Facebook
+            name: facebook
+            widget: string
+            required: false
+            hint: Isi facebook sesuai data terbaru dan sumber yang tersedia.
+          - label: YouTube
+            name: youtube
+            widget: string
+            required: false
+            hint: Isi youtube sesuai data terbaru dan sumber yang tersedia.
+          - label: Instagram
+            name: instagram
+            widget: string
+            required: false
+            hint: Isi instagram sesuai data terbaru dan sumber yang tersedia.
+          - label: TikTok
+            name: tiktok
+            widget: string
+            required: false
+            hint: Isi tiktok sesuai data terbaru dan sumber yang tersedia.
+          - label: Lintang Kantor Desa
+            name: koordinat_latitude
+            widget: number
+            value_type: float
+            min: -90
+            max: 90
+            step: 1e-7
+            default: -6.3796663
+            hint: Isi lintang kantor desa sesuai data terbaru dan sumber yang tersedia.
+          - label: Bujur Kantor Desa
+            name: koordinat_longitude
+            widget: number
+            value_type: float
+            min: -180
+            max: 180
+            step: 1e-7
+            default: 107.6461475
+            hint: Isi bujur kantor desa sesuai data terbaru dan sumber yang tersedia.
+          - label: Zoom Peta
+            name: peta_zoom
+            widget: number
+            value_type: int
+            min: 1
+            max: 21
+            default: 18
+            hint: Isi zoom peta sesuai data terbaru dan sumber yang tersedia.
+          - label: Sumber Koordinat
+            name: sumber_koordinat
+            widget: text
+            required: false
+            hint: Isi sumber koordinat sesuai data terbaru dan sumber yang tersedia.
+          - label: Tahun APBDes Aktif
+            name: tahun_apbdes_aktif
+            widget: number
+            value_type: int
+            min: 2000
+            max: 2100
+            default: 2026
+            hint: Isi tahun apbdes aktif sesuai data terbaru dan sumber yang tersedia.
+          - *a1
+          - label: Tampilkan di Publik
+            name: aktif
+            widget: boolean
+            default: true
+            hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+media_library:
+  config:
+    max_file_size: 5242880

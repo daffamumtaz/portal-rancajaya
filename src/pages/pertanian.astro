@@ -10,9 +10,9 @@ const umumData = await getEntry('pengaturan', 'umum');
 const potensi = isPublishedContent(potensiData?.data) ? potensiData.data : {};
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 
-const stats = (await getCollection('potensi-statistik')).filter((entry) => isPublishedContent(entry.data));
-const kelompokTani = (await getCollection('kelompok-tani')).filter((entry) => isPublishedContent(entry.data));
-const produksiPertanian = (await getCollection('produksi-pertanian')).filter((entry) => isPublishedContent(entry.data));
+const stats = (potensi.statistik_potensi || []).filter(isPublishedContent).map((data) => ({ data }));
+const kelompokTani = (potensi.kelompok_tani || []).filter(isPublishedContent).map((data) => ({ data }));
+const produksiPertanian = (potensi.produksi_pertanian || []).filter(isPublishedContent).map((data) => ({ data }));
 const umkm = (await getCollection('umkm')).filter((entry) => isPublishedContent(entry.data));
 
 const sortByOrder = (a, b) => (a.data.urutan || 0) - (b.data.urutan || 0);

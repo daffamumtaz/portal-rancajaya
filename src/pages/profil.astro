@@ -10,9 +10,16 @@ const umumData = await getEntry('pengaturan', 'umum');
 const profil = isPublishedContent(profilData?.data) ? profilData.data : {};
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
 const chartScriptUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/vendor/chart.umd.js`;
-const strukturOrganisasi = (await getCollection('struktur-organisasi')).filter((entry) => isPublishedContent(entry.data));
+const strukturOrganisasi = (profil.struktur_organisasi || [])
+  .filter((item) => isPublishedContent(item))
+  .map((data) => ({ data }));
 const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
-const allApbdesEntries = (await getCollection('apbdes')).filter((entry) => isPublishedContent(entry.data));
+const allApbdesEntries = (await getCollection('apbdes'))
+  .filter((entry) => isPublishedContent(entry.data))
+  .flatMap((entry) => [
+    ...(entry.data.pendapatan || []).map((row) => ({ data: { ...row, tahun: entry.data.tahun, versi: entry.data.versi, jenis: 'Pendapatan' } })),
+    ...(entry.data.belanja || []).map((row) => ({ data: { ...row, tahun: entry.data.tahun, versi: entry.data.versi, jenis: 'Belanja' } })),
+  ]);
 const apbdesPeriods = [...new Map(allApbdesEntries.map((entry) => {
   const key = `${entry.data.tahun}-${entry.data.versi.toLowerCase()}`;
   return [key, { key, tahun: entry.data.tahun, versi: entry.data.versi }];
@@ -338,7 +345,7 @@ const apbdesHistoryRange = apbdesHistory.length > 1
 
       <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <p class="text-sm text-muted">Setiap legenda menampilkan jumlah warga per kelompok.</p>
-        {profil.sumber_demografi && <span class="pill-primary">{profil.tahun_demografi ? `Data ${profil.tahun_demografi}` : 'Laporan Demografi'} / {profil.status_validasi_demografi || 'Dummy'}</span>}
+        {profil.sumber_demografi && <span class="pill-primary">{profil.tahun_demografi ? `Data ${profil.tahun_demografi}` : 'Laporan Demografi'} / {profil.status_validasi_demografi || 'Perlu Verifikasi'}</span>}
       </div>
 
       <!-- Charts -->
