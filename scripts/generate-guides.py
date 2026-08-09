@@ -9,6 +9,7 @@ from docx.enum.section import WD_SECTION
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -28,6 +29,9 @@ PALE_GREEN = "E9F4EE"
 PALE_GOLD = "FBF3DD"
 PALE_RED = "FBEDE7"
 BORDER = "D9CDB4"
+REPOSITORY_URL = "https://github.com/portalrancajaya/portalrancajaya.github.io"
+SUPPORT_URL = "https://wa.me/6289663580475"
+SUPPORT_LABEL = "Hubungi Daffa"
 
 
 def p(text): return {"type": "p", "text": text}
@@ -38,6 +42,7 @@ def note(title, text, tone="green"): return {"type": "note", "title": title, "te
 def table(headers, rows): return {"type": "table", "headers": headers, "rows": rows}
 def image(name, caption): return {"type": "image", "name": name, "caption": caption}
 def code(text): return {"type": "code", "text": text}
+def link(label, url): return {"type": "link", "label": label, "url": url}
 
 
 OPERATIONAL = {
@@ -52,6 +57,7 @@ OPERATIONAL = {
     "sections": [
         ("Mengenal Halaman Pengelolaan", [
             p("Halaman pengelolaan membantu perangkat desa memperbarui isi Portal Rancajaya melalui browser. Perubahan yang disimpan akan diteruskan ke website secara otomatis."),
+            link("Bantuan teknis Daffa melalui WhatsApp", SUPPORT_URL),
             steps("Masuk ke halaman admin.", "Pilih jenis informasi yang ingin diperbarui.", "Isi atau perbaiki data.", "Klik Terbitkan, lalu tunggu beberapa menit sampai website berubah."),
             table(["Dapat ditambah dan diubah", "Hanya memperbarui data yang tersedia"], [["Berita, APBDes, statistik potensi, kelompok tani, produksi pertanian, UMKM, layanan, kontak, dan galeri", "Struktur organisasi, dusun, pengaturan umum, serta halaman website"]]),
             image("admin-dashboard.png", "Ilustrasi susunan menu berdasarkan konfigurasi Portal Rancajaya."),
@@ -59,7 +65,6 @@ OPERATIONAL = {
         ]),
         ("Masuk ke Halaman Admin", [
             p("Buka alamat https://portalrancajaya.github.io/admin melalui Chrome, Edge, atau Firefox."),
-            image("admin-login.png", "Halaman masuk admin dan tombol Panduan di pojok kanan bawah."),
             steps("Klik Masuk dengan GitHub.", "Masukkan akun GitHub yang telah diberi akses oleh pengembang.", "Jika diminta, setujui izin akses.", "Setelah berhasil, daftar menu pengelolaan akan tampil."),
             note("Keamanan akun", "Jangan menuliskan kata sandi di dokumen, grup percakapan, atau catatan yang dapat dibaca umum. Aktifkan verifikasi dua langkah pada akun GitHub.", "gold"),
         ]),
@@ -102,7 +107,7 @@ OPERATIONAL = {
         ("Galeri Foto", [
             steps("Pilih Galeri Foto lalu klik + Foto Galeri.", "Isi judul, tanggal, kategori, foto, teks alternatif, dan deskripsi.", "Teks alternatif menjelaskan isi foto secara singkat, misalnya Warga mengikuti lokakarya di Balai Desa Rancajaya.", "Terbitkan."),
             image("admin-media.png", "Ilustrasi halaman pemilihan dan pengunggahan gambar."),
-            bullets("Gunakan JPG, PNG, atau WebP.", "Gunakan nama berkas yang jelas dan tanpa karakter aneh.", "Pilih foto terang, tidak buram, dan tidak memperlihatkan dokumen pribadi warga."),
+            bullets("Gunakan JPG, PNG, atau WebP.", "Usahakan ukuran foto tidak lebih dari 5 MB; saat ini batas ukuran belum dipaksakan oleh halaman admin.", "Gunakan nama berkas yang jelas dan tanpa karakter aneh.", "Pilih foto terang, tidak buram, dan tidak memperlihatkan dokumen pribadi warga."),
         ]),
         ("Beranda dan Pengaturan Umum", [
             p("Halaman Website berisi teks dan gambar khusus untuk Beranda, Profil, Potensi, dan Layanan. Pengaturan berisi identitas yang dipakai di banyak halaman."),
@@ -114,7 +119,7 @@ OPERATIONAL = {
             table(["Pilihan", "Hasil"], [["Draf", "Informasi disimpan tetapi tidak ditampilkan di website"], ["Terbit", "Informasi dapat tampil setelah website selesai diperbarui"], ["Tampilkan di Publik dimatikan", "Informasi disembunyikan tanpa menghapus berkasnya"]]),
             h("Masalah umum"),
             bullets("Perubahan belum terlihat: tunggu beberapa menit lalu muat ulang halaman.", "Tidak bisa masuk: pastikan akun GitHub memiliki akses tulis ke repository Portal Rancajaya.", "Foto tidak muncul: unggah ulang JPG, PNG, atau WebP dengan nama berkas sederhana.", "Website gagal diperbarui: catat informasi terakhir yang diubah dan hubungi PIC teknis.", "Salah isi: buka kembali data, perbaiki, lalu Terbitkan ulang."),
-            note("Bantuan teknis", "Sampaikan halaman yang bermasalah, perubahan terakhir, waktu kejadian, dan tangkapan layar pesan kesalahan kepada PIC teknis.", "green"),
+            note("Bantuan teknis", "Sampaikan halaman yang bermasalah, perubahan terakhir, waktu kejadian, dan tangkapan layar pesan kesalahan kepada Daffa melalui WhatsApp.", "green"),
         ]),
     ],
 }
@@ -125,33 +130,118 @@ DEVELOPMENT = {
     "filename": "Panduan-Pengembangan-Portal-Rancajaya",
     "eyebrow": "PANDUAN TEKNIS",
     "title": "Panduan Pengembangan",
-    "subtitle": "dan Pemeliharaan Portal",
+    "subtitle": "Arsitektur, Ekstensi, dan Pemeliharaan Portal",
     "portal": "PORTAL DESA RANCAJAYA",
-    "description": "Dokumentasi teknis untuk pengembang, PIC teknis, dan tim penerus.",
+    "description": "Panduan teknis untuk memahami, memperluas, memelihara, dan memulihkan Portal Desa Rancajaya.",
     "audience": "Pengembang dan PIC Teknis Portal Rancajaya",
     "sections": [
-        ("Ruang Lingkup dan Arsitektur", [p("Portal Rancajaya adalah website statis berbasis Astro. Decap CMS menulis konten ke GitHub, GitHub Actions membangun folder dist, dan GitHub Pages menyajikan hasilnya. Netlify hanya menjadi OAuth proxy untuk proses masuk GitHub."), image("arsitektur-portal.png", "Alur teknis publikasi Portal Rancajaya."), note("Batas sistem", "Portal bukan database kependudukan, sistem persuratan otomatis, atau tempat menyimpan dokumen pribadi warga.", "gold")]),
-        ("Stack dan Komponen Utama", [table(["Komponen", "Peran"], [["Astro 5", "Static site generator dan routing"], ["Tailwind CSS 3", "Utility styling"], ["Astro Content Collections + Zod", "Skema dan validasi konten"], ["Decap CMS 3", "Editor konten berbasis Git"], ["Chart.js", "Visualisasi APBDes dan demografi"], ["GitHub Actions", "Build dan deployment"], ["GitHub Pages", "Hosting produksi"], ["Netlify", "OAuth proxy untuk backend GitHub"]]), p("Repository saat dokumentasi dibuat: https://github.com/Neuraly4/portal-rancajaya. Alamat publik yang digunakan pada panduan: https://portalrancajaya.github.io.")]),
-        ("Struktur Repository", [code("src/pages/                 rute halaman Astro\nsrc/components/            komponen UI\nsrc/layouts/               layout dan SEO global\nsrc/content/               Markdown dan JSON dari CMS\nsrc/content/config.ts      skema Zod\nsrc/utils/content.ts       filter publikasi dan normalisasi URL\npublic/admin/config.yml    konfigurasi Decap CMS\npublic/admin/index.html    entry point admin\npublic/images/             aset publik\n.github/workflows/         deployment GitHub Pages"), note("Sumber kebenaran", "Struktur bidang CMS dan skema Zod harus selalu berubah bersama. Ketidaksamaan keduanya dapat membuat build gagal setelah konten disimpan.", "red")]),
-        ("Menjalankan Proyek Secara Lokal", [steps("Gunakan Node.js 20 atau versi kompatibel.", "Clone repository dan masuk ke folder portal-rancajaya.", "Jalankan npm ci untuk instalasi yang konsisten dengan package-lock.json.", "Jalankan npm run dev.", "Buka http://localhost:4321/portal-rancajaya.", "Jalankan npm run build sebelum membuat commit."), code("git clone https://github.com/Neuraly4/portal-rancajaya.git\ncd portal-rancajaya\nnpm ci\nnpm run dev\nnpm run build")]),
-        ("Model Konten dan Status Publikasi", [p("Konten berbentuk Markdown untuk collection dan JSON untuk pengaturan/halaman tunggal. Field publicationFields mengendalikan visibilitas."), table(["Field", "Perilaku"], [["release_status: Draf", "isPublishedContent mengembalikan false"], ["release_status: Terbit", "konten boleh dirender"], ["release_status: Siap", "nilai lama yang tetap dianggap tampil"], ["aktif: false", "konten selalu disembunyikan"]]), p("Fungsi isPublishedContent di src/utils/content.ts harus digunakan secara konsisten ketika mengambil collection untuk halaman publik.")]),
-        ("Konfigurasi Decap CMS", [p("Backend memakai GitHub, branch main, dan OAuth proxy Netlify. Editorial Workflow tidak diaktifkan."), code("backend:\n  name: github\n  repo: Neuraly4/portal-rancajaya\n  branch: main\n  base_url: https://api.netlify.com\n  auth_endpoint: auth"), table(["Operasi", "Collection"], [["Tambah + edit", "berita, APBDes, statistik potensi, kelompok tani, produksi, UMKM, layanan, kontak, galeri"], ["Edit saja", "struktur organisasi, dusun, pengaturan umum, halaman website"], ["Hapus", "dinonaktifkan pada seluruh collection"]])]),
-        ("Menambah atau Mengubah Collection", [steps("Tambahkan atau ubah schema pada src/content/config.ts.", "Tambahkan collection dan fields yang sama pada public/admin/config.yml.", "Sesuaikan tipe pada komponen atau halaman yang membaca data.", "Buat contoh konten yang valid.", "Jalankan npm run build dan perbaiki semua validation error.", "Uji tambah/edit melalui lingkungan admin yang aman."), note("Relation field", "Untuk field relation, pastikan identifier_field, search_fields, value_field, dan nilai frontmatter benar-benar konsisten.", "gold")]),
-        ("Halaman, Komponen, dan Layout", [p("Rute berada di src/pages. Komponen berulang berada di src/components. Layout.astro memasang metadata dan komponen SEO global."), steps("Buat rute .astro baru di src/pages.", "Gunakan Layout dan Seo agar metadata konsisten.", "Gunakan resolvePublicPath untuk aset yang berasal dari konten.", "Tambahkan tautan navigasi hanya jika halaman memang ditujukan untuk publik.", "Pastikan tampilan responsif dan tidak mengandalkan JavaScript untuk konten pokok."), code("---\nimport Layout from '../layouts/Layout.astro';\n---\n<Layout title=\"Judul Halaman\" description=\"Deskripsi lokal\">\n  <main>...</main>\n</Layout>")]),
-        ("Aset, Base Path, dan URL", [p("Proyek saat ini memakai base /portal-rancajaya. Path aset CMS disimpan melalui public_folder dan harus sesuai base produksi."), bullets("Gunakan resolvePublicPath untuk path relatif dari frontmatter atau JSON.", "Jangan menggabungkan base path secara manual di banyak komponen.", "Untuk migrasi ke user site portalrancajaya.github.io, ubah site, base, public_folder, link kanonis, sitemap, dan dokumentasi secara bersamaan.", "Uji semua gambar admin serta tautan PDF setelah perubahan base."), note("Migrasi root domain", "Jika repository dipindahkan menjadi portalrancajaya.github.io dan dipublikasikan dari root, base biasanya berubah menjadi '/'. Lakukan migrasi sebagai satu perubahan teruji.", "gold")]),
-        ("SEO dan Data Terstruktur", [p("Seo.astro dan Layout.astro menjadi pusat title, description, canonical URL, Open Graph, serta JSON-LD profil desa."), bullets("Berikan title dan description berbeda pada setiap halaman.", "Pertahankan kata kunci lokal secara alami: Desa Rancajaya, Patokbeusi, Subang, Jawa Barat.", "Pastikan sitemap dari @astrojs/sitemap memakai site produksi yang benar.", "robots.txt harus mengizinkan halaman publik dan tidak perlu mengindeks /admin.", "JSON-LD tidak boleh memuat klaim atau koordinat yang belum terverifikasi.")]),
-        ("Build dan GitHub Pages", [p("Workflow .github/workflows/deploy.yml berjalan pada push ke main atau workflow_dispatch."), code("checkout -> setup-node 20 -> npm ci -> npm run build\n-> upload-pages-artifact ./dist -> deploy-pages"), steps("Buka tab Actions untuk melihat workflow terbaru.", "Buka job build jika npm ci atau npm run build gagal.", "Perbaiki sumber masalah di branch, lalu push commit baru.", "Jangan mengubah hasil dist secara manual karena folder tersebut dibangun ulang."), note("Netlify bukan hosting produksi", "netlify.toml dipertahankan untuk layanan OAuth. Status deploy website produksi diperiksa di GitHub Actions dan GitHub Pages.", "green")]),
-        ("OAuth dan Akses Admin", [p("Decap CMS memakai backend GitHub. Pengguna perlu akun GitHub dengan akses tulis ke repository. Netlify meneruskan alur OAuth melalui base_url dan auth_endpoint."), bullets("Pastikan OAuth app/proxy mengarah ke repository dan callback yang benar.", "Gunakan akun resmi desa sebagai pemilik utama jika memungkinkan.", "Aktifkan 2FA pada GitHub dan Netlify.", "Cabut akses anggota yang tidak lagi bertugas.", "Jangan menaruh token, password, client secret, atau recovery code di repository maupun PDF."), note("Halaman panduan", "Halaman dan berkas panduan berada di public/admin. Tidak ada autentikasi tambahan pada file statis; karena itu panduan tidak boleh berisi rahasia.", "red")]),
-        ("Backup, Pemulihan, dan Rollback", [p("Git menjadi riwayat utama kode dan konten. Pemulihan harus dilakukan dengan commit baru atau revert yang dapat diaudit."), steps("Identifikasi commit terakhir yang masih baik.", "Periksa perubahan pada commit bermasalah.", "Gunakan git revert untuk membatalkan commit yang sudah terpublikasi.", "Push hasil revert ke main dan tunggu GitHub Actions selesai.", "Untuk konten tunggal, perbaiki melalui CMS jika penyebabnya hanya nilai field."), code("git log --oneline\ngit show <commit>\ngit revert <commit>\ngit push origin main"), note("Cadangan tambahan", "Simpan salinan aset asli, dokumen sumber APBDes, daftar akses internal, dan konfigurasi domain di penyimpanan resmi desa.", "gold")]),
-        ("Diagnostik Masalah Umum", [table(["Gejala", "Lokasi diagnosis"], [["CMS tidak dapat masuk", "OAuth proxy Netlify, akses GitHub, callback, dan console browser"], ["Build gagal setelah edit konten", "GitHub Actions serta pesan validasi Zod"], ["Gambar 404", "public_folder, base path, resolvePublicPath, dan nama file"], ["Konten Draf tampil", "isPublishedContent dan filter collection"], ["Sitemap/canonical salah", "astro.config.mjs dan Seo.astro"], ["Panduan tidak terbuka", "path relatif admin, hasil dist, dan base URL"]]), p("Catat URL, waktu kejadian, commit terakhir, pesan error lengkap, serta perubahan yang dilakukan sebelum masalah muncul.")]),
-        ("Pengembangan Lanjutan", [bullets("Pertahankan website sebagai portal informasi statis selama belum ada kebutuhan backend yang tervalidasi.", "Jangan menerima upload KTP/KK atau menyimpan respons formulir di repository publik.", "Jika menambah fitur interaktif, dokumentasikan pemilik data, retensi, akses, risiko, dan cara pemulihan.", "Perbarui kedua panduan serta halaman admin setiap kali menu, field, URL, atau proses deployment berubah."), note("Kriteria selesai", "Perubahan teknis dinyatakan selesai setelah npm run build berhasil, halaman utama dan admin dapat dibuka pada base produksi, tidak ada data sensitif, dan dokumentasi relevan telah diperbarui.", "green")]),
+        ("Arsitektur dan Alur Publikasi", [
+            p("Portal Rancajaya adalah website statis berbasis Astro. Konten dikelola sebagai berkas Markdown dan JSON di GitHub; tidak ada server aplikasi atau database produksi."),
+            image("arsitektur-portal.png", "Alur publikasi Portal Rancajaya dari pengelola sampai pengunjung."),
+            table(["Tahap", "Tanggung jawab"], [["Decap CMS", "Menulis perubahan konten sebagai commit Git"], ["GitHub", "Menyimpan kode, konten, aset, dan riwayat"], ["GitHub Actions", "Memasang dependency, memvalidasi konten, dan membangun dist"], ["GitHub Pages", "Menyajikan hasil statis kepada pengunjung"], ["Netlify", "Hanya meneruskan OAuth untuk proses masuk GitHub"]]),
+            note("Batas sistem", "Portal bukan database kependudukan, sistem persuratan otomatis, atau tempat menyimpan KTP, KK, NIK, respons formulir, dan surat pribadi warga.", "gold"),
+        ]),
+        ("Stack dan Alasan Pemilihan", [
+            table(["Komponen", "Peran dan alasan"], [["Astro 5", "Routing berbasis berkas dan keluaran statis; sesuai untuk portal informasi dengan JavaScript minimum"], ["Tailwind CSS 3", "Token desain dan kelas utilitas yang konsisten tanpa framework UI tambahan"], ["Content Collections + Zod", "Validasi struktur Markdown/JSON saat build sebelum perubahan tayang"], ["Decap CMS 3", "Antarmuka pengelolaan berbasis Git tanpa database CMS"], ["Chart.js 4", "Grafik APBDes dan demografi dari data yang sudah tersedia di halaman"], ["GitHub Actions + Pages", "Build dan hosting produksi gratis dalam satu riwayat repository"], ["Netlify", "OAuth proxy saja; bukan hosting produksi"]]),
+            link("Repository resmi", REPOSITORY_URL),
+            p("Situs produksi: https://portalrancajaya.github.io."),
+            note("Tidak dipakai", "Portal tidak memakai Pagefind, Leaflet, Formspree, Vitest, atau backend database. Jangan menambahkan dependency hanya karena tercantum pada proyek referensi.", "gold"),
+        ]),
+        ("Struktur Repository", [
+            code("src/pages/                 rute: beranda, profil, informasi, potensi, layanan\nsrc/components/            Navbar, Footer, Seo, kartu, dan Hero\nsrc/layouts/Layout.astro   shell halaman dan metadata global\nsrc/content/               koleksi Markdown serta data JSON\nsrc/content/config.ts      skema Zod seluruh konten\nsrc/styles/global.css      kelas komponen dan gaya dasar\nsrc/utils/content.ts       publikasi, URL aset, WhatsApp, formulir, peta\npublic/admin/config.yml    collection dan field Decap CMS\npublic/admin/index.html    halaman masuk dan akses panduan\npublic/images/             gambar publik dan hasil unggahan\npublic/vendor/             Chart.js yang dilayani lokal\n.github/workflows/         build dan deploy GitHub Pages"),
+            note("Sumber kebenaran", "Untuk setiap field, src/content/config.ts, public/admin/config.yml, contoh konten, dan halaman yang membaca data harus tetap konsisten.", "red"),
+        ]),
+        ("Alur Data dan Model Konten", [
+            p("Konten collection disimpan sebagai Markdown, sedangkan pengaturan dan teks halaman tunggal disimpan sebagai JSON. Halaman mengambil data melalui getCollection atau getEntry lalu memfilter status publikasi."),
+            table(["Kelompok data", "Sumber", "Konsumen utama"], [["Berita", "src/content/berita/*.md", "Beranda dan halaman Informasi"], ["APBDes", "src/content/apbdes/*.md", "Profil dan grafik riwayat APBDes"], ["Potensi", "potensi-statistik, kelompok-tani, produksi-pertanian", "Halaman Potensi"], ["UMKM dan galeri", "src/content/umkm serta galeri", "Beranda, Potensi, dan Informasi visual"], ["Struktur dan dusun", "struktur-organisasi serta dusun", "Halaman Profil"], ["Layanan dan kontak", "layanan-administrasi serta kontak", "Beranda dan Layanan"], ["Pengaturan", "pengaturan/umum.json", "Navbar, Footer, peta, dan identitas desa"], ["Halaman", "halaman/*.json", "Teks khusus Beranda, Profil, Potensi, dan Layanan"]]),
+            table(["Status", "Perilaku"], [["release_status: Draf", "isPublishedContent mengembalikan false"], ["release_status: Terbit", "konten boleh ditampilkan"], ["release_status: Siap", "nilai lama yang tetap dianggap tampil"], ["aktif: false", "konten selalu disembunyikan"]]),
+            note("Validasi bukan verifikasi", "Zod memeriksa tipe dan struktur data, bukan kebenaran faktual. Tahun, sumber, dan status validasi tetap harus diperiksa terhadap dokumen resmi.", "gold"),
+        ]),
+        ("Menjalankan Proyek Secara Lokal", [
+            steps("Gunakan Node.js 20 atau versi kompatibel.", "Clone repository dan masuk ke folder portalrancajaya.github.io.", "Jalankan npm ci agar dependency mengikuti package-lock.json.", "Jalankan npm run dev.", "Buka http://localhost:4321/.", "Jalankan npm run build dan npm run preview sebelum commit."),
+            code("git clone https://github.com/portalrancajaya/portalrancajaya.github.io.git\ncd portalrancajaya.github.io\nnpm ci\nnpm run dev\nnpm run build\nnpm run preview"),
+            note("Batas pengujian", "Belum ada automated test di package.json. npm run build adalah pemeriksaan minimum untuk schema, import, dan kompilasi; tampilan utama dan admin tetap harus diperiksa di browser.", "gold"),
+        ]),
+        ("Menambah Halaman Baru", [
+            steps("Buat file .astro di src/pages; nama folder atau file menentukan URL.", "Gunakan Layout dari src/layouts/Layout.astro.", "Isi title dan description lokal serta schema JSON-LD bila relevan.", "Gunakan getCollection/getEntry untuk data dan isPublishedContent untuk collection publik.", "Gunakan resolvePublicPath untuk gambar dari konten.", "Tambahkan navigasi di src/components/Navbar.astro dan Footer.astro bila halaman memang publik.", "Uji desktop, ponsel, tautan aktif, base path, lalu jalankan npm run build."),
+            code("---\nimport Layout from '../layouts/Layout.astro';\nconst base = import.meta.env.BASE_URL.replace(/\\/$/, '');\n---\n<Layout title=\"Judul Halaman\" description=\"Deskripsi lokal\">\n  <main class=\"section\">...</main>\n</Layout>"),
+            note("Navigasi", "Navbar.astro dan Footer.astro mempunyai daftar tautan masing-masing. Jika menu baru harus tampil di keduanya, perbarui kedua file secara bersamaan.", "green"),
+        ]),
+        ("Menambah atau Mengubah Collection", [
+            steps("Definisikan atau ubah schema Zod di src/content/config.ts.", "Daftarkan collection pada export collections di file yang sama.", "Buat folder konten dan satu contoh berkas yang valid.", "Tambahkan collection serta field yang identik di public/admin/config.yml.", "Atur create, delete, identifier_field, summary, dan slug sesuai kebutuhan.", "Sesuaikan komponen atau halaman yang membaca data.", "Jalankan npm run build, lalu uji tambah dan edit melalui admin."),
+            code("const contohCollection = defineCollection({\n  type: 'content',\n  schema: z.object({\n    nama: z.string(),\n    urutan: z.number(),\n    ...publicationFields,\n  }),\n});"),
+            note("Relation field", "identifier_field, search_fields, value_field, nama folder, nama collection, dan nilai frontmatter harus konsisten. Perubahan salah satu tanpa yang lain dapat merusak pilihan relasi atau build.", "gold"),
+        ]),
+        ("Menambah Visualisasi Data", [
+            p("Padanan fitur infografis pada Portal Rancajaya adalah grafik demografi dan APBDes di src/pages/profil.astro. Chart.js dilayani lokal dari public/vendor/chart.umd.js."),
+            steps("Tentukan sumber data dan satuan yang akan divisualisasikan.", "Validasi field sumber di src/content/config.ts dan CMS jika datanya dapat diedit.", "Ubah data menjadi array label/value di frontmatter halaman.", "Tambahkan canvas dengan id unik, role img, dan aria-label yang menjelaskan grafik.", "Muat chartScriptUrl satu kali dan buat grafik setelah DOMContentLoaded.", "Sediakan angka ringkas, legenda teks, atau tabel agar informasi tidak hanya bergantung pada grafik.", "Uji kondisi data kosong, banyak kategori, layar kecil, dan pergantian periode."),
+            code("const chartScriptUrl = `${import.meta.env.BASE_URL.replace(/\\/$/, '')}/vendor/chart.umd.js`;\n\n<canvas id=\"chartBaru\" role=\"img\" aria-label=\"Deskripsi grafik\"></canvas>\n<script is:inline src={chartScriptUrl}></script>"),
+            note("Aksesibilitas data", "Canvas tidak menggantikan teks. Nilai penting harus tetap tersedia sebagai ringkasan, legenda, atau tabel yang dapat dibaca tanpa menjalankan JavaScript.", "green"),
+        ]),
+        ("Mengubah Design System", [
+            p("Token utama berada di tailwind.config.mjs, sedangkan pola komponen berulang berada di src/styles/global.css. Perubahan token harus lebih dahulu dipilih daripada mengganti warna satu per satu di halaman."),
+            table(["Bagian", "Lokasi dan isi"], [["Warna", "primary, gold, ink, muted, paper, dan line di tailwind.config.mjs"], ["Font", "Lexend untuk display; Plus Jakarta Sans/Inter untuk body"], ["Radius", "2xl, xl, lg, md, dan pill"], ["Kartu", ".card, .card-hover, .stat-card, .stat-card-dark"], ["Tombol", ".btn-primary, .btn-gold, .btn-outline, .btn-ghost"], ["Label", ".pill, .pill-primary, .pill-gold, .eyebrow"], ["Tata letak", ".container-page, .section, .section-header, .section-title"]]),
+            steps("Ubah token atau kelas dasar.", "Cari warna atau ukuran hardcoded yang perlu dinormalisasi.", "Periksa kontras teks, focus state, dan ukuran target sentuh.", "Uji Beranda, Profil, Informasi, Potensi, Layanan, serta admin pada desktop dan ponsel.", "Jalankan npm run build."),
+            note("Jangan mengubah merek parsial", "Perubahan warna, font, atau radius harus diterapkan sebagai satu sistem. Hindari menambahkan warna baru pada komponen tunggal tanpa peran desain yang jelas.", "gold"),
+        ]),
+        ("Konfigurasi CMS dan Publikasi", [
+            p("Decap CMS memakai backend GitHub pada branch main dan OAuth proxy Netlify. Editorial Workflow tidak diaktifkan; status Draf/Terbit berasal dari field konten Portal Rancajaya."),
+            code("backend:\n  name: github\n  repo: portalrancajaya/portalrancajaya.github.io\n  branch: main\n  base_url: https://api.netlify.com\n  auth_endpoint: auth"),
+            table(["Operasi", "Collection"], [["Tambah + edit", "berita, APBDes, statistik potensi, kelompok tani, produksi, UMKM, layanan, kontak, galeri"], ["Edit saja", "struktur organisasi, dusun, pengaturan umum, halaman website"], ["Hapus", "dinonaktifkan pada seluruh collection"]]),
+            bullets("Jaga urutan field agar mudah dipakai pengelola.", "Berikan hint dan pola nilai untuk field yang rawan salah.", "Jangan menyimpan rahasia, token, atau data pribadi pada config maupun konten.", "Perubahan config CMS harus diuji bersama schema Zod dan contoh konten."),
+        ]),
+        ("Aset, Base Path, dan URL", [
+            p("Repository sudah memakai GitHub Pages user site: https://portalrancajaya.github.io dengan base '/'. Path aset CMS melalui public_folder harus mengikuti base produksi."),
+            bullets("Gunakan resolvePublicPath untuk path gambar dari Markdown atau JSON.", "Gunakan import.meta.env.BASE_URL untuk aset statis yang dirangkai di kode.", "Jangan menambahkan prefix repository pada URL aset atau tautan internal.", "Periksa gambar, favicon, vendor Chart.js, halaman admin, dan tautan unduhan panduan setelah perubahan base.", "Pertahankan nama berkas sederhana, format web, dan ukuran yang wajar."),
+            note("Situs GitHub Pages", "Konfigurasi site, base, public_folder, canonical, sitemap, callback OAuth, dan dokumentasi harus tetap mengarah ke portalrancajaya.github.io. Untuk user site, base biasanya '/'.", "gold"),
+        ]),
+        ("SEO dan Data Terstruktur", [
+            p("Seo.astro dan Layout.astro menjadi pusat title, description, canonical URL, Open Graph, favicon, sitemap, serta JSON-LD profil desa."),
+            bullets("Berikan title dan description berbeda pada setiap halaman.", "Gunakan kata kunci lokal secara alami: Desa Rancajaya, Patokbeusi, Subang, Jawa Barat.", "Pastikan canonical dan sitemap memakai alamat produksi yang benar.", "robots.txt harus mengizinkan halaman publik dan tidak perlu mengindeks /admin.", "JSON-LD hanya memuat identitas, alamat, dan koordinat yang telah diverifikasi.", "Gunakan alt text yang menjelaskan isi gambar, bukan nama file."),
+            note("Saran domain resmi", "Saat ini portal masih memakai domain GitHub Pages, belum domain desa.id. Bila desa ingin menggunakan domain resmi, rencanakan perubahan DNS, canonical, sitemap, OAuth callback, dan pengujian URL sebagai satu pekerjaan terjadwal; jangan mengganti alamat sebagian-sebagian.", "green"),
+        ]),
+        ("Deployment dan CI/CD", [
+            p("Workflow .github/workflows/deploy.yml berjalan pada push ke main atau workflow_dispatch."),
+            code("checkout -> setup-node 20 -> npm ci -> npm run build\n-> upload-pages-artifact ./dist -> deploy-pages"),
+            steps("Push perubahan ke branch yang dituju.", "Buka tab Actions dan periksa workflow terbaru.", "Jika build gagal, buka job Build with Astro dan baca error pertama yang relevan.", "Perbaiki sumber di repository lalu push commit baru.", "Setelah deploy, uji halaman publik, admin, gambar, sitemap, dan unduhan panduan."),
+            note("Netlify bukan hosting produksi", "netlify.toml dipertahankan untuk layanan OAuth. Status website produksi diperiksa di GitHub Actions dan GitHub Pages.", "green"),
+        ]),
+        ("OAuth dan Akses Admin", [
+            p("Pengguna Decap CMS memerlukan akun GitHub dengan akses tulis ke repository. Netlify meneruskan OAuth melalui base_url dan auth_endpoint."),
+            bullets("Gunakan akun resmi desa sebagai pemilik utama jika memungkinkan.", "Aktifkan 2FA pada GitHub dan Netlify.", "Pastikan callback OAuth mengikuti alamat admin produksi.", "Cabut akses anggota yang tidak lagi bertugas.", "Jangan menaruh token, password, client secret, atau recovery code di repository maupun panduan.", "Catat pemilik repository, OAuth app, Netlify site, domain, dan kontak pemulihan di penyimpanan internal desa."),
+            note("Panduan admin bersifat publik", "Halaman dan berkas panduan berada di public/admin tanpa autentikasi tambahan. Panduan boleh menjelaskan proses, tetapi tidak boleh memuat rahasia atau daftar kredensial.", "red"),
+        ]),
+        ("Keterbatasan dan Utang Teknis", [
+            table(["Keterbatasan", "Dampak dan mitigasi"], [["Rebuild pada setiap commit", "Tidak ada preview situs produksi secara real-time; konten baru tayang setelah GitHub Actions selesai, biasanya sekitar 1-2 menit."], ["Akun GitHub wajib", "CMS memerlukan akun GitHub dengan akses tulis; siapkan pemilik dan admin cadangan."], ["OAuth bergantung pada Netlify", "Login Decap CMS bergantung pada layanan eksternal Netlify; catat pemilik site, callback, dan kontak pemulihan."], ["Tidak ada offline editing", "Perubahan membutuhkan koneksi internet dan akses ke GitHub/Netlify."], ["Unggahan gambar belum dibatasi otomatis", "CMS belum menolak ukuran file besar; 5 MB adalah rekomendasi editorial. Kompres gambar sebelum unggah."], ["Optimasi gambar hanya saat build", "Tidak ada CDN resizing saat pengunjung membuka situs; gunakan format web dan ukuran gambar yang wajar."], ["Bahasa tunggal", "Antarmuka dan konten saat ini berbahasa Indonesia; belum ada fitur multi-language."], ["Belum ada automated test", "npm run build dan uji browser wajib sebelum deploy."], ["Data faktual tidak terverifikasi otomatis", "Gunakan sumber_data, tahun_data, dan status_validasi."], ["Formulir surat berada di Google Forms", "Portal hanya menautkan formulir dan tidak mengendalikan retensi respons."], ["Belum memakai domain desa.id", "Situs masih berada di portalrancajaya.github.io; domain resmi desa dapat dipertimbangkan sebagai pengembangan berikutnya."]]),
+            note("Pemeliharaan technical debt", "Setiap utang teknis baru harus dicatat bersama dampak, pemilik keputusan, mitigasi sementara, dan syarat kapan perlu diselesaikan. Perbarui panduan pada perubahan yang memengaruhi pengguna atau pengembang.", "gold"),
+        ]),
+        ("Recovery Playbook", [
+            h("Build gagal setelah edit konten"),
+            steps("Buka GitHub Actions dan baca error pertama.", "Cari berkas konten serta field yang disebut pada pesan Zod atau import.", "Perbaiki melalui CMS atau GitHub.", "Push perbaikan dan tunggu workflow baru."),
+            h("Rollback perubahan yang sudah tayang"),
+            code("git log --oneline\ngit show <commit>\ngit revert <commit>\ngit push origin main"),
+            h("Pemulihan konfigurasi repository"),
+            steps("Pastikan repository resmi adalah portalrancajaya/portalrancajaya.github.io.", "Pastikan GitHub Pages memakai sumber GitHub Actions dan user site portalrancajaya.github.io.", "Periksa backend.repo di public/admin/config.yml.", "Periksa site dan base di astro.config.mjs serta public_folder CMS.", "Periksa OAuth app, callback, dan konfigurasi Netlify.", "Jalankan build lalu uji halaman publik dan login admin."),
+            note("Cadangan tambahan", "Simpan aset asli, dokumen sumber APBDes, daftar akses internal, dan konfigurasi domain pada penyimpanan resmi desa di luar repository publik.", "gold"),
+        ]),
+        ("Diagnostik Masalah Umum", [
+            table(["Gejala", "Lokasi diagnosis"], [["CMS tidak dapat masuk", "OAuth Netlify, akses GitHub, callback, dan console browser"], ["Build gagal setelah edit", "GitHub Actions, schema Zod, serta frontmatter/JSON"], ["Gambar 404", "public_folder, base path, resolvePublicPath, dan nama file"], ["Konten Draf tampil", "isPublishedContent dan filter getCollection"], ["Grafik kosong", "data sumber, id canvas, chartScriptUrl, dan waktu render"], ["Sitemap/canonical salah", "astro.config.mjs, Seo.astro, dan hasil dist"], ["Panduan tidak terbuka", "path admin, index.html, base URL, dan hasil dist"], ["Dokumentasi tertinggal", "Bandingkan perubahan terakhir dengan Panduan Operasional, Panduan Pengembangan, dan halaman admin"]]),
+            p("Catat URL, waktu kejadian, commit terakhir, pesan error lengkap, browser/perangkat, serta perubahan yang dilakukan sebelum masalah muncul."),
+            note("Urutan diagnosis", "Reproduksi masalah, tentukan apakah sumbernya konten atau kode, periksa commit terkait, lakukan perbaikan terkecil, lalu uji build dan halaman yang terdampak.", "green"),
+        ]),
+        ("Pengembangan Lanjutan", [
+            bullets("Pertahankan portal sebagai website informasi statis selama kebutuhan backend belum tervalidasi.", "Jangan menerima upload KTP/KK atau menyimpan respons formulir pada repository publik.", "Jika menambah fitur interaktif, dokumentasikan pemilik data, retensi, akses, risiko, fallback, dan cara pemulihan.", "Tambahkan automated test bila logika transformasi data, filter publikasi, atau normalisasi URL semakin kompleks.", "Update Panduan Operasional, Panduan Pengembangan, halaman admin, dan technical debt setiap kali menu, field, route, URL, dependency, deployment, atau ownership berubah."),
+            note("Definition of Done", "Development work is not complete until npm run build passes, affected public and admin pages are checked, no sensitive data is exposed, and the related documentation is updated in the same change. Documentation is part of the deliverable, not an afterthought.", "green"),
+        ]),
     ],
 }
 
 
 def set_cell_fill(cell, color):
     tc_pr = cell._tc.get_or_add_tcPr()
-    shd = tc_pr.find(qn("w:shd")) or OxmlElement("w:shd")
+    shd = tc_pr.find(qn("w:shd"))
+    if shd is None:
+        shd = OxmlElement("w:shd")
     shd.set(qn("w:fill"), color)
     if shd.getparent() is None: tc_pr.append(shd)
 
@@ -164,7 +254,9 @@ def set_cell_margins(cell, top=110, start=130, bottom=110, end=130):
         tc_mar = OxmlElement("w:tcMar")
         tc_pr.append(tc_mar)
     for tag, value in (("top", top), ("start", start), ("bottom", bottom), ("end", end)):
-        node = tc_mar.find(qn(f"w:{tag}")) or OxmlElement(f"w:{tag}")
+        node = tc_mar.find(qn(f"w:{tag}"))
+        if node is None:
+            node = OxmlElement(f"w:{tag}")
         node.set(qn("w:w"), str(value)); node.set(qn("w:type"), "dxa")
         if node.getparent() is None: tc_mar.append(node)
 
@@ -281,6 +373,26 @@ def add_bullet(doc, text):
     return par
 
 
+def add_hyperlink(paragraph, label, url, size=10.5):
+    """Append a styled external hyperlink to a Word paragraph."""
+    relationship_id = paragraph.part.relate_to(url, RT.HYPERLINK, is_external=True)
+    hyperlink = OxmlElement("w:hyperlink"); hyperlink.set(qn("r:id"), relationship_id)
+    run = paragraph.add_run(label); set_font(run, size=size, color="0563C1")
+    run._element.get_or_add_rPr().append(OxmlElement("w:u"))
+    underline = run._element.rPr.find(qn("w:u")); underline.set(qn("w:val"), "single")
+    paragraph._p.remove(run._r); hyperlink.append(run._r); paragraph._p.append(hyperlink)
+    return hyperlink
+
+
+def add_table_separator(doc):
+    """Prevent Word from merging adjacent tables that use different column grids."""
+    par = doc.add_paragraph()
+    par.paragraph_format.space_before = Pt(0)
+    par.paragraph_format.space_after = Pt(0)
+    par.paragraph_format.line_spacing = Pt(1)
+    set_font(par.add_run("\u200b"), size=1)
+
+
 def add_cover(doc, guide):
     for _ in range(3): doc.add_paragraph()
     ep = doc.add_paragraph(); ep.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -297,6 +409,7 @@ def add_cover(doc, guide):
     par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(par.add_run(guide["description"]), size=10.5, color=MUTED, italic=True)
     doc.add_paragraph()
     par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(par.add_run("Ditujukan untuk: "), size=10.5, bold=True); set_font(par.add_run(guide["audience"]), size=10.5, bold=True)
+    par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(par.add_run("Bantuan teknis: "), size=10, color=MUTED); add_hyperlink(par, "Daffa via WhatsApp", SUPPORT_URL, size=10)
     doc.add_paragraph()
     par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(par.add_run("Disusun oleh"), size=9, color=MUTED)
     par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(par.add_run("KKN-T IPB 2026"), "Cambria", 13, INK, True)
@@ -329,13 +442,19 @@ def add_blocks(doc, blocks):
     for block in blocks:
         kind = block["type"]
         if kind == "p": doc.add_paragraph(block["text"])
-        elif kind == "h": doc.add_paragraph(block["text"], style=next((item for item in doc.styles if item.name == "Heading 3"), None))
+        elif kind == "link":
+            par = doc.add_paragraph(); set_font(par.add_run(block["label"] + ": "), size=10.5, bold=True); add_hyperlink(par, block["url"], block["url"])
+        elif kind == "h": doc.add_paragraph(block["text"], style=next((item for item in doc.styles if item.name == "Heading 2"), None))
         elif kind == "bullets":
             for item in block["items"]: add_bullet(doc, item)
         elif kind == "steps":
-            for idx, item in enumerate(block["items"], 1):
-                t = doc.add_table(rows=1, cols=2); t.autofit = False
-                n, body = t.rows[0].cells; set_cell_width(n, 430); set_cell_width(body, 7900)
+            add_table_separator(doc)
+            t = doc.add_table(rows=len(block["items"]), cols=2); t.autofit = False
+            grid_cols = t._tbl.tblGrid.findall(qn("w:gridCol"))
+            for grid_col, width in zip(grid_cols, (430, 7900)):
+                grid_col.set(qn("w:w"), str(width))
+            for idx, (row, item) in enumerate(zip(t.rows, block["items"]), 1):
+                n, body = row.cells; set_cell_width(n, 430); set_cell_width(body, 7900)
                 set_cell_fill(n, GREEN_BRIGHT); set_cell_margins(n, 40, 50, 40, 50); set_cell_margins(body, 45, 120, 45, 40)
                 n.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER; body.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                 n.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(n.paragraphs[0].add_run(str(idx)), size=9, color="FFFFFF", bold=True)
@@ -358,7 +477,10 @@ def add_blocks(doc, blocks):
         elif kind == "image":
             path = ASSET_DIR / block["name"]
             if path.exists():
-                par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER; par.add_run().add_picture(str(path), width=Inches(5.7))
+                par = doc.add_paragraph(); par.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                picture = par.add_run().add_picture(str(path), width=Inches(5.7))
+                picture._inline.docPr.set("descr", block["caption"])
+                picture._inline.docPr.set("title", block["caption"])
                 cap = doc.add_paragraph(); cap.alignment = WD_ALIGN_PARAGRAPH.CENTER; set_font(cap.add_run(block["caption"]), size=9, color=MUTED, italic=True)
         elif kind == "code":
             t = doc.add_table(rows=1, cols=1); cell = t.cell(0, 0); set_cell_fill(cell, "F1F3F2"); set_cell_margins(cell, 120, 150, 120, 150)
@@ -383,6 +505,7 @@ def build_docx(guide):
 def block_html(block):
     kind = block["type"]
     if kind == "p": return f"<p>{html.escape(block['text'])}</p>"
+    if kind == "link": return f"<p class='resource-link'><strong>{html.escape(block['label'])}:</strong> <a href='{html.escape(block['url'], quote=True)}' target='_blank' rel='noopener noreferrer'>{html.escape(block['url'])}</a></p>"
     if kind == "h": return f"<h3>{html.escape(block['text'])}</h3>"
     if kind in ("bullets", "steps"):
         tag = "ol" if kind == "steps" else "ul"; items = "".join(f"<li>{html.escape(x)}</li>" for x in block["items"]); return f"<{tag}>{items}</{tag}>"
@@ -408,6 +531,9 @@ def build_html(guide):
     sections = "".join(f"<section class='section' id='bagian-{i}'><div class='section-label'>BAGIAN {i:02d}</div><h2>{html.escape(title)}</h2>{''.join(block_html(b) for b in blocks_)}</section>" for i, (title, blocks_) in enumerate(guide["sections"], 1))
     filename = guide["filename"]
     page = f"""<!doctype html><html lang='id'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{html.escape(guide['title'])} - Portal Rancajaya</title><meta name='description' content='{html.escape(guide['description'])}'><style>{STYLE}</style></head><body><header class='top'><div class='top-inner'><a href='../index.html'>← Kembali ke Admin</a><div class='actions'><a href='../panduan/files/{filename}.pdf'>Unduh PDF</a><a href='../panduan/files/{filename}.docx'>Unduh Word</a></div></div></header><div class='layout'><nav class='toc' aria-label='Daftar isi'>{toc}</nav><main><div class='cover'><div class='eyebrow'>{guide['eyebrow']}</div><h1>{html.escape(guide['title'])}</h1><h2>{html.escape(guide['subtitle'])}</h2><p class='lede'>{html.escape(guide['description'])}</p><p><strong>Ditujukan untuk:</strong> {html.escape(guide['audience'])}<br><strong>Disusun oleh:</strong> KKN-T IPB 2026<br><strong>Versi:</strong> Agustus 2026</p></div>{sections}</main></div></body></html>"""
+    page = page.replace("<style>", "<link rel='icon' href='../decap-cms-favicon.svg' type='image/svg+xml'><style>", 1)
+    page = page.replace("<div class='actions'>", f"<div class='actions'><a href='{SUPPORT_URL}' target='_blank' rel='noopener noreferrer'>{SUPPORT_LABEL}</a>", 1)
+    page = page.replace("<strong>Disusun oleh:</strong>", f"<strong>Bantuan teknis:</strong> <a href='{SUPPORT_URL}' target='_blank' rel='noopener noreferrer'>Daffa via WhatsApp</a><br><strong>Disusun oleh:</strong>", 1)
     (out_dir / "index.html").write_text(page, encoding="utf-8")
 
 

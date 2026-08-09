@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Panel Pengelolaan Desa</title>
+  <link rel="icon" href="decap-cms-favicon.svg" type="image/svg+xml" />
   <style>
     /* Styling panel agar sesuai dengan warna desa (Agraris Hijau & Emas) */
     [data-slate-editor] { padding: 1rem !important; }
@@ -120,9 +121,6 @@
   <button class="admin-action" id="admin-guide-button" type="button" aria-expanded="false" aria-controls="admin-guide-menu">
     Panduan
   </button>
-  <a class="admin-action" id="admin-upload-media" href="upload.html" aria-label="Buka halaman unggah media">
-    Unggah Media
-  </a>
 </div>
 
 <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
@@ -136,7 +134,6 @@
   const adminPath = window.location.pathname.replace(/(?:index\.html)?$/, "");
   document.getElementById("admin-guide-operasional")?.setAttribute("href", `${adminPath}panduan-operasional/index.html`);
   document.getElementById("admin-guide-pengembangan")?.setAttribute("href", `${adminPath}panduan-pengembangan/index.html`);
-  document.getElementById("admin-upload-media")?.setAttribute("href", `${adminPath}upload.html`);
 
   guideButton?.addEventListener("click", () => {
     const isOpen = guideMenu.dataset.open === "true";
