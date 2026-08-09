@@ -1240,3 +1240,7 @@ collections:
             widget: boolean
             default: true
             hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
+media_library:
+  name: default
+  config:
+    max_file_size: 5242880
