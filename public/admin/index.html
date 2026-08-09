@@ -41,11 +41,18 @@
       background-color: #166534 !important;
       color: white !important;
     }
-    .admin-upload-link {
+    .admin-dock {
       position: fixed;
       right: 1rem;
       bottom: 1rem;
       z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.6rem;
+      font-family: system-ui, sans-serif;
+    }
+    .admin-action {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -56,9 +63,41 @@
       font: 700 0.8125rem/1.2 system-ui, sans-serif;
       box-shadow: 0 8px 22px rgba(22, 101, 52, 0.24);
       text-decoration: none;
+      border: 0;
+      cursor: pointer;
     }
-    .admin-upload-link:hover {
+    .admin-action:hover,
+    .admin-action:focus-visible {
       background: #14532d;
+    }
+    .admin-guide-menu {
+      display: none;
+      width: min(20rem, calc(100vw - 2rem));
+      padding: 0.55rem;
+      border: 1px solid #d7e5dc;
+      border-radius: 0.75rem;
+      background: #fff;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.2);
+    }
+    .admin-guide-menu[data-open="true"] { display: grid; gap: 0.35rem; }
+    .admin-guide-menu a {
+      display: block;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      color: #14532d;
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 750;
+    }
+    .admin-guide-menu a:hover,
+    .admin-guide-menu a:focus-visible { background: #f0fdf4; }
+    .admin-guide-menu small {
+      display: block;
+      margin-top: 0.2rem;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 500;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -67,12 +106,51 @@
 
 <div id="nc-root"></div>
 
-<a class="admin-upload-link" href="upload.html" aria-label="Buka halaman unggah media">
-  Unggah Media
-</a>
+<div class="admin-dock" aria-label="Akses cepat admin">
+  <div class="admin-guide-menu" id="admin-guide-menu" data-open="false">
+    <a id="admin-guide-operasional" href="panduan-operasional/index.html">
+      Panduan Operasional
+      <small>Untuk pengelola website desa</small>
+    </a>
+    <a id="admin-guide-pengembangan" href="panduan-pengembangan/index.html">
+      Panduan Pengembangan
+      <small>Untuk pengembang dan PIC teknis</small>
+    </a>
+  </div>
+  <button class="admin-action" id="admin-guide-button" type="button" aria-expanded="false" aria-controls="admin-guide-menu">
+    Panduan
+  </button>
+  <a class="admin-action" id="admin-upload-media" href="upload.html" aria-label="Buka halaman unggah media">
+    Unggah Media
+  </a>
+</div>
 
 <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
 <script src="locale-id.js"></script>
+<script>
+  const guideButton = document.getElementById("admin-guide-button");
+  const guideMenu = document.getElementById("admin-guide-menu");
+
+  // Decap menambahkan base URL miliknya sendiri. Gunakan path halaman admin
+  // agar tautan tetap benar pada GitHub Pages project site maupun user site.
+  const adminPath = window.location.pathname.replace(/(?:index\.html)?$/, "");
+  document.getElementById("admin-guide-operasional")?.setAttribute("href", `${adminPath}panduan-operasional/index.html`);
+  document.getElementById("admin-guide-pengembangan")?.setAttribute("href", `${adminPath}panduan-pengembangan/index.html`);
+  document.getElementById("admin-upload-media")?.setAttribute("href", `${adminPath}upload.html`);
+
+  guideButton?.addEventListener("click", () => {
+    const isOpen = guideMenu.dataset.open === "true";
+    guideMenu.dataset.open = String(!isOpen);
+    guideButton.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".admin-dock")) {
+      guideMenu.dataset.open = "false";
+      guideButton.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>
 
 </body>
 </html>
