@@ -6,6 +6,6 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), sitemap()],
-  site: 'https://neuraly4.github.io/portal-rancajaya',
-  base: '/portal-rancajaya',
+  site: 'https://portalrancajaya.github.io',
+  base: '/',
 });

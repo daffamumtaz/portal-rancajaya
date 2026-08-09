@@ -1,10 +1,10 @@
 backend:
   name: github
-  repo: Neuraly4/portal-rancajaya
+  repo: portalrancajaya/portalrancajaya.github.io
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
-  site_id: portal-rancajaya.netlify.app
+  site_id: portalrancajayaauth.netlify.app
 
 # Mode simpan langsung. Status Draf/Terbit tetap diatur lewat field Status Publikasi.
 # Tambah + edit: berita, APBDes, potensi, kelompok tani, produksi, UMKM, layanan, kontak, dan galeri.
@@ -12,7 +12,7 @@ backend:
 show_preview_links: true
 
 media_folder: "public/images/uploads"
-public_folder: "/portal-rancajaya/images/uploads"
+public_folder: "/images/uploads"
 
 locale: "id"
 
