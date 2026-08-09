@@ -45,18 +45,29 @@ export default async request => {
 
     // Decap terlebih dahulu melakukan handshake. Pada titik ini opener masih
     // tersedia; pemulihan setelah GitHub dilakukan oleh BroadcastChannel.
-    const document = `<!doctype html><meta charset="utf-8"><title>Menghubungkan ke GitHub…</title><p>Menghubungkan ke GitHub…</p><script>
+    const document = `<!doctype html><meta charset="utf-8"><title>Menghubungkan ke GitHub…</title><p id="status">Menghubungkan ke GitHub…</p><script>
       const targetOrigin = ${json(cmsOrigin)};
       const authorizeUrl = ${json(authorizeUrl.href)};
       if (!window.opener) {
-        document.body.textContent = 'Login harus dimulai dari halaman admin Decap.';
+        document.getElementById('status').textContent = 'Login harus dimulai dari halaman admin Decap.';
       } else {
-        window.opener.postMessage('authorizing:github', targetOrigin);
+        let attempts = 0;
+        const handshake = () => {
+          window.opener.postMessage('authorizing:github', targetOrigin);
+          attempts += 1;
+          if (attempts >= 40) {
+            clearInterval(handshakeTimer);
+            document.getElementById('status').textContent = 'Koneksi ke halaman admin tidak merespons. Tutup pop-up ini dan coba login ulang dari /admin/.';
+          }
+        };
+        const handshakeTimer = setInterval(handshake, 250);
+        handshake();
         window.addEventListener('message', event => {
           if (event.origin === targetOrigin && event.data === 'authorizing:github') {
+            clearInterval(handshakeTimer);
             window.location.replace(authorizeUrl);
           }
-        }, { once: true });
+        });
       }
     </script>`;
 
