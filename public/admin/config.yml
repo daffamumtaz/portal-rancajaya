@@ -15,7 +15,7 @@ collections:
     label_singular: Informasi
     folder: src/content/berita
     create: true
-    delete: false
+    delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     summary: "{{category}} - {{title}}"
     sortable_fields:
@@ -106,7 +106,7 @@ collections:
     label_singular: Foto Galeri
     folder: src/content/galeri
     create: true
-    delete: false
+    delete: true
     identifier_field: judul
     summary: "{{tanggal}} - {{judul}}"
     sortable_fields:
@@ -839,7 +839,7 @@ collections:
     label_singular: UMKM
     folder: src/content/umkm
     create: true
-    delete: false
+    delete: true
     identifier_field: nama
     summary: "{{nama}} - {{kategori}}"
     sortable_fields:
@@ -952,7 +952,7 @@ collections:
     label_singular: Layanan Administrasi
     folder: src/content/layanan-administrasi
     create: true
-    delete: false
+    delete: true
     identifier_field: nama
     summary: "{{nama}}"
     sortable_fields:
@@ -1045,7 +1045,7 @@ collections:
     label_singular: Kontak
     folder: src/content/kontak
     create: true
-    delete: false
+    delete: true
     identifier_field: nama
     summary: "{{jenis}} - {{nama}}"
     sortable_fields:
