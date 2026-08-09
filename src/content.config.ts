@@ -1,16 +1,18 @@
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 const labelValueSchema = z.object({
   label: z.string(),
   value: z.number(),
 });
 
-const releaseStatusSchema = z.enum(['Draf', 'Siap', 'Terbit']).default('Terbit');
+const releaseStatusSchema = z.enum(['Draf', 'Terbit']).default('Terbit');
 
 const sourceMetadataFields = {
   tahun_data: z.coerce.number().int().min(2000).max(2100).optional(),
   sumber_data: z.string().optional(),
-  status_validasi: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
+  status_validasi: z.enum(['Perlu Verifikasi', 'Terverifikasi']).default('Perlu Verifikasi'),
 };
 
 const publicationFields = {
@@ -20,7 +22,7 @@ const publicationFields = {
 };
 
 const beritaCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/berita' }),
   schema: z.object({
     title: z.string(),
     date: z.date(),
@@ -35,22 +37,8 @@ const beritaCollection = defineCollection({
   }),
 });
 
-const strukturOrganisasiCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    nama: z.string(),
-    jabatan: z.string(),
-    parent: z.string().optional(),
-    foto: z.string().optional(),
-    urutan: z.number(),
-    deskripsi: z.string().optional(),
-    ...sourceMetadataFields,
-    ...publicationFields,
-  }),
-});
-
 const dusunCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/dusun' }),
   schema: z.object({
     nama: z.string(),
     kepala_dusun: z.string().optional(),
@@ -67,24 +55,24 @@ const dusunCollection = defineCollection({
 });
 
 const apbdesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/apbdes' }),
   schema: z.object({
-    nama: z.string(),
-    jenis: z.enum(['Pendapatan', 'Belanja']),
     tahun: z.coerce.number().int().min(2000).max(2100),
     versi: z.enum(['Awal', 'Perubahan']).default('Awal'),
-    jumlah: z.number(),
-    realisasi: z.number().optional(),
-    urutan: z.number(),
-    deskripsi: z.string().optional(),
-    tanggal_pembaruan: z.coerce.date().optional(),
-    ...sourceMetadataFields,
+    pendapatan: z.array(z.object({
+      nama: z.string(), jumlah: z.number(), realisasi: z.number().optional(), urutan: z.number(),
+      deskripsi: z.string().optional(), tanggal_pembaruan: z.coerce.date().optional(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
+    belanja: z.array(z.object({
+      nama: z.string(), jumlah: z.number(), realisasi: z.number().optional(), urutan: z.number(),
+      deskripsi: z.string().optional(), tanggal_pembaruan: z.coerce.date().optional(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
     ...publicationFields,
   }),
 });
 
 const galeriCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/galeri' }),
   schema: z.object({
     judul: z.string(),
     tanggal: z.date(),
@@ -96,53 +84,8 @@ const galeriCollection = defineCollection({
   }),
 });
 
-const kelompokTaniCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    nama: z.string(),
-    ketua: z.string(),
-    dusun: z.string().optional(),
-    komoditas_utama: z.string(),
-    luas_ha: z.number().nonnegative(),
-    jumlah_anggota: z.number(),
-    deskripsi: z.string(),
-    kontak: z.string().optional(),
-    ...sourceMetadataFields,
-    ...publicationFields,
-  }),
-});
-
-const potensiStatistikCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    kategori: z.enum(['Pertanian', 'Peternakan', 'Sarana Pertanian']),
-    label: z.string(),
-    value: z.string(),
-    keterangan: z.string().optional(),
-    satuan: z.string().optional(),
-    urutan: z.number(),
-    ...sourceMetadataFields,
-    ...publicationFields,
-  }),
-});
-
-const produksiPertanianCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    nama: z.string(),
-    kategori: z.enum(['Tanaman Pangan', 'Sayuran', 'Buah-buahan', 'Perkebunan']),
-    luas_ha: z.number().nonnegative(),
-    produktivitas: z.string(),
-    produksi_ton: z.number().nonnegative(),
-    catatan: z.string().optional(),
-    urutan: z.number(),
-    ...sourceMetadataFields,
-    ...publicationFields,
-  }),
-});
-
 const umkmCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/umkm' }),
   schema: z.object({
     nama: z.string(),
     pemilik: z.string(),
@@ -160,7 +103,7 @@ const umkmCollection = defineCollection({
 });
 
 const layananAdministrasiCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/layanan-administrasi' }),
   schema: z.object({
     nama: z.string(),
     kategori: z.enum(['Administrasi Kependudukan', 'Surat Pengantar', 'Usaha', 'Sosial', 'Lainnya']).default('Administrasi Kependudukan'),
@@ -179,7 +122,7 @@ const layananAdministrasiCollection = defineCollection({
 });
 
 const kontakCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/kontak' }),
   schema: z.object({
     nama: z.string(),
     jenis: z.enum(['Desa', 'Kesehatan', 'Keamanan', 'Darurat', 'Layanan']),
@@ -192,21 +135,8 @@ const kontakCollection = defineCollection({
   }),
 });
 
-const faqCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    pertanyaan: z.string(),
-    jawaban: z.string(),
-    kategori: z.enum(['Administrasi', 'Layanan', 'Umum', 'Potensi']).default('Umum'),
-    urutan: z.number(),
-    tanggal_pembaruan: z.coerce.date().optional(),
-    sumber_data: z.string().optional(),
-    ...publicationFields,
-  }),
-});
-
 const pengaturanCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/pengaturan' }),
   schema: z.object({
     nama_desa: z.string().optional(),
     kecamatan: z.string().optional(),
@@ -236,7 +166,7 @@ const pengaturanCollection = defineCollection({
 });
 
 const halamanCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/halaman' }),
   schema: z.object({
     // Beranda
     hero_title: z.string().optional(),
@@ -265,22 +195,20 @@ const halamanCollection = defineCollection({
     penduduk_wanita: z.string().optional(),
     tahun_wilayah: z.coerce.number().int().min(2000).max(2100).optional(),
     sumber_wilayah: z.string().optional(),
-    status_validasi_wilayah: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
+    status_validasi_wilayah: z.enum(['Perlu Verifikasi', 'Terverifikasi']).default('Perlu Verifikasi'),
     demo_pendidikan: z.array(labelValueSchema).default([]),
     demografi_umur: z.array(labelValueSchema).default([]),
     data_pekerjaan_warga: z.array(labelValueSchema).default([]),
     status_pernikahan: z.array(labelValueSchema).default([]),
     tahun_demografi: z.coerce.number().int().min(2000).max(2100).optional(),
     sumber_demografi: z.string().optional(),
-    status_validasi_demografi: z.enum(['Dummy', 'Perlu Verifikasi', 'Terverifikasi']).default('Dummy'),
+    status_validasi_demografi: z.enum(['Perlu Verifikasi', 'Terverifikasi']).default('Perlu Verifikasi'),
+    struktur_organisasi: z.array(z.object({
+      slug: z.string(), nama: z.string(), jabatan: z.string(), parent: z.string().optional(), foto: z.string().optional(),
+      urutan: z.number(), deskripsi: z.string().optional(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
     
     // Pertanian
-    luas_lahan: z.string().optional(),
-    komoditas: z.string().optional(),
-    jumlah_kelompok: z.string().optional(),
-    jumlah_petani: z.string().optional(),
-    irigasi: z.string().optional(),
-    produktivitas: z.string().optional(),
     deskripsi: z.string().optional(),
     peternakan_copywriting: z.string().optional(),
     gapoktan_nama: z.string().optional(),
@@ -289,6 +217,18 @@ const halamanCollection = defineCollection({
       foto: z.string(),
       alt_text: z.string(),
     })).default([]),
+    statistik_potensi: z.array(z.object({
+      slug: z.string(), kategori: z.enum(['Pertanian', 'Peternakan', 'Sarana Pertanian']), label: z.string(), value: z.string(),
+      satuan: z.string().optional(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
+    kelompok_tani: z.array(z.object({
+      slug: z.string(), nama: z.string(), ketua: z.string(), dusun: z.string().optional(), komoditas_utama: z.string(),
+      luas_ha: z.number(), jumlah_anggota: z.number(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
+    produksi_pertanian: z.array(z.object({
+      slug: z.string(), nama: z.string(), kategori: z.enum(['Tanaman Pangan', 'Sayuran', 'Buah-buahan', 'Perkebunan']),
+      luas_ha: z.number(), produktivitas: z.string(), produksi_ton: z.number(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
+    })).default([]),
 
     // Layanan
     administrasi: z.array(z.object({
@@ -296,35 +236,18 @@ const halamanCollection = defineCollection({
       link: z.string().optional(),
       ikon: z.string().optional(),
     })).default([]),
-    faq: z.array(z.object({
-      q: z.string(),
-      a: z.string(),
-    })).default([]),
-
-    // Tracking Progress
-    tracking_placeholder: z.string().optional(),
-    tracking_disclaimer: z.string().optional(),
-    tracking_steps: z.array(z.object({
-      label: z.string(),
-      detail: z.string(),
-    })).default([]),
     ...publicationFields,
   }),
 });
 
 export const collections = {
   'berita': beritaCollection,
-  'struktur-organisasi': strukturOrganisasiCollection,
   'dusun': dusunCollection,
   'apbdes': apbdesCollection,
   'galeri': galeriCollection,
-  'kelompok-tani': kelompokTaniCollection,
-  'potensi-statistik': potensiStatistikCollection,
-  'produksi-pertanian': produksiPertanianCollection,
   'umkm': umkmCollection,
   'layanan-administrasi': layananAdministrasiCollection,
   'kontak': kontakCollection,
-  'faq': faqCollection,
   'pengaturan': pengaturanCollection,
   'halaman': halamanCollection,
 };

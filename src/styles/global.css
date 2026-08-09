@@ -1,9 +1,7 @@
 /* ===== Google Fonts ===== */
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
 
 /* ===== Base Resets ===== */
 @layer base {
@@ -36,7 +34,7 @@
     @apply bg-white border border-line rounded-2xl shadow-sm;
   }
   .card-hover {
-    @apply card transition-all duration-300 hover:shadow-md hover:border-primary-300 hover:-translate-y-0.5;
+    @apply bg-white border border-line rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary-300 hover:-translate-y-0.5;
   }
   .stat-card {
     @apply bg-white border border-line rounded-xl p-4;
@@ -64,10 +62,10 @@
     @apply inline-flex items-center px-3 py-1 rounded-pill text-xs font-semibold border;
   }
   .pill-primary {
-    @apply pill bg-primary-50 text-primary-700 border-primary-100;
+    @apply inline-flex items-center px-3 py-1 rounded-pill text-xs font-semibold border bg-primary-50 text-primary-700 border-primary-100;
   }
   .pill-gold {
-    @apply pill bg-gold-50 text-gold-700 border-gold-100;
+    @apply inline-flex items-center px-3 py-1 rounded-pill text-xs font-semibold border bg-gold-50 text-gold-700 border-gold-100;
   }
 
   /* Section spacing */

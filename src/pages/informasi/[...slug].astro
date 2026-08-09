@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { isPublishedContent, resolvePublicPath } from '../../utils/content';
 
 export async function getStaticPaths() {
   const beritaEntries = (await getCollection('berita')).filter((entry) => isPublishedContent(entry.data));
   return beritaEntries.map(entry => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 // Format date
 const dateFormatted = new Intl.DateTimeFormat('id-ID', {

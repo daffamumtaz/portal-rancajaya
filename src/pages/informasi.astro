@@ -81,7 +81,7 @@ const sortedArticles = allArticles.sort((a, b) => b.data.date.valueOf() - a.data
                 excerpt={article.data.excerpt}
                 category={article.data.category}
                 date={dateFormatted}
-                slug={article.slug}
+                slug={article.id}
                 thumbnail={article.data.thumbnail}
                 featured={article.data.featured}
               />

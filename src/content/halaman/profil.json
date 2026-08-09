@@ -5,10 +5,22 @@
   "luas_sawah": "447 Hektar",
   "jumlah_rt": "15 RT",
   "batas_wilayah": [
-    { "arah": "Utara", "wilayah": "Desa Sukamandi, Kecamatan Ciasem" },
-    { "arah": "Timur", "wilayah": "Desa Rancabango, Kecamatan Patokbeusi" },
-    { "arah": "Selatan", "wilayah": "Desa Rancamulya, Kecamatan Patokbeusi" },
-    { "arah": "Barat", "wilayah": "Desa Gempolsari, Kecamatan Patokbeusi" }
+    {
+      "arah": "Utara",
+      "wilayah": "Desa Sukamandi, Kecamatan Ciasem"
+    },
+    {
+      "arah": "Timur",
+      "wilayah": "Desa Rancabango, Kecamatan Patokbeusi"
+    },
+    {
+      "arah": "Selatan",
+      "wilayah": "Desa Rancamulya, Kecamatan Patokbeusi"
+    },
+    {
+      "arah": "Barat",
+      "wilayah": "Desa Gempolsari, Kecamatan Patokbeusi"
+    }
   ],
   "tahun_wilayah": 2026,
   "sumber_wilayah": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026",
@@ -17,41 +29,257 @@
   "penduduk_pria": "3366",
   "penduduk_wanita": "3231",
   "demo_pendidikan": [
-    { "label": "Tidak/Belum Sekolah", "value": 2454 },
-    { "label": "Tamat SD/Sederajat", "value": 1611 },
-    { "label": "SLTP/Sederajat", "value": 948 },
-    { "label": "SLTA/Sederajat", "value": 775 },
-    { "label": "Belum Tamat SD/Sederajat", "value": 730 },
-    { "label": "Diploma IV/Strata I", "value": 48 },
-    { "label": "Diploma III/Sarjana Muda", "value": 15 },
-    { "label": "Diploma I/II", "value": 13 },
-    { "label": "Strata II-III", "value": 3 }
+    {
+      "label": "Tidak/Belum Sekolah",
+      "value": 2454
+    },
+    {
+      "label": "Tamat SD/Sederajat",
+      "value": 1611
+    },
+    {
+      "label": "SLTP/Sederajat",
+      "value": 948
+    },
+    {
+      "label": "SLTA/Sederajat",
+      "value": 775
+    },
+    {
+      "label": "Belum Tamat SD/Sederajat",
+      "value": 730
+    },
+    {
+      "label": "Diploma IV/Strata I",
+      "value": 48
+    },
+    {
+      "label": "Diploma III/Sarjana Muda",
+      "value": 15
+    },
+    {
+      "label": "Diploma I/II",
+      "value": 13
+    },
+    {
+      "label": "Strata II-III",
+      "value": 3
+    }
   ],
   "demografi_umur": [
-    { "label": "0-4 tahun", "value": 199 },
-    { "label": "5-9 tahun", "value": 397 },
-    { "label": "10-14 tahun", "value": 451 },
-    { "label": "15-19 tahun", "value": 519 },
-    { "label": "20-29 tahun", "value": 1097 },
-    { "label": "30-39 tahun", "value": 1071 },
-    { "label": "40-49 tahun", "value": 1032 },
-    { "label": "50-59 tahun", "value": 850 },
-    { "label": "60-69 tahun", "value": 570 },
-    { "label": "70 tahun ke atas", "value": 411 }
+    {
+      "label": "0-4 tahun",
+      "value": 199
+    },
+    {
+      "label": "5-9 tahun",
+      "value": 397
+    },
+    {
+      "label": "10-14 tahun",
+      "value": 451
+    },
+    {
+      "label": "15-19 tahun",
+      "value": 519
+    },
+    {
+      "label": "20-29 tahun",
+      "value": 1097
+    },
+    {
+      "label": "30-39 tahun",
+      "value": 1071
+    },
+    {
+      "label": "40-49 tahun",
+      "value": 1032
+    },
+    {
+      "label": "50-59 tahun",
+      "value": 850
+    },
+    {
+      "label": "60-69 tahun",
+      "value": 570
+    },
+    {
+      "label": "70 tahun ke atas",
+      "value": 411
+    }
   ],
   "data_pekerjaan_warga": [
-    { "label": "Belum/Tidak Bekerja", "value": 1910 },
-    { "label": "Mengurus Rumah Tangga", "value": 1759 },
-    { "label": "Wiraswasta", "value": 967 },
-    { "label": "Pelajar/Mahasiswa", "value": 781 },
-    { "label": "Buruh Tani/Perkebunan", "value": 382 },
-    { "label": "Petani/Pekebun", "value": 244 },
-    { "label": "Karyawan Swasta", "value": 201 },
-    { "label": "Buruh Harian Lepas", "value": 191 },
-    { "label": "Pekerjaan Lainnya", "value": 162 }
+    {
+      "label": "Belum/Tidak Bekerja",
+      "value": 1910
+    },
+    {
+      "label": "Mengurus Rumah Tangga",
+      "value": 1759
+    },
+    {
+      "label": "Wiraswasta",
+      "value": 967
+    },
+    {
+      "label": "Pelajar/Mahasiswa",
+      "value": 781
+    },
+    {
+      "label": "Buruh Tani/Perkebunan",
+      "value": 382
+    },
+    {
+      "label": "Petani/Pekebun",
+      "value": 244
+    },
+    {
+      "label": "Karyawan Swasta",
+      "value": 201
+    },
+    {
+      "label": "Buruh Harian Lepas",
+      "value": 191
+    },
+    {
+      "label": "Pekerjaan Lainnya",
+      "value": 162
+    }
   ],
-  "status_pernikahan": [
-  ],
+  "status_pernikahan": [],
   "release_status": "Terbit",
-  "aktif": true
+  "aktif": true,
+  "struktur_organisasi": [
+    {
+      "slug": "kadus-buwer",
+      "nama": "Miska",
+      "jabatan": "Kawil Dusun Buwer",
+      "parent": "kepala-desa",
+      "urutan": 7,
+      "deskripsi": "Mengkoordinasikan pelayanan dan kegiatan warga di Dusun Buwer.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kadus-mulyasari",
+      "nama": "Sukana Muhtar",
+      "jabatan": "Kawil Dusun Mulyasari",
+      "parent": "kepala-desa",
+      "urutan": 5,
+      "deskripsi": "Mengkoordinasikan pelayanan dan kegiatan warga di Dusun Mulyasari.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kadus-sengon",
+      "nama": "Nano Suharno",
+      "jabatan": "Kawil Dusun Sengon",
+      "parent": "kepala-desa",
+      "urutan": 6,
+      "deskripsi": "Mengkoordinasikan pelayanan dan kegiatan warga di Dusun Sengon.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kasi-pemerintahan",
+      "nama": "Wendy Wiranto",
+      "jabatan": "Kaur Pemerintahan",
+      "parent": "kepala-desa",
+      "urutan": 4,
+      "deskripsi": "Membantu urusan pemerintahan, kependudukan, dan pelayanan administrasi masyarakat.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kaur-kesra",
+      "nama": "Udianto",
+      "jabatan": "Kaur Kesra",
+      "parent": "kepala-desa",
+      "urutan": 3,
+      "deskripsi": "Membantu pelaksanaan urusan kesejahteraan rakyat desa.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kaur-keuangan",
+      "nama": "Rinto Purwanto",
+      "jabatan": "Kaur Keuangan",
+      "parent": "kepala-desa",
+      "urutan": 3,
+      "deskripsi": "Mengelola administrasi keuangan desa dan pelaporan APBDes.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kaur-umum",
+      "nama": "Anim Setiawan",
+      "jabatan": "Kaur Umum",
+      "parent": "kaur-kesra",
+      "urutan": 4,
+      "deskripsi": "Membantu pelaksanaan urusan tata usaha dan umum desa.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kepala-desa",
+      "nama": "Kosasih",
+      "jabatan": "Kepala Desa",
+      "urutan": 1,
+      "deskripsi": "Memimpin penyelenggaraan pemerintahan desa, pembangunan, pembinaan masyarakat, dan pemberdayaan warga.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sekretaris-desa",
+      "nama": "Suryanto Suprianto",
+      "jabatan": "Sekretaris Desa",
+      "parent": "kepala-desa",
+      "urutan": 2,
+      "deskripsi": "Mengkoordinasikan administrasi pemerintahan, surat menyurat, dan tata kelola kantor desa.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "staff-acep-dudung",
+      "nama": "Acep Dudung",
+      "jabatan": "Staff",
+      "parent": "kaur-keuangan",
+      "urutan": 7,
+      "deskripsi": "Staff Pemerintahan Desa Rancajaya.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "staff-ujang-tamin",
+      "nama": "Ujang Tamin",
+      "jabatan": "Staff",
+      "parent": "kasi-pemerintahan",
+      "urutan": 6,
+      "deskripsi": "Staff Pemerintahan Desa Rancajaya.",
+      "sumber_data": "STRUKTUR DESA RANCAJAYA.xlsx",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    }
+  ]
 }

@@ -6,17 +6,311 @@
   "gapoktan_ketua": "Pak Syarif",
   "peternakan_copywriting": "Peternakan domba menjadi salah satu potensi yang menonjol di Desa Rancajaya. Kandang-kandang warga memperlihatkan praktik pemeliharaan skala rumah tangga yang menjadi bagian dari aktivitas ekonomi keluarga.",
   "peternakan_galeri": [
-    { "foto": "/images/peternakan/domba-1.jpeg", "alt_text": "Kandang domba warga Desa Rancajaya" },
-    { "foto": "/images/peternakan/domba-2.jpeg", "alt_text": "Domba peliharaan warga Desa Rancajaya" },
-    { "foto": "/images/peternakan/domba-3.jpeg", "alt_text": "Aktivitas peternakan domba di Desa Rancajaya" },
-    { "foto": "/images/peternakan/domba-4.jpeg", "alt_text": "Dokumentasi kandang domba warga Desa Rancajaya" }
+    {
+      "foto": "/images/peternakan/domba-1.jpeg",
+      "alt_text": "Kandang domba warga Desa Rancajaya"
+    },
+    {
+      "foto": "/images/peternakan/domba-2.jpeg",
+      "alt_text": "Domba peliharaan warga Desa Rancajaya"
+    },
+    {
+      "foto": "/images/peternakan/domba-3.jpeg",
+      "alt_text": "Aktivitas peternakan domba di Desa Rancajaya"
+    },
+    {
+      "foto": "/images/peternakan/domba-4.jpeg",
+      "alt_text": "Dokumentasi kandang domba warga Desa Rancajaya"
+    }
   ],
-  "luas_lahan": "488",
-  "komoditas": "Padi",
-  "jumlah_kelompok": "8",
-  "jumlah_petani": "378 anggota Gapoktan",
-  "irigasi": "Teknis",
-  "produktivitas": "6,9",
   "release_status": "Terbit",
-  "aktif": true
+  "aktif": true,
+  "statistik_potensi": [
+    {
+      "slug": "anggota-gapoktan",
+      "kategori": "Pertanian",
+      "label": "Anggota Gapoktan",
+      "value": "378 Orang",
+      "urutan": 3,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "hand-sprayer",
+      "kategori": "Sarana Pertanian",
+      "label": "Hand Sprayer",
+      "value": "195 Unit",
+      "urutan": 2,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "hand-traktor",
+      "kategori": "Sarana Pertanian",
+      "label": "Hand Traktor",
+      "value": "14 Unit",
+      "urutan": 3,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "jumlah-kelompok-tani",
+      "kategori": "Pertanian",
+      "label": "Kelompok Tani Padi",
+      "value": "8 Kelompok",
+      "urutan": 2,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "luas-sawah-teknis",
+      "kategori": "Pertanian",
+      "label": "Sawah Teknis",
+      "value": "488 Hektare",
+      "urutan": 1,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "mesin-appo",
+      "kategori": "Sarana Pertanian",
+      "label": "Mesin APPO",
+      "value": "4 Unit",
+      "urutan": 5,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "pompa-air",
+      "kategori": "Sarana Pertanian",
+      "label": "Pompa Air",
+      "value": "18 Unit",
+      "urutan": 1,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "produksi-padi",
+      "kategori": "Pertanian",
+      "label": "Produksi Padi",
+      "value": "3.464,8 Ton",
+      "urutan": 4,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "rmu-huller",
+      "kategori": "Sarana Pertanian",
+      "label": "RMU / Huller",
+      "value": "9 Unit",
+      "urutan": 4,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    }
+  ],
+  "kelompok_tani": [
+    {
+      "slug": "sri-jaya-1",
+      "nama": "SRI JAYA I",
+      "ketua": "Hendri Rudianto",
+      "komoditas_utama": "Padi",
+      "luas_ha": 56,
+      "jumlah_anggota": 52,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-2",
+      "nama": "SRI JAYA II",
+      "ketua": "Ardiyanto",
+      "komoditas_utama": "Padi",
+      "luas_ha": 71,
+      "jumlah_anggota": 55,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-3",
+      "nama": "SRI JAYA III",
+      "ketua": "Muhamad Nur",
+      "komoditas_utama": "Padi",
+      "luas_ha": 73,
+      "jumlah_anggota": 44,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-4",
+      "nama": "SRI JAYA IV",
+      "ketua": "Syarif",
+      "komoditas_utama": "Padi",
+      "luas_ha": 70,
+      "jumlah_anggota": 45,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-5",
+      "nama": "SRI JAYA V",
+      "ketua": "Carom",
+      "komoditas_utama": "Padi",
+      "luas_ha": 67,
+      "jumlah_anggota": 56,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-6",
+      "nama": "SRI JAYA VI",
+      "ketua": "Enjang Irawan",
+      "komoditas_utama": "Padi",
+      "luas_ha": 55,
+      "jumlah_anggota": 40,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-7",
+      "nama": "SRI JAYA VII",
+      "ketua": "Dadang Suhana",
+      "komoditas_utama": "Padi",
+      "luas_ha": 66,
+      "jumlah_anggota": 60,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "sri-jaya-8",
+      "nama": "SRI JAYA VIII",
+      "ketua": "Nanang Sutarna",
+      "komoditas_utama": "Padi",
+      "luas_ha": 30,
+      "jumlah_anggota": 26,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Terverifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    }
+  ],
+  "produksi_pertanian": [
+    {
+      "slug": "kacang-panjang",
+      "nama": "Kacang Panjang",
+      "kategori": "Sayuran",
+      "luas_ha": 1,
+      "produktivitas": "15 kuintal/ha",
+      "produksi_ton": 1.5,
+      "urutan": 2,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "kelapa",
+      "nama": "Kelapa",
+      "kategori": "Perkebunan",
+      "luas_ha": 0.5,
+      "produktivitas": "1 kuintal/ha",
+      "produksi_ton": 0.05,
+      "urutan": 5,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "mangga",
+      "nama": "Mangga",
+      "kategori": "Buah-buahan",
+      "luas_ha": 2,
+      "produktivitas": "250 kuintal/ha",
+      "produksi_ton": 50,
+      "urutan": 3,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "padi",
+      "nama": "Padi Sawah",
+      "kategori": "Tanaman Pangan",
+      "luas_ha": 488,
+      "produktivitas": "6,9 ton/ha",
+      "produksi_ton": 3464.8,
+      "urutan": 1,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    },
+    {
+      "slug": "rambutan",
+      "nama": "Rambutan",
+      "kategori": "Buah-buahan",
+      "luas_ha": 0.5,
+      "produktivitas": "100 kuintal/ha",
+      "produksi_ton": 5,
+      "urutan": 4,
+      "tahun_data": 2026,
+      "sumber_data": "Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026, BPP Patokbeusi",
+      "status_validasi": "Perlu Verifikasi",
+      "release_status": "Terbit",
+      "aktif": true
+    }
+  ]
 }
