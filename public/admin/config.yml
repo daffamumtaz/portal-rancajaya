@@ -238,6 +238,16 @@ collections:
             name: luas_wilayah
             widget: string
             hint: Isi luas wilayah (km2) sesuai data terbaru dan sumber yang tersedia.
+          - label: Luas Sawah
+            name: luas_sawah
+            widget: string
+            required: false
+            hint: Masukkan luas sawah desa, misalnya 447 Hektar.
+          - label: Jumlah RT
+            name: jumlah_rt
+            widget: string
+            required: false
+            hint: Masukkan jumlah RT desa, misalnya 15 RT.
           - label: Total Penduduk
             name: penduduk_total
             widget: string
@@ -713,11 +723,6 @@ collections:
                 name: value
                 widget: string
                 hint: Masukkan nilai yang akan ditampilkan.
-              - label: Keterangan
-                name: keterangan
-                widget: text
-                required: false
-                hint: Tambahkan keterangan bila diperlukan.
               - label: Satuan
                 name: satuan
                 widget: string
@@ -772,15 +777,6 @@ collections:
                 value_type: int
                 min: 0
                 hint: Masukkan jumlah anggota kelompok.
-              - label: Deskripsi
-                name: deskripsi
-                widget: text
-                hint: Tulis penjelasan singkat dan jelas untuk publik.
-              - label: Kontak
-                name: kontak
-                widget: string
-                required: false
-                hint: Isi kontak sesuai data terbaru dan sumber yang tersedia.
               - *a2
               - *a3
               - *a4
@@ -824,11 +820,6 @@ collections:
                 value_type: float
                 min: 0
                 hint: Masukkan total produksi dalam ton.
-              - label: Catatan
-                name: catatan
-                widget: text
-                required: false
-                hint: Tambahkan catatan bila diperlukan.
               - label: Urutan
                 name: urutan
                 widget: number
@@ -1218,6 +1209,16 @@ collections:
             max: 21
             default: 18
             hint: Isi zoom peta sesuai data terbaru dan sumber yang tersedia.
+          - label: Pencarian Lokasi Peta
+            name: peta_query
+            widget: string
+            required: false
+            hint: Isi alamat atau nama lokasi yang dipakai untuk menampilkan peta.
+          - label: Tautan Google Maps
+            name: peta_url
+            widget: string
+            required: false
+            hint: Masukkan tautan Google Maps langsung ke lokasi kantor desa.
           - label: Sumber Koordinat
             name: sumber_koordinat
             widget: text

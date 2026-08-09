@@ -207,12 +207,6 @@ const halamanCollection = defineCollection({
     })).default([]),
     
     // Pertanian
-    luas_lahan: z.string().optional(),
-    komoditas: z.string().optional(),
-    jumlah_kelompok: z.string().optional(),
-    jumlah_petani: z.string().optional(),
-    irigasi: z.string().optional(),
-    produktivitas: z.string().optional(),
     deskripsi: z.string().optional(),
     peternakan_copywriting: z.string().optional(),
     gapoktan_nama: z.string().optional(),
@@ -223,15 +217,15 @@ const halamanCollection = defineCollection({
     })).default([]),
     statistik_potensi: z.array(z.object({
       slug: z.string(), kategori: z.enum(['Pertanian', 'Peternakan', 'Sarana Pertanian']), label: z.string(), value: z.string(),
-      keterangan: z.string().optional(), satuan: z.string().optional(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
+      satuan: z.string().optional(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
     })).default([]),
     kelompok_tani: z.array(z.object({
       slug: z.string(), nama: z.string(), ketua: z.string(), dusun: z.string().optional(), komoditas_utama: z.string(),
-      luas_ha: z.number(), jumlah_anggota: z.number(), deskripsi: z.string(), kontak: z.string().optional(), ...sourceMetadataFields, ...publicationFields,
+      luas_ha: z.number(), jumlah_anggota: z.number(), ...sourceMetadataFields, ...publicationFields,
     })).default([]),
     produksi_pertanian: z.array(z.object({
       slug: z.string(), nama: z.string(), kategori: z.enum(['Tanaman Pangan', 'Sayuran', 'Buah-buahan', 'Perkebunan']),
-      luas_ha: z.number(), produktivitas: z.string(), produksi_ton: z.number(), catatan: z.string().optional(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
+      luas_ha: z.number(), produktivitas: z.string(), produksi_ton: z.number(), urutan: z.number(), ...sourceMetadataFields, ...publicationFields,
     })).default([]),
 
     // Layanan
