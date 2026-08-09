@@ -55,6 +55,9 @@ collections:
         widget: image
         required: false
         hint: Unggah gambar pendukung. Maksimal 5 MB.
+        media_library:
+          config:
+            max_file_size: 5242880
       - label: Ringkasan
         name: excerpt
         widget: text
@@ -93,8 +96,7 @@ collections:
           - label: Terbit
             value: Terbit
         default: Terbit
-        hint:
-          Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul
+        hint: Pilih Draf jika konten belum boleh tampil. Pilih Terbit agar konten muncul
           setelah situs selesai dibangun.
       - label: Tampilkan di Publik
         name: aktif
@@ -150,6 +152,9 @@ collections:
         name: foto
         widget: image
         hint: Unggah foto. Maksimal 5 MB.
+        media_library:
+          config:
+            max_file_size: 5242880
       - label: Teks Alternatif Foto
         name: alt_text
         widget: string
@@ -186,6 +191,9 @@ collections:
             widget: image
             required: false
             hint: Unggah gambar latar bagian utama. Maksimal 5 MB.
+            media_library:
+              config:
+                max_file_size: 5242880
           - label: Judul Sorotan
             name: highlight_title
             widget: string
@@ -199,6 +207,9 @@ collections:
             widget: image
             required: false
             hint: Unggah gambar sorotan. Maksimal 5 MB.
+            media_library:
+              config:
+                max_file_size: 5242880
           - label: Statistik
             name: statistik
             widget: list
@@ -380,8 +391,7 @@ collections:
               - Perlu Verifikasi
               - Terverifikasi
             default: Perlu Verifikasi
-            hint:
-              Isi status validasi demografi sesuai data terbaru dan sumber yang
+            hint: Isi status validasi demografi sesuai data terbaru dan sumber yang
               tersedia.
           - *a1
           - label: Tampilkan di Publik
@@ -415,6 +425,9 @@ collections:
                 widget: image
                 required: false
                 hint: Unggah foto. Maksimal 5 MB.
+                media_library:
+                  config:
+                    max_file_size: 5242880
               - label: Urutan
                 name: urutan
                 widget: number
@@ -689,6 +702,9 @@ collections:
                 name: foto
                 widget: image
                 hint: Unggah foto. Maksimal 5 MB.
+                media_library:
+                  config:
+                    max_file_size: 5242880
               - label: Teks Alternatif
                 name: alt_text
                 widget: string
@@ -898,6 +914,9 @@ collections:
         widget: image
         required: false
         hint: Unggah foto. Maksimal 5 MB.
+        media_library:
+          config:
+            max_file_size: 5242880
       - label: Deskripsi
         name: deskripsi
         widget: text
@@ -1240,7 +1259,3 @@ collections:
             widget: boolean
             default: true
             hint: Nonaktifkan untuk menyimpan data tanpa menampilkannya di situs.
-media_library:
-  name: default
-  config:
-    max_file_size: 5242880
