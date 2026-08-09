@@ -5,6 +5,8 @@ category: "Artikel"
 thumbnail: "/images/artikel/eco-print.jpg"
 excerpt: "Program eco-print di tiga sekolah dasar mengajak siswa membuat motif kain dari daun melalui praktik langsung."
 author: "KKN-T IPB Desa Rancajaya"
+external_url: "https://www.goodnewsfromindonesia.id/2026/08/05/belajar-sambil-berkarya-mahasiswa-kkn-t-ipb-kenalkan-eco-print-kepada-104-siswa-sd-di-desa-rancajaya"
+external_source: "Good News From Indonesia"
 featured: true
 release_status: "Terbit"
 aktif: true

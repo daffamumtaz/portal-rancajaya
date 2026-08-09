@@ -30,6 +30,11 @@ const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
   src: resolvePublicPath(item.foto, base),
   alt: item.alt_text,
 })).filter((item) => item.src);
+const sourceForEntries = (entries) => [...new Set(entries.map((entry) => entry.data.sumber_data).filter(Boolean))].join('; ');
+const pertanianSource = sourceForEntries(pertanianStats);
+const produksiSource = sourceForEntries(sortedProduksi);
+const saranaSource = sourceForEntries(saranaPertanian);
+const kelompokTaniSource = sourceForEntries(sortedKelompokTani);
 ---
 
 <Layout title={`Potensi Desa Rancajaya - Pertanian, Peternakan & UMKM`} description={`Potensi pertanian, peternakan domba, UMKM, dan ekonomi lokal Desa Rancajaya, Kecamatan Patokbeusi, Kabupaten Subang.`}>
@@ -54,13 +59,7 @@ const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
           </StatCard>
         ))}
       </div>
-      {potensi.kondisi_lahan?.length > 0 && (
-        <div class="mt-8 rounded-2xl border border-primary-100 bg-primary-50/60 p-5 md:p-6">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {potensi.kondisi_lahan.map((item) => <div><span class="block text-xs font-semibold uppercase tracking-wide text-primary-700">{item.label}</span><span class="mt-1 block font-display text-lg font-bold text-ink">{item.nilai}</span></div>)}
-          </div>
-        </div>
-      )}
+      {pertanianSource && <p class="mt-5 text-xs leading-relaxed text-muted"><strong class="text-ink">Sumber:</strong> {pertanianSource}.</p>}
     </div>
   </section>
 
@@ -87,7 +86,7 @@ const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
           </article>
         ))}
       </div>
-      <p class="mt-5 text-xs leading-relaxed text-muted">Angka produksi dikonversi dari kuintal menjadi ton berdasarkan tabel Programa Penyuluhan Pertanian Desa Rancajaya Tahun 2026.</p>
+      <p class="mt-5 text-xs leading-relaxed text-muted">Angka produksi dikonversi dari kuintal menjadi ton. {produksiSource && <><strong class="text-ink">Sumber:</strong> {produksiSource}.</>}</p>
     </div>
   </section>
 
@@ -129,6 +128,7 @@ const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         {saranaPertanian.map((item) => <article class="card p-5 text-center"><span class="block text-xs font-semibold uppercase tracking-wide text-muted">{item.data.label}</span><strong class="mt-2 block font-display text-2xl text-primary-800">{item.data.value}</strong></article>)}
       </div>
+      {saranaSource && <p class="mt-5 text-xs leading-relaxed text-muted"><strong class="text-ink">Sumber:</strong> {saranaSource}.</p>}
     </div>
   </section>
 
@@ -150,6 +150,7 @@ const peternakanSlides = (potensi.peternakan_galeri || []).map((item) => ({
         {sortedKelompokTani.map((poktan) => <article class="card p-5"><div class="flex items-start gap-4"><div class="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-700 shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="min-w-0 flex-1"><h3 class="font-bold text-ink text-lg">{poktan.data.nama}</h3><p class="text-xs text-muted">Ketua: <strong class="text-ink">{poktan.data.ketua}</strong></p><div class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm"><div><span class="block text-muted text-xs">Luas</span><span class="font-semibold text-ink">{formatNumber(poktan.data.luas_ha)} ha</span></div><div><span class="block text-muted text-xs">Anggota</span><span class="font-semibold text-ink">{poktan.data.jumlah_anggota} orang</span></div><div><span class="block text-muted text-xs">Komoditas</span><span class="font-semibold text-primary-700">{poktan.data.komoditas_utama}</span></div></div></div></div></article>)}
         {sortedKelompokTani.length === 0 && <p class="text-muted col-span-2 text-center">Data kelompok tani belum ditambahkan.</p>}
       </div>
+      {kelompokTaniSource && <p class="mt-5 text-xs leading-relaxed text-muted"><strong class="text-ink">Sumber:</strong> {kelompokTaniSource}.</p>}
     </div>
   </section>
 

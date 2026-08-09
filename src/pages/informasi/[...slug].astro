@@ -79,6 +79,16 @@ const thumbnail = resolvePublicPath(entry.data.thumbnail, base);
         <div class="prose prose-lg prose-emerald max-w-none">
           <Content />
         </div>
+
+        {entry.data.external_url && (
+          <aside class="mt-10 rounded-2xl border border-primary-100 bg-primary-50 p-5 md:p-6 not-prose">
+            <p class="text-sm text-muted">Artikel selengkapnya tersedia di media penerbit.</p>
+            <a href={entry.data.external_url} target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-2 font-semibold text-primary-700 hover:underline">
+              Baca selengkapnya di {entry.data.external_source || 'sumber asli'}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            </a>
+          </aside>
+        )}
       </div>
     </div>
   </article>

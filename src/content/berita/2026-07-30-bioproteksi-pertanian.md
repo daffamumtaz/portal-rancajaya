@@ -5,6 +5,8 @@ category: "Artikel"
 thumbnail: "/images/artikel/bioproteksi.jpg"
 excerpt: "Sosialisasi Bioproteksi membahas pestisida nabati, PGPR, dan bumbung parasitoid untuk mendukung pertanian berkelanjutan."
 author: "KKN-T IPB Desa Rancajaya"
+external_url: "https://www.kompasiana.com/ivanadamaiatsari3116/6a7315cded641555530c383d/petani-rancajaya-belajar-bioproteksi-bersama-kkn-t-ipb"
+external_source: "Kompasiana"
 featured: true
 release_status: "Terbit"
 aktif: true

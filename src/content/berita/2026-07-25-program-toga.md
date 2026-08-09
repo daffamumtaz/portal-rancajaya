@@ -5,6 +5,8 @@ category: "Artikel"
 thumbnail: "/images/artikel/toga.jpg"
 excerpt: "Ibu-ibu dari tiga dusun mengikuti edukasi dan praktik menanam tanaman obat keluarga di Balai Desa Rancajaya."
 author: "KKN-T IPB Desa Rancajaya"
+external_url: "https://www.idntimes.com/news/community/belajar-toga-warga-rancajaya-sulap-pekarangan-lebih-hijau-01-6w7sj-8t5yc8/preview"
+external_source: "IDN Times"
 featured: true
 release_status: "Terbit"
 aktif: true

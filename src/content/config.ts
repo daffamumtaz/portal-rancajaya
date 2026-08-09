@@ -28,6 +28,8 @@ const beritaCollection = defineCollection({
     thumbnail: z.string().optional(),
     excerpt: z.string(),
     author: z.string().default('Admin Desa'),
+    external_url: z.string().url().optional(),
+    external_source: z.string().optional(),
     featured: z.boolean().default(false),
     ...publicationFields,
   }),
@@ -251,7 +253,6 @@ const halamanCollection = defineCollection({
     // Profil
     sambutan: z.string().optional(),
     nama_kades: z.string().optional(),
-    foto_kades: z.string().optional(),
     luas_wilayah: z.string().optional(),
     luas_sawah: z.string().optional(),
     jumlah_rt: z.string().optional(),
@@ -284,10 +285,6 @@ const halamanCollection = defineCollection({
     peternakan_copywriting: z.string().optional(),
     gapoktan_nama: z.string().optional(),
     gapoktan_ketua: z.string().optional(),
-    kondisi_lahan: z.array(z.object({
-      label: z.string(),
-      nilai: z.string(),
-    })).default([]),
     peternakan_galeri: z.array(z.object({
       foto: z.string(),
       alt_text: z.string(),

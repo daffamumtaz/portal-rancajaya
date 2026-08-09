@@ -4,12 +4,6 @@
   "deskripsi": "Pertanian Desa Rancajaya ditopang oleh 488 hektare sawah beririgasi teknis, delapan kelompok tani padi, serta kegiatan hortikultura warga.",
   "gapoktan_nama": "SRIJAYA",
   "gapoktan_ketua": "Pak Syarif",
-  "kondisi_lahan": [
-    { "label": "Irigasi Sawah", "nilai": "Teknis" },
-    { "label": "Kemiringan Lahan", "nilai": "< 8%" },
-    { "label": "pH Tanah Sawah", "nilai": "5,5–5,9" },
-    { "label": "Bulan Basah", "nilai": "7–9 bulan" }
-  ],
   "peternakan_copywriting": "Peternakan domba menjadi salah satu potensi yang menonjol di Desa Rancajaya. Kandang-kandang warga memperlihatkan praktik pemeliharaan skala rumah tangga yang menjadi bagian dari aktivitas ekonomi keluarga.",
   "peternakan_galeri": [
     { "foto": "/images/peternakan/domba-1.jpeg", "alt_text": "Kandang domba warga Desa Rancajaya" },

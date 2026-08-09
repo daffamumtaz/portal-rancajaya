@@ -6,9 +6,9 @@ backend:
   auth_endpoint: auth
   site_id: portal-rancajaya.netlify.app
 
-# Decap memakai workflow native: Draf, Dalam Review, dan Siap Terbit.
-# Struktur Organisasi dan Dusun tetap; koleksi lain dapat menambah entri.
-publish_mode: editorial_workflow
+# Mode simpan langsung. Status Draf/Terbit tetap diatur lewat field Status Publikasi.
+# Tambah + edit: berita, APBDes, potensi, kelompok tani, produksi, UMKM, layanan, kontak, dan galeri.
+# Hanya edit entri yang ada: struktur organisasi, dusun, pengaturan umum, serta halaman website.
 show_preview_links: true
 
 media_folder: "public/images/uploads"
@@ -41,6 +41,8 @@ collections:
       - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
       - { label: "Ringkasan", name: "excerpt", widget: "text" }
       - { label: "Penulis", name: "author", widget: "string", default: "Admin Desa" }
+      - { label: "Tautan Artikel Lengkap", name: "external_url", widget: "string", required: false, hint: "Isi jika artikel memiliki versi lengkap di media lain." }
+      - { label: "Nama Media Sumber", name: "external_source", widget: "string", required: false, hint: "Contoh: Kompasiana, Good News From Indonesia, atau IDN Times." }
       - { label: "Tampilkan di Beranda", name: "featured", widget: "boolean", default: false }
       - { label: "Konten", name: "body", widget: "markdown" }
       - &publication_status
@@ -55,7 +57,7 @@ collections:
       - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
   - name: "struktur-organisasi"
-    label: "Struktur Organisasi Tree"
+    label: "Struktur Organisasi"
     label_singular: "Posisi Struktur"
     folder: "src/content/struktur-organisasi"
     create: false
@@ -356,30 +358,6 @@ collections:
       - *publication_status
       - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
 
-  - name: "faq"
-    label: "FAQ"
-    label_singular: "FAQ"
-    folder: "src/content/faq"
-    create: true
-    delete: false
-    identifier_field: "pertanyaan"
-    summary: "{{kategori}} - {{pertanyaan}}"
-    sortable_fields: ["urutan", "kategori", "pertanyaan"]
-    view_filters:
-      - { label: "Draf", field: "release_status", pattern: "Draf" }
-    fields:
-      - { label: "Pertanyaan", name: "pertanyaan", widget: "string" }
-      - { label: "Jawaban", name: "jawaban", widget: "text" }
-      - label: "Kategori"
-        name: "kategori"
-        widget: "select"
-        options: ["Administrasi", "Layanan", "Umum", "Potensi"]
-      - { label: "Urutan", name: "urutan", widget: "number", value_type: "int", min: 1, default: 1 }
-      - { label: "Tanggal Pembaruan", name: "tanggal_pembaruan", widget: "date", required: false }
-      - { label: "Sumber Data", name: "sumber_data", widget: "string", required: false }
-      - *publication_status
-      - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
   - name: "galeri"
     label: "Galeri Foto"
     label_singular: "Foto Galeri"
@@ -471,7 +449,6 @@ collections:
         fields:
           - { label: "Kata Sambutan", name: "sambutan", widget: "text" }
           - { label: "Nama Kepala Desa", name: "nama_kades", widget: "string" }
-          - { label: "Foto Kepala Desa", name: "foto_kades", widget: "image", required: false }
           - { label: "Luas Wilayah (km2)", name: "luas_wilayah", widget: "string" }
           - { label: "Total Penduduk", name: "penduduk_total", widget: "string" }
           - { label: "Penduduk Pria", name: "penduduk_pria", widget: "string" }
@@ -532,13 +509,6 @@ collections:
           - { label: "Deskripsi Potensi", name: "deskripsi", widget: "text" }
           - { label: "Nama Gapoktan", name: "gapoktan_nama", widget: "string", required: false }
           - { label: "Ketua Gapoktan", name: "gapoktan_ketua", widget: "string", required: false }
-          - label: "Kondisi Lahan"
-            name: "kondisi_lahan"
-            widget: "list"
-            required: false
-            fields:
-              - { label: "Label", name: "label", widget: "string" }
-              - { label: "Nilai", name: "nilai", widget: "string" }
           - { label: "Narasi Peternakan Domba", name: "peternakan_copywriting", widget: "text", required: false }
           - label: "Galeri Peternakan"
             name: "peternakan_galeri"
@@ -555,22 +525,5 @@ collections:
         fields:
           - { label: "Judul Hero", name: "hero_title", widget: "string", required: false }
           - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text", required: false }
-          - *publication_status
-          - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }
-
-      - label: "Halaman Tracking Progress"
-        name: "tracking"
-        file: "src/content/halaman/tracking.json"
-        fields:
-          - { label: "Judul Hero", name: "hero_title", widget: "string" }
-          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
-          - { label: "Placeholder Nomor Permohonan", name: "tracking_placeholder", widget: "string" }
-          - { label: "Catatan Pelacakan", name: "tracking_disclaimer", widget: "text" }
-          - label: "Tahapan Status"
-            name: "tracking_steps"
-            widget: "list"
-            fields:
-              - { label: "Label Status", name: "label", widget: "string" }
-              - { label: "Keterangan", name: "detail", widget: "text" }
           - *publication_status
           - { label: "Tampilkan di Publik", name: "aktif", widget: "boolean", default: true }

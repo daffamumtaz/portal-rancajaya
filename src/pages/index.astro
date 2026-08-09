@@ -15,19 +15,11 @@ const beranda = isPublishedContent(berandaData?.data) ? berandaData.data : {};
 const profil = isPublishedContent(profilData?.data) ? profilData.data : {};
 
 const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
-const apbdesEntries = (await getCollection('apbdes'))
-  .filter((entry) => isPublishedContent(entry.data))
-  .filter((entry) => entry.data.tahun === (common.tahun_apbdes_aktif || new Date().getFullYear()));
 const layananEntries = (await getCollection('layanan-administrasi'))
   .filter((entry) => isPublishedContent(entry.data))
   .sort((a, b) => a.data.urutan - b.data.urutan);
 const umkmEntries = (await getCollection('umkm')).filter((entry) => isPublishedContent(entry.data));
 
-const totalPendapatan = apbdesEntries.filter((entry) => entry.data.jenis === 'Pendapatan').reduce((sum, entry) => sum + entry.data.jumlah, 0);
-const totalBelanja = apbdesEntries.filter((entry) => entry.data.jenis === 'Belanja').reduce((sum, entry) => sum + entry.data.jumlah, 0);
-const formatRupiah = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
-const formatNumber = (value) => new Intl.NumberFormat('id-ID').format(value);
-const activeApbdesYear = common.tahun_apbdes_aktif || new Date().getFullYear();
 const homeStatValues = {
   'Luas Wilayah': profil.luas_wilayah || undefined,
   'Luas Sawah': profil.luas_sawah || undefined,
@@ -131,35 +123,7 @@ const mapEmbedUrl = toGoogleMapsEmbedUrl(common.koordinat_latitude, common.koord
     </div>
   </section>
 
-  <!-- 4. Ringkasan Data Desa -->
-  <section class="section bg-paper border-b border-line">
-    <div class="container-page">
-      <div class="section-header">
-        <span class="eyebrow">Data Terbaru</span>
-        <h2 class="section-title">Ringkasan Desa</h2>
-        <p class="section-subtitle">Ringkasan informasi Desa Rancajaya yang telah dipublikasikan.</p>
-      </div>
-      <div class="grid grid-cols-1 gap-6">
-        <div class="card p-6 md:p-7">
-          <div class="flex items-start justify-between gap-4 mb-5">
-            <div>
-              <span class="eyebrow">APBDes</span>
-              <h3 class="text-xl font-display font-bold text-ink mt-2">Tahun {activeApbdesYear}</h3>
-            </div>
-            <a href={`${base}/profil#apbdes`} class="text-xs font-semibold text-primary-700 hover:underline whitespace-nowrap">Lihat rincian</a>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="rounded-md bg-primary-50 p-4"><span class="block text-xs text-muted">Pendapatan</span><strong class="block text-sm text-primary-800 mt-1">{formatRupiah(totalPendapatan)}</strong></div>
-            <div class="rounded-md bg-blue-50 p-4"><span class="block text-xs text-muted">Belanja</span><strong class="block text-sm text-blue-800 mt-1">{formatRupiah(totalBelanja)}</strong></div>
-            <div class="rounded-md bg-gold-50 p-4"><span class="block text-xs text-muted">Saldo</span><strong class="block text-sm text-gold-800 mt-1">{formatRupiah(totalPendapatan - totalBelanja)}</strong></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Potensi Unggulan -->
+  <!-- 4. Potensi Unggulan -->
   <section class="section bg-paper">
     <div class="container-page">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

@@ -9,6 +9,7 @@ const profilData = await getEntry('halaman', 'profil');
 const umumData = await getEntry('pengaturan', 'umum');
 const profil = isPublishedContent(profilData?.data) ? profilData.data : {};
 const common = isPublishedContent(umumData?.data) ? umumData.data : {};
+const chartScriptUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/vendor/chart.umd.js`;
 const strukturOrganisasi = (await getCollection('struktur-organisasi')).filter((entry) => isPublishedContent(entry.data));
 const dusunEntries = (await getCollection('dusun')).filter((entry) => isPublishedContent(entry.data));
 const allApbdesEntries = (await getCollection('apbdes')).filter((entry) => isPublishedContent(entry.data));
@@ -71,6 +72,21 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
     belanja: rows.filter((row) => row.jenis === 'Belanja').sort((a, b) => b.jumlah - a.jumlah),
   }];
 }));
+const apbdesHistory = [...new Set(apbdesPeriods.map((period) => period.tahun))]
+  .sort((a, b) => a - b)
+  .map((tahun) => {
+    const versi = apbdesPeriods.some((period) => period.tahun === tahun && period.versi === 'Perubahan') ? 'Perubahan' : 'Awal';
+    const rows = allApbdesEntries.filter((entry) => entry.data.tahun === tahun && entry.data.versi === versi);
+    return {
+      tahun,
+      versi,
+      pendapatan: rows.filter((entry) => entry.data.jenis === 'Pendapatan').reduce((sum, entry) => sum + entry.data.jumlah, 0),
+      belanja: rows.filter((entry) => entry.data.jenis === 'Belanja').reduce((sum, entry) => sum + entry.data.jumlah, 0),
+    };
+  });
+const apbdesHistoryRange = apbdesHistory.length > 1
+  ? `${apbdesHistory[0].tahun}–${apbdesHistory[apbdesHistory.length - 1].tahun}`
+  : `${apbdesHistory[0]?.tahun || configuredApbdesYear}`;
 
 ---
 
@@ -395,7 +411,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
     </div>
   </section>
 
-  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script is:inline src={chartScriptUrl}></script>
   <script is:inline define:vars={{ demoDusun, demoPendidikan: pendidikanRows, demoUmur: umurRows, demoPekerjaan: pekerjaanRows, chartPalette }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
@@ -469,6 +485,19 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
         </div>
       </div>
 
+      {apbdesHistory.length > 0 && (
+        <div class="card p-5 md:p-7 mb-8">
+          <div class="mb-5">
+            <h3 class="font-display text-xl font-bold text-ink">Riwayat APBDes {apbdesHistoryRange}</h3>
+            <p class="mt-1 text-sm text-muted">Perbandingan total pemasukan dan belanja per tahun. Versi perubahan digunakan jika tersedia; tahun yang belum memiliki perubahan memakai versi awal.</p>
+          </div>
+          <div class="relative h-72 md:h-96 w-full">
+            <canvas id="chartApbdesHistory" role="img" aria-label={`Grafik perbandingan pemasukan dan belanja APBDes ${apbdesHistoryRange}`}></canvas>
+          </div>
+          <p class="mt-4 text-xs leading-relaxed text-muted"><strong class="text-ink">Periode yang dibandingkan:</strong> {apbdesHistory.map((item) => `${item.tahun} ${item.versi}`).join(', ')}.</p>
+        </div>
+      )}
+
       <div id="apbdesEmpty" class={`card p-8 text-center text-muted ${apbdesEntries.length > 0 ? 'hidden' : ''}`}>Data APBDes untuk tahun yang dipilih belum tersedia.</div>
 
       <div id="apbdesContent" class={apbdesEntries.length > 0 ? '' : 'hidden'}>
@@ -509,6 +538,7 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
   <script is:inline define:vars={{
     apbdesByPeriod,
     activeApbdesPeriod,
+    apbdesHistory,
   }}>
     document.addEventListener("DOMContentLoaded", function() {
       if (!window.Chart) return;
@@ -523,6 +553,47 @@ const apbdesByPeriod = Object.fromEntries(apbdesPeriods.map((period) => {
       const escapeHtml = (value) => String(value ?? '').replace(/[&<>\'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
       let chartPendapatan;
       let chartBelanja;
+
+      const historyCanvas = document.getElementById('chartApbdesHistory');
+      if (historyCanvas && apbdesHistory.length) {
+        new Chart(historyCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: apbdesHistory.map((item) => String(item.tahun)),
+            datasets: [
+              {
+                label: 'Pemasukan',
+                data: apbdesHistory.map((item) => item.pendapatan),
+                backgroundColor: '#16a34a',
+                borderColor: '#166534',
+                borderWidth: 1,
+                borderRadius: 5,
+              },
+              {
+                label: 'Belanja',
+                data: apbdesHistory.map((item) => item.belanja),
+                backgroundColor: '#2563eb',
+                borderColor: '#1e40af',
+                borderWidth: 1,
+                borderRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } },
+              tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}` } },
+            },
+            scales: {
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, ticks: { callback: compactCurrency } },
+            },
+          },
+        });
+      }
 
       function renderLegend(elementId, rows, color) {
         const element = document.getElementById(elementId);
